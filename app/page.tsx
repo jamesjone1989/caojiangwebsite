@@ -157,7 +157,10 @@ export default function Home() {
           </p>
         </div>
 
-        <div className="canvas-shell" aria-label="可随鼠标转动的西瓜老师 3D 形象">
+        <div
+          className="canvas-shell"
+          aria-label="可用鼠标或手指拖拽旋转的西瓜老师 3D 形象"
+        >
           <XiguaTeacher3D focus={activeId} />
         </div>
 
@@ -190,7 +193,7 @@ export default function Home() {
 
         <p className="motion-hint">
           <Rotate3D size={18} aria-hidden="true" />
-          移动鼠标看他转身 · 点击标签走近看看
+          按住拖动，360° 旋转 · 点击标签走近看看
         </p>
 
         <section
@@ -240,6 +243,8 @@ export default function Home() {
           <strong>{activeItem?.index ?? "00"}</strong>
           <span>/ 05</span>
         </div>
+
+        <footer className="font-credit">本站使用 OPPO Sans 4.0 字体</footer>
       </section>
     </main>
   );

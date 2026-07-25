@@ -1,5 +1,13 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: "OPPO Sans";
+  src: url("/fonts/OPPOSans4.0.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+}
+
 :root {
   --paper: #e9e4d8;
   --cream: #f7f4ec;
@@ -7,8 +15,8 @@
   --muted: #6d6a62;
   --red: #ff5b53;
   --green: #8fcb57;
-  --font-display: "ZCOOL KuaiLe", "STKaiti", cursive;
-  --font-body: "Noto Sans SC Variable", "Source Han Sans SC", sans-serif;
+  --font-display: "OPPO Sans", "Source Han Sans SC", sans-serif;
+  --font-body: "OPPO Sans", "Source Han Sans SC", sans-serif;
 }
 
 * {
@@ -214,6 +222,10 @@ a {
   height: 100% !important;
   cursor: grab;
   touch-action: pan-y;
+}
+
+.xigua-canvas:active {
+  cursor: grabbing;
 }
 
 .hero-copy {
@@ -533,6 +545,19 @@ a {
   font-weight: 400;
 }
 
+.font-credit {
+  position: absolute;
+  z-index: 6;
+  left: 50%;
+  bottom: 20px;
+  color: var(--muted);
+  font-size: 8px;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  opacity: 0.62;
+  transform: translateX(-50%);
+}
+
 @media (max-width: 900px) {
   .topbar {
     height: 68px;
@@ -738,6 +763,10 @@ a {
 
   .stage-counter {
     display: none;
+  }
+
+  .font-credit {
+    bottom: 18px;
   }
 }
 

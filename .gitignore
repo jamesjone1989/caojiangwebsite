@@ -41,3 +41,6 @@ next-env.d.ts
 /.wrangler/
 /outputs/
 /work/
+
+# Official OPPO Sans binary is downloaded unmodified from ColorOS before dev/build.
+/public/fonts/OPPOSans4.0.ttf

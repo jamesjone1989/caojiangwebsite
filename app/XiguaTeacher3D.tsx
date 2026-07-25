@@ -1,8 +1,13 @@
 "use client";
 
-import { ContactShadows, Float, RoundedBox } from "@react-three/drei";
+import {
+  ContactShadows,
+  Float,
+  PresentationControls,
+  RoundedBox,
+} from "@react-three/drei";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { useMemo, useRef } from "react";
+import { useMemo } from "react";
 import * as THREE from "three";
 
 export type FocusId =
@@ -106,175 +111,132 @@ function WatermelonHat() {
 
 function Glasses() {
   return (
-    <group position={[0, 1.34, 0.8]}>
-      {[-0.43, 0.43].map((x) => (
+    <group position={[-0.08, 1.32, 0.98]}>
+      {[-0.4, 0.4].map((x) => (
         <group key={x} position={[x, 0, 0]}>
           <mesh position={[0, 0, -0.025]}>
-            <circleGeometry args={[0.295, 48]} />
+            <circleGeometry args={[0.32, 48]} />
             <meshPhysicalMaterial
-              color="#fffdf7"
-              roughness={0.12}
-              transmission={0.12}
-              transparent
-              opacity={0.92}
+              color="#f2e4d0"
+              roughness={0.58}
+              transmission={0.02}
             />
           </mesh>
           <mesh castShadow>
-            <torusGeometry args={[0.305, 0.058, 18, 48]} />
-            <meshStandardMaterial color="#11110f" roughness={0.38} />
+            <torusGeometry args={[0.33, 0.07, 22, 56]} />
+            <meshStandardMaterial color="#10110f" roughness={0.5} metalness={0.02} />
           </mesh>
         </group>
       ))}
       <mesh position={[0, 0.015, 0]} rotation={[0, 0, Math.PI / 2]}>
-        <cylinderGeometry args={[0.045, 0.045, 0.24, 18]} />
-        <meshStandardMaterial color="#11110f" />
+        <cylinderGeometry args={[0.048, 0.048, 0.16, 20]} />
+        <meshStandardMaterial color="#10110f" roughness={0.48} />
       </mesh>
     </group>
   );
 }
 
 function XiguaCharacter({ focus }: { focus: FocusId }) {
-  const character = useRef<THREE.Group>(null);
-  const head = useRef<THREE.Group>(null);
-  const eyes = useRef<THREE.Group>(null);
-
-  useFrame((state, delta) => {
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (!character.current || !head.current || !eyes.current) return;
-
-    const pointerX = reduced ? 0 : state.pointer.x;
-    const pointerY = reduced ? 0 : state.pointer.y;
-    head.current.rotation.y = THREE.MathUtils.damp(
-      head.current.rotation.y,
-      pointerX * 0.16,
-      5,
-      delta,
-    );
-    head.current.rotation.x = THREE.MathUtils.damp(
-      head.current.rotation.x,
-      -pointerY * 0.08,
-      5,
-      delta,
-    );
-    eyes.current.position.x = THREE.MathUtils.damp(
-      eyes.current.position.x,
-      pointerX * 0.06,
-      8,
-      delta,
-    );
-    eyes.current.position.y = THREE.MathUtils.damp(
-      eyes.current.position.y,
-      pointerY * 0.035,
-      8,
-      delta,
-    );
-    character.current.rotation.y = THREE.MathUtils.damp(
-      character.current.rotation.y,
-      focus === "overview" ? pointerX * 0.08 : 0,
-      4,
-      delta,
-    );
-  });
-
   return (
     <Float
       speed={1.25}
       rotationIntensity={focus === "overview" ? 0.06 : 0.02}
       floatIntensity={0.16}
     >
-      <group ref={character} position={[0.3, -0.13, 0]} scale={0.98}>
-        <group ref={head}>
-          <mesh position={[0, 1.32, -0.04]} scale={[1.09, 1.13, 0.87]} castShadow>
+      <group position={[0.3, -0.1, 0]} scale={0.98}>
+        <group>
+          <mesh position={[0, 1.3, -0.18]} scale={[1.02, 1.08, 0.91]} castShadow>
             <sphereGeometry args={[1, 64, 64]} />
-            <meshStandardMaterial color="#11110f" roughness={0.58} />
+            <meshStandardMaterial color="#11110f" roughness={0.72} />
           </mesh>
-          <mesh position={[0, 1.29, 0.06]} scale={[1.01, 1.055, 0.84]} castShadow>
+          <mesh position={[-0.06, 1.25, 0.09]} scale={[0.94, 0.99, 0.83]} castShadow>
             <sphereGeometry args={[1, 64, 64]} />
-            <meshStandardMaterial color="#fffdf8" roughness={0.62} />
+            <meshStandardMaterial color="#f0dfc8" roughness={0.7} />
           </mesh>
 
           {[
-            [-0.8, 1.9, 0.03, 0.53],
-            [-0.36, 2.12, -0.04, 0.56],
-            [0.13, 2.14, -0.08, 0.55],
-            [0.56, 2.01, -0.03, 0.54],
-            [0.82, 1.72, 0, 0.46],
+            [-0.83, 1.88, 0.02, 0.54],
+            [-0.42, 2.12, -0.06, 0.58],
+            [0.05, 2.15, -0.1, 0.57],
+            [0.5, 2.04, -0.04, 0.56],
+            [0.79, 1.72, 0.02, 0.49],
           ].map(([x, y, z, scale], index) => (
             <mesh key={index} position={[x, y, z]} scale={scale} castShadow>
               <sphereGeometry args={[1, 40, 40]} />
-              <meshStandardMaterial color="#11110f" roughness={0.58} />
+              <meshStandardMaterial color="#11110f" roughness={0.72} />
             </mesh>
           ))}
 
-          <group ref={eyes} position={[0, 0, 0]}>
-            {[-0.43, 0.43].map((x) => (
-              <mesh key={x} position={[x, 1.34, 0.825]} scale={[0.075, 0.1, 0.04]}>
-                <sphereGeometry args={[1, 22, 22]} />
-                <meshStandardMaterial color="#171715" />
-              </mesh>
-            ))}
-          </group>
+          <mesh position={[0.84, 1.18, 0.08]} scale={[0.28, 0.34, 0.22]} castShadow>
+            <sphereGeometry args={[1, 40, 40]} />
+            <meshStandardMaterial color="#f0dfc8" roughness={0.7} />
+          </mesh>
           <Glasses />
 
-          <mesh position={[0.08, 0.89, 0.82]} rotation={[0, 0, Math.PI]} castShadow>
-            <torusGeometry args={[0.3, 0.042, 12, 36, Math.PI]} />
-            <meshStandardMaterial color="#11110f" />
-          </mesh>
           <WatermelonHat />
         </group>
 
-        <group position={[0, -0.48, 0]}>
-          <mesh scale={[1.02, 1.2, 0.54]} castShadow>
+        <mesh position={[-0.05, 0.24, 0]} castShadow>
+          <cylinderGeometry args={[0.25, 0.31, 0.62, 32]} />
+          <meshStandardMaterial color="#f0dfc8" roughness={0.72} />
+        </mesh>
+
+        <group position={[0, -0.55, 0]}>
+          <mesh scale={[1.04, 1.22, 0.58]} castShadow>
             <sphereGeometry args={[1, 52, 52]} />
-            <meshStandardMaterial color="#11110f" roughness={0.54} />
+            <meshStandardMaterial color="#f5f0e7" roughness={0.76} />
           </mesh>
-          <mesh position={[0, 0.02, 0.08]} scale={[0.94, 1.12, 0.52]} castShadow>
-            <sphereGeometry args={[1, 52, 52]} />
-            <meshStandardMaterial color="#f9f7f0" roughness={0.64} />
+          <mesh position={[-0.04, 0.22, 0.55]} scale={[0.33, 0.92, 0.1]} castShadow>
+            <capsuleGeometry args={[0.5, 0.72, 12, 28]} />
+            <meshStandardMaterial color="#181816" roughness={0.7} />
           </mesh>
 
-          <mesh position={[0, 0.14, 0.55]} scale={[0.28, 0.88, 0.09]} castShadow>
-            <capsuleGeometry args={[0.5, 0.7, 12, 24]} />
-            <meshStandardMaterial color="#181816" roughness={0.6} />
+          <mesh
+            position={[-0.38, 0.47, 0.62]}
+            rotation={[0.02, -0.05, -0.52]}
+            scale={[0.5, 0.11, 0.075]}
+          >
+            <capsuleGeometry args={[0.42, 0.58, 12, 24]} />
+            <meshStandardMaterial color="#fffaf1" roughness={0.76} />
           </mesh>
-          <mesh position={[-0.35, 0.4, 0.56]} rotation={[0, 0, -0.48]} scale={[0.48, 0.1, 0.065]}>
-            <capsuleGeometry args={[0.4, 0.55, 10, 20]} />
-            <meshStandardMaterial color="#e9e4d8" roughness={0.68} />
-          </mesh>
-          <mesh position={[0.35, 0.4, 0.56]} rotation={[0, 0, 0.48]} scale={[0.48, 0.1, 0.065]}>
-            <capsuleGeometry args={[0.4, 0.55, 10, 20]} />
-            <meshStandardMaterial color="#e9e4d8" roughness={0.68} />
+          <mesh
+            position={[0.36, 0.47, 0.62]}
+            rotation={[0.02, 0.05, 0.52]}
+            scale={[0.5, 0.11, 0.075]}
+          >
+            <capsuleGeometry args={[0.42, 0.58, 12, 24]} />
+            <meshStandardMaterial color="#fffaf1" roughness={0.76} />
           </mesh>
 
           {[-1, 1].map((side) => (
             <group key={side}>
               <mesh
-                position={[side * 1.04, -0.1, -0.04]}
-                rotation={[0, 0, side * -0.18]}
+                position={[side * 1.04, -0.08, -0.01]}
+                rotation={[0, 0, side * -0.12]}
                 castShadow
               >
-                <capsuleGeometry args={[0.25, 1.12, 12, 24]} />
-                <meshStandardMaterial color="#11110f" roughness={0.55} />
-              </mesh>
-              <mesh
-                position={[side * 0.99, -0.08, 0.04]}
-                rotation={[0, 0, side * -0.18]}
-                scale={0.88}
-                castShadow
-              >
-                <capsuleGeometry args={[0.22, 1.05, 12, 24]} />
-                <meshStandardMaterial color="#f9f7f0" roughness={0.64} />
+                <capsuleGeometry args={[0.3, 1.18, 14, 28]} />
+                <meshStandardMaterial color="#f5f0e7" roughness={0.76} />
               </mesh>
             </group>
           ))}
 
-          <mesh position={[0.62, -0.36, 0.56]}>
-            <circleGeometry args={[0.12, 32]} />
-            <meshStandardMaterial color="#ff5b53" />
+          <RoundedBox
+            args={[0.48, 0.42, 0.08]}
+            radius={0.1}
+            smoothness={5}
+            position={[0.56, -0.31, 0.58]}
+            rotation={[0, -0.04, 0]}
+          >
+            <meshStandardMaterial color="#eee8de" roughness={0.78} />
+          </RoundedBox>
+          <mesh position={[-0.52, -0.44, 0.59]} rotation={[Math.PI / 2, 0, 0]}>
+            <cylinderGeometry args={[0.11, 0.11, 0.06, 28]} />
+            <meshStandardMaterial color="#171715" roughness={0.5} />
           </mesh>
-          <mesh position={[0.62, -0.36, 0.575]} scale={[0.04, 0.07, 0.02]}>
-            <sphereGeometry args={[1, 18, 18]} />
-            <meshStandardMaterial color="#11110f" />
+          <mesh position={[-0.52, -0.44, 0.63]} rotation={[Math.PI / 2, 0, 0]}>
+            <torusGeometry args={[0.055, 0.018, 12, 26]} />
+            <meshStandardMaterial color="#47463f" roughness={0.45} />
           </mesh>
         </group>
 
@@ -323,7 +285,18 @@ export default function XiguaTeacher3D({ focus }: { focus: FocusId }) {
       <pointLight position={[4, 2, 3]} intensity={12} color="#ff8d72" distance={9} />
       <pointLight position={[-4, 1, 2]} intensity={10} color="#b8e88c" distance={9} />
       <CameraRig focus={focus} />
-      <XiguaCharacter focus={focus} />
+      <PresentationControls
+        global
+        cursor
+        snap={false}
+        speed={1.15}
+        rotation={[0, -0.12, 0]}
+        polar={[-0.25, 0.25]}
+        azimuth={[-Infinity, Infinity]}
+        damping={0.22}
+      >
+        <XiguaCharacter focus={focus} />
+      </PresentationControls>
       <ContactShadows
         position={[0, -2.96, 0]}
         opacity={0.28}

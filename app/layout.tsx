@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
-import "@fontsource/zcool-kuaile";
-import "@fontsource-variable/noto-sans-sc";
 import "./globals.css";
 
 export async function generateMetadata(): Promise<Metadata> {
