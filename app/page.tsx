@@ -114,7 +114,7 @@ export default function Home() {
 
         <div className="topbar-note">
           <span className="live-dot" aria-hidden="true" />
-          一份可以转着看的自我介绍
+          一份可以轻轻转动的自我介绍
         </div>
 
         <button
@@ -128,7 +128,7 @@ export default function Home() {
         </button>
       </header>
 
-      <section className="three-stage" aria-label="曹将 3D 作品地图">
+      <section className="three-stage" aria-label="曹将作品地图">
         <div className="sr-only">
           <h2>曹将的作品与内容</h2>
           <ul>
@@ -159,7 +159,7 @@ export default function Home() {
 
         <div
           className="canvas-shell"
-          aria-label="可用鼠标或手指拖拽旋转的西瓜老师 3D 形象"
+          aria-label="使用原图呈现、可用鼠标或手指拖拽倾斜的西瓜老师形象"
         >
           <XiguaTeacher3D focus={activeId} />
         </div>
@@ -193,7 +193,7 @@ export default function Home() {
 
         <p className="motion-hint">
           <Rotate3D size={18} aria-hidden="true" />
-          按住拖动，360° 旋转 · 点击标签走近看看
+          按住拖动，轻轻转动 · 双击复位 · 点击标签走近看看
         </p>
 
         <section

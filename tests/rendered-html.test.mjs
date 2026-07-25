@@ -42,8 +42,8 @@ test("server-renders the Cao Jiang works map", async () => {
   assert.match(html, /公众号/);
   assert.match(html, /小红书/);
   assert.match(html, /回声日记/);
-  assert.match(html, /aria-label="曹将 3D 作品地图"/);
-  assert.match(html, /可用鼠标或手指拖拽旋转的西瓜老师 3D 形象/);
+  assert.match(html, /aria-label="曹将作品地图"/);
+  assert.match(html, /使用原图呈现、可用鼠标或手指拖拽倾斜的西瓜老师形象/);
   assert.match(html, /aria-pressed="true"/);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape/);
 });
@@ -68,6 +68,7 @@ test("keeps the finished visual system and removes starter assets", async () => 
   assert.match(css, /--cream:\s*#f7f4ec/i);
   assert.match(css, /prefers-reduced-motion:\s*reduce/);
   assert.doesNotMatch(packageJson, /react-loading-skeleton/);
+  assert.doesNotMatch(packageJson, /@react-three|["']three["']/);
   assert.doesNotMatch(css, /violet|purple|indigo|fuchsia/i);
   assert.doesNotMatch(css, /\bInter\b|\bRoboto\b|\bArial\b|system-ui|-apple-system/i);
 
@@ -75,6 +76,7 @@ test("keeps the finished visual system and removes starter assets", async () => 
     access(new URL("../public/fonts/OPPOSans4.0.ttf", import.meta.url)),
     access(new URL("../public/fonts/OPPOSans4.0-License.txt", import.meta.url)),
     access(new URL("../public/xigua-teacher.png", import.meta.url)),
+    access(new URL("../public/xigua-teacher-exact.png", import.meta.url)),
     access(new URL("../public/og.png", import.meta.url)),
     access(new URL("../public/favicon.png", import.meta.url)),
   ]);
