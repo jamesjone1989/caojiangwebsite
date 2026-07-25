@@ -34,14 +34,16 @@ test("server-renders the Cao Jiang works map", async () => {
   const html = await response.text();
   assert.match(html, /<html lang="zh-CN">/);
   assert.match(html, /<title>曹将｜欢迎来到我的作品地图<\/title>/);
-  assert.match(html, /你好，我是曹将。/);
+  assert.match(html, /你好，/);
+  assert.match(html, /我是<span>曹将<\/span>。/);
   assert.match(html, /高效学习：曹将的公开课/);
   assert.match(html, /PPT炼成记/);
   assert.match(html, /AI新手村/);
   assert.match(html, /公众号/);
   assert.match(html, /小红书/);
   assert.match(html, /回声日记/);
-  assert.match(html, /aria-label="曹将作品地图"/);
+  assert.match(html, /aria-label="曹将 3D 作品地图"/);
+  assert.match(html, /可随鼠标转动的西瓜老师 3D 形象/);
   assert.match(html, /aria-pressed="true"/);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape/);
 });
@@ -54,17 +56,17 @@ test("keeps the finished visual system and removes starter assets", async () => 
     readFile(new URL("../package.json", import.meta.url), "utf8"),
   ]);
 
-  assert.match(page, /story-stage/);
-  assert.match(page, /prefers-reduced-motion|mobile-map/);
+  assert.match(page, /three-stage/);
+  assert.match(page, /XiguaTeacher3D/);
   assert.match(page, /https:\/\/huishengriji\.cn/);
   assert.match(layout, /@fontsource\/zcool-kuaile/);
   assert.match(layout, /@fontsource-variable\/noto-sans-sc/);
   assert.match(layout, /og\.png/);
   assert.match(css, /"ZCOOL KuaiLe"/);
   assert.match(css, /"Noto Sans SC Variable"/);
-  assert.match(css, /--red:\s*#ff5753/i);
-  assert.match(css, /--green:\s*#79b74a/i);
-  assert.match(css, /--yellow:\s*#f7c95c/i);
+  assert.match(css, /--red:\s*#ff5b53/i);
+  assert.match(css, /--green:\s*#8fcb57/i);
+  assert.match(css, /--cream:\s*#f7f4ec/i);
   assert.match(css, /prefers-reduced-motion:\s*reduce/);
   assert.doesNotMatch(packageJson, /react-loading-skeleton/);
   assert.doesNotMatch(css, /violet|purple|indigo|fuchsia/i);
