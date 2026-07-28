@@ -134,7 +134,6 @@ export default function Home() {
               height={1460}
               fetchPriority="high"
             />
-            <span className="hero-caption">西瓜老师</span>
           </div>
         </div>
       </section>
@@ -326,6 +325,81 @@ export default function Home() {
             />
             <figcaption>AI 真实案例 · 一览图</figcaption>
           </figure>
+        </div>
+
+        <div className="village-case-showcase" data-reveal>
+          <div className="village-case-heading">
+            <p className="eyebrow">案例与独家资料</p>
+            <h3>
+              从具体内容，
+              <br />
+              看见 AI 怎么用。
+            </h3>
+            <p>课程之外，还可以带走专题手册、提示词库和持续更新的真实案例。</p>
+          </div>
+
+          <div className="village-case-rail" aria-label="AI 新手村案例与独家资料">
+            <figure>
+              <img
+                src="/editorial/ai-village-resource-hr-ai.jpg"
+                alt="《HR AI启发》知识卡片手册"
+                width={1400}
+                height={1980}
+                loading="lazy"
+              />
+              <figcaption>《HR AI启发》知识卡片手册</figcaption>
+            </figure>
+            <figure>
+              <img
+                src="/editorial/ai-village-resource-codex.jpg"
+                alt="《Codex橙皮书》知识卡片手册"
+                width={1400}
+                height={1980}
+                loading="lazy"
+              />
+              <figcaption>《Codex橙皮书》知识卡片手册</figcaption>
+            </figure>
+            <figure>
+              <img
+                src="/editorial/ai-village-resource-chatgpt-prompts.jpg"
+                alt="ChatGPT图片提示词库"
+                width={1400}
+                height={1980}
+                loading="lazy"
+              />
+              <figcaption>ChatGPT 图片提示词库</figcaption>
+            </figure>
+            <figure>
+              <img
+                src="/editorial/ai-village-cases-20260706.jpg"
+                alt="AI新手村优秀案例 2026年7月6日至7月12日"
+                width={1400}
+                height={1980}
+                loading="lazy"
+              />
+              <figcaption>AI 新手村优秀案例 · 07.06—07.12</figcaption>
+            </figure>
+            <figure>
+              <img
+                src="/editorial/ai-village-cases-20260713.jpg"
+                alt="AI新手村优秀案例 2026年7月13日至7月19日"
+                width={1400}
+                height={1980}
+                loading="lazy"
+              />
+              <figcaption>AI 新手村优秀案例 · 07.13—07.19</figcaption>
+            </figure>
+            <figure>
+              <img
+                src="/editorial/ai-village-cases-20260720.jpg"
+                alt="AI新手村优秀案例 2026年7月20日至7月26日"
+                width={1400}
+                height={1981}
+                loading="lazy"
+              />
+              <figcaption>AI 新手村优秀案例 · 07.20—07.26</figcaption>
+            </figure>
+          </div>
         </div>
       </section>
 

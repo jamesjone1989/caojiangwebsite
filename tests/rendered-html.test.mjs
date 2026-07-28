@@ -51,6 +51,11 @@ test("server-renders the Cao Jiang works map", async () => {
   assert.match(html, /创意产出/);
   assert.match(html, /生活提质/);
   assert.match(html, /个人成长/);
+  assert.match(html, /案例与独家资料/);
+  assert.match(html, /HR AI启发/);
+  assert.match(html, /Codex橙皮书/);
+  assert.match(html, /ChatGPT 图片提示词库/);
+  assert.match(html, /07\.20—07\.26/);
   assert.match(html, /公众号/);
   assert.match(html, /小红书/);
   assert.match(html, /回声日记/);
@@ -62,6 +67,7 @@ test("server-renders the Cao Jiang works map", async () => {
   assert.doesNotMatch(html, /一份可以轻轻转动的自我介绍/);
   assert.doesNotMatch(html, /按住拖动，轻轻转动/);
   assert.doesNotMatch(html, />3D<\/span>西瓜老师/);
+  assert.doesNotMatch(html, /class="hero-caption"/);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape/);
 });
 
@@ -136,6 +142,42 @@ test("keeps the finished visual system and removes starter assets", async () => 
     access(
       new URL(
         "../public/editorial/ai-village-cases-map.png",
+        import.meta.url,
+      ),
+    ),
+    access(
+      new URL(
+        "../public/editorial/ai-village-resource-hr-ai.jpg",
+        import.meta.url,
+      ),
+    ),
+    access(
+      new URL(
+        "../public/editorial/ai-village-resource-codex.jpg",
+        import.meta.url,
+      ),
+    ),
+    access(
+      new URL(
+        "../public/editorial/ai-village-resource-chatgpt-prompts.jpg",
+        import.meta.url,
+      ),
+    ),
+    access(
+      new URL(
+        "../public/editorial/ai-village-cases-20260706.jpg",
+        import.meta.url,
+      ),
+    ),
+    access(
+      new URL(
+        "../public/editorial/ai-village-cases-20260713.jpg",
+        import.meta.url,
+      ),
+    ),
+    access(
+      new URL(
+        "../public/editorial/ai-village-cases-20260720.jpg",
         import.meta.url,
       ),
     ),
