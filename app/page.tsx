@@ -126,10 +126,10 @@ export default function Home() {
             <div className="hero-grid-lines" aria-hidden="true" />
             <img
               className="hero-person"
-              src="/editorial/xigua-fullbody-transparent-v3-cropped.png"
+              src="/editorial/xigua-teacher-halfbody-cutout.png"
               alt="戴着西瓜帽、穿白色外套的西瓜老师"
-              width={520}
-              height={1460}
+              width={702}
+              height={1200}
               fetchPriority="high"
             />
           </div>
@@ -564,8 +564,14 @@ export default function Home() {
       </section>
 
       <section className="closing-section">
-        <div className="closing-mark" aria-hidden="true">
-          曹
+        <div className="closing-portrait" aria-hidden="true">
+          <img
+            src="/editorial/xigua-teacher-halfbody-cutout.png"
+            alt=""
+            width={702}
+            height={1200}
+            loading="lazy"
+          />
         </div>
         <div className="closing-copy" data-reveal>
           <h2>

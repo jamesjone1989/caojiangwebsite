@@ -44,6 +44,9 @@ test("server-renders the Cao Jiang works map", async () => {
   assert.match(html, /忙着自促。/);
   assert.match(html, /欢迎你从下面任何一个入口加入。/);
   assert.match(html, /一起前行，共同成长。/);
+  assert.ok(
+    (html.match(/xigua-teacher-halfbody-cutout\.png/g)?.length ?? 0) >= 2,
+  );
   assert.doesNotMatch(html, /我写作、做产品/);
   assert.doesNotMatch(html, /也一直在研究怎样把复杂的事情讲清楚/);
   assert.doesNotMatch(html, /继续学习，/);
@@ -145,7 +148,7 @@ test("keeps the finished visual system and removes starter assets", async () => 
     access(new URL("../public/favicon.png", import.meta.url)),
     access(
       new URL(
-        "../public/editorial/xigua-fullbody-transparent-v3-cropped.png",
+        "../public/editorial/xigua-teacher-halfbody-cutout.png",
         import.meta.url,
       ),
     ),
