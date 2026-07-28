@@ -75,6 +75,16 @@ test("server-renders the Cao Jiang works map", async () => {
   assert.match(html, /ChatGPT 图片提示词库/);
   assert.match(html, /07\.20—07\.26/);
   assert.match(html, /公众号/);
+  assert.match(html, /1947/);
+  assert.match(html, /代表长文/);
+  assert.match(html, /复盘｜曹将，你有什么想对过去的自己说的/);
+  assert.match(html, /如何快速熟悉一个新领域/);
+  assert.match(html, /AI 时代，我们还可以做什么？/);
+  assert.match(html, /我的甲状腺全切手术全流程/);
+  assert.equal(
+    html.match(/https:\/\/mp\.weixin\.qq\.com\/s\//g)?.length,
+    15,
+  );
   assert.match(html, /小红书/);
   assert.match(html, /回声日记/);
   assert.match(html, /小报童/);
@@ -111,6 +121,9 @@ test("keeps the finished visual system and removes starter assets", async () => 
   );
   assert.match(page, /https:\/\/huishengriji\.cn/);
   assert.match(page, /wechat-caojiang-qr\.png/);
+  assert.match(page, /const featuredArticles = \[/);
+  assert.match(page, /w07WsMtlv84XM6ft7n2O9A/);
+  assert.match(page, /UnJtLgKT0RW5xq7sPtMotw/);
   assert.match(page, /ai-village-qr\.png/);
   assert.match(
     page,

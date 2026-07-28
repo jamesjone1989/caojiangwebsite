@@ -24,6 +24,129 @@ const links = {
     "https://xiaobot.net/p/jghbd?refer=c3f68f06-3090-44fa-bf08-434f581889b3",
 };
 
+const featuredArticles = [
+  {
+    title: "复盘｜曹将，你有什么想对过去的自己说的",
+    year: "2018",
+    length: "约 2 万字",
+    topic: "复盘",
+    size: "hero",
+    href: "https://mp.weixin.qq.com/s/w07WsMtlv84XM6ft7n2O9A",
+  },
+  {
+    title: "我的研究生生活",
+    year: "2019",
+    length: "6500 字",
+    topic: "成长",
+    size: "xl",
+    href: "https://mp.weixin.qq.com/s/EQZx_sSF8nxzfdEyyPv6CQ",
+  },
+  {
+    title: "演示设计清单",
+    year: "2022",
+    length: "5300 字",
+    topic: "表达",
+    size: "lg",
+    href: "https://mp.weixin.qq.com/s/hssZ5M1gRr4x2cxN6oGeTA",
+  },
+  {
+    title: "如何快速熟悉一个新领域",
+    year: "2022",
+    length: "5600 字",
+    topic: "学习",
+    size: "xl",
+    href: "https://mp.weixin.qq.com/s/_UFI6CHqDE5KwDtpPuBK_Q",
+  },
+  {
+    title: "时间管理的 10 个误区",
+    year: "2024",
+    length: "5800 字",
+    topic: "效率",
+    size: "lg",
+    href: "https://mp.weixin.qq.com/s/qohULQcM6Pgi36MGlsHvtg",
+  },
+  {
+    title: "7000 字职场心得，适合在路上看",
+    year: "2023",
+    length: "7000 字",
+    topic: "职场",
+    size: "hero",
+    href: "https://mp.weixin.qq.com/s/TvOrlHy1pvBhN50GwHltbA",
+  },
+  {
+    title: "AI 时代，我们还可以做什么？",
+    year: "2024",
+    length: "3700 字",
+    topic: "AI",
+    size: "xl",
+    href: "https://mp.weixin.qq.com/s/E8qVr2fmeLHNXyoG0yEQPg",
+  },
+  {
+    title: "我的前半生",
+    year: "2020",
+    length: "4600 字",
+    topic: "人生",
+    size: "lg",
+    href: "https://mp.weixin.qq.com/s/BmjrHn-XjAmUuTO9ws11CQ",
+  },
+  {
+    title: "提升演讲能力的 18 句话",
+    year: "2016",
+    length: "4000 字",
+    topic: "演讲",
+    size: "md",
+    href: "https://mp.weixin.qq.com/s/8wlDXlK7WsFlpHLJC7zAHQ",
+  },
+  {
+    title: "我的印象笔记使用手册",
+    year: "2018",
+    length: "4300 字",
+    topic: "知识管理",
+    size: "md",
+    href: "https://mp.weixin.qq.com/s/6TyUdzomGfrJLzQ2S6hRsA",
+  },
+  {
+    title: "我是如何开始做副业的？",
+    year: "2021",
+    length: "6000 字",
+    topic: "选择",
+    size: "xl",
+    href: "https://mp.weixin.qq.com/s/PMCIL9NlL40E7sIkACZvBQ",
+  },
+  {
+    title: "哪些职场能力可以穿越周期",
+    year: "2023",
+    length: "5400 字",
+    topic: "能力",
+    size: "lg",
+    href: "https://mp.weixin.qq.com/s/NjvhF3euxkymgTSdt7G9Jg",
+  },
+  {
+    title: "一次 3780 元旅行带来的体验设计思考",
+    year: "2019",
+    length: "7100 字",
+    topic: "体验",
+    size: "md",
+    href: "https://mp.weixin.qq.com/s/NgWuFv4nybiw9U0KeHywzg",
+  },
+  {
+    title: "我的甲状腺全切手术全流程",
+    year: "2026",
+    length: "4600 字",
+    topic: "生活",
+    size: "lg",
+    href: "https://mp.weixin.qq.com/s/UnJtLgKT0RW5xq7sPtMotw",
+  },
+  {
+    title: "我的年度图书",
+    year: "2025",
+    length: "4800 字",
+    topic: "阅读",
+    size: "md",
+    href: "https://mp.weixin.qq.com/s/aMuBkVDDu7HyDcT41rYKcw",
+  },
+] as const;
+
 function ExternalLink({
   href,
   children,
@@ -97,7 +220,7 @@ export default function Home() {
         <nav className="topnav" aria-label="页面导航">
           <a href="#books">书</a>
           <a href="#village">AI 新手村</a>
-          <a href="#channels">关注我</a>
+          <a href="#channels">公众号</a>
           <a href="#works">作品</a>
         </nav>
       </header>
@@ -429,16 +552,16 @@ export default function Home() {
 
       <section className="chapter channels-section" id="channels">
         <div className="chapter-heading channels-heading" data-reveal>
-          <p className="eyebrow">03 / 持续写作</p>
+          <p className="eyebrow">03 / 微信公众号「曹将」</p>
           <h2>
-            长文章，认真写。
+            从 2014，
             <br />
-            小发现，轻轻记。
+            一直写到今天。
           </h2>
         </div>
 
-        <div className="channels-grid">
-          <article className="wechat-panel" data-reveal>
+        <div className="article-feature-grid">
+          <article className="wechat-intro" data-reveal>
             <div className="channel-title">
               <MessageCircle aria-hidden="true" size={27} />
               <div>
@@ -446,10 +569,14 @@ export default function Home() {
                 <h3>曹将</h3>
               </div>
             </div>
-            <p className="channel-description">
-              记录学习、表达、职场与 AI 实践。长文章，是我整理经验和回答问题的主要方式。
+            <p className="wechat-count">
+              <strong>1947</strong>
+              <span>篇文章</span>
             </p>
-            <div className="qr-stage">
+            <p className="channel-description">
+              写学习、表达、职场、工具，也写一路走来的选择与变化。长文章，是我整理经验和回答问题的主要方式。
+            </p>
+            <div className="wechat-qr">
               <img
                 src="/wechat-caojiang-qr.png"
                 alt="微信公众号曹将二维码"
@@ -457,11 +584,42 @@ export default function Home() {
                 height={890}
                 loading="lazy"
               />
+              <strong>微信扫一扫，关注公众号「曹将」</strong>
             </div>
-            <strong className="scan-label">微信扫一扫，关注公众号「曹将」</strong>
           </article>
 
-          <article className="xiaohongshu-panel" data-reveal>
+          <div className="article-cloud-wrap" data-reveal>
+            <div className="article-cloud-heading">
+              <p className="eyebrow">代表长文</p>
+              <p>
+                从 1947 篇文章中，选出这些篇幅较长、也更能代表我长期关注主题的文章。点击标题，直接阅读原文。
+              </p>
+            </div>
+            <div className="article-cloud" aria-label="曹将公众号代表长文">
+              {featuredArticles.map((article) => (
+                <a
+                  className={`article-cloud-link article-size-${article.size}`}
+                  href={article.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  key={article.href}
+                  aria-label={`${article.title}，${article.year} 年，${article.length}，打开微信原文`}
+                >
+                  <span>{article.title}</span>
+                  <small>
+                    {article.year} · {article.topic} · {article.length}
+                  </small>
+                  <ArrowUpRight aria-hidden="true" />
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="xiaohongshu-section">
+        <article className="xiaohongshu-panel xiaohongshu-panel-wide" data-reveal>
+          <div className="xiaohongshu-copy">
             <div className="channel-title">
               <Sparkles aria-hidden="true" size={27} />
               <div>
@@ -469,18 +627,18 @@ export default function Home() {
                 <h3>曹将</h3>
               </div>
             </div>
-            <div className="redbook-display" aria-hidden="true">
-              <span>学习</span>
-              <span>工具</span>
-              <span>阅读</span>
-              <span>工作</span>
-              <b>曹将</b>
-            </div>
             <p className="channel-description">
               把方法拆成更轻巧、更直观的一页。小红书搜索「曹将」，就能找到我。
             </p>
-          </article>
-        </div>
+          </div>
+          <div className="redbook-display" aria-hidden="true">
+            <span>学习</span>
+            <span>工具</span>
+            <span>阅读</span>
+            <span>工作</span>
+            <b>曹将</b>
+          </div>
+        </article>
       </section>
 
       <section className="chapter echo-section" id="works">

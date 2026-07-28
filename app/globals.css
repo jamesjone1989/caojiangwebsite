@@ -805,7 +805,8 @@ img {
 }
 
 .channels-section {
-  background: var(--paper);
+  overflow: hidden;
+  background: var(--warm);
 }
 
 .channels-heading {
@@ -818,29 +819,226 @@ img {
   padding-top: 10px;
 }
 
-.channels-grid {
-  width: min(1260px, 100%);
+.article-feature-grid {
+  width: min(1380px, 100%);
   margin: clamp(72px, 9vw, 138px) auto 0;
   display: grid;
-  grid-template-columns: 1.05fr 0.95fr;
-  gap: 20px;
+  grid-template-columns: minmax(300px, 0.38fr) minmax(0, 1fr);
+  align-items: start;
+  gap: clamp(24px, 4vw, 64px);
 }
 
-.wechat-panel,
-.xiaohongshu-panel {
-  min-height: 720px;
+.wechat-intro {
+  position: sticky;
+  top: 104px;
+  min-height: 730px;
   padding: clamp(28px, 4vw, 52px);
   border-radius: clamp(30px, 4vw, 56px);
+  background: #e7f3db;
+  box-shadow: 18px 20px 0 rgba(129, 201, 67, 0.32);
 }
 
-.wechat-panel {
-  background: #e7f3db;
+.wechat-count {
+  margin: clamp(46px, 6vw, 78px) 0 0;
+}
+
+.wechat-count strong,
+.wechat-count span {
+  display: block;
+}
+
+.wechat-count strong {
+  font-size: clamp(78px, 8vw, 126px);
+  font-weight: 850;
+  line-height: 0.78;
+  letter-spacing: -0.08em;
+}
+
+.wechat-count span {
+  margin-top: 14px;
+  color: rgba(29, 29, 31, 0.58);
+  font-size: 14px;
+  font-weight: 760;
+}
+
+.wechat-qr {
+  margin-top: 34px;
+  padding: 16px;
+  display: grid;
+  grid-template-columns: 116px 1fr;
+  align-items: center;
+  gap: 16px;
+  border-radius: 24px;
+  background: white;
+  box-shadow: 0 18px 42px rgba(29, 29, 31, 0.1);
+  transform: rotate(-1.5deg);
+}
+
+.wechat-qr img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 12px;
+}
+
+.wechat-qr strong {
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.article-cloud-wrap {
+  position: relative;
+  min-height: 950px;
+  padding: clamp(32px, 5vw, 76px);
+  overflow: hidden;
+  border: 1px solid rgba(29, 29, 31, 0.08);
+  border-radius: clamp(36px, 5vw, 72px);
+  background:
+    linear-gradient(rgba(29, 29, 31, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(29, 29, 31, 0.045) 1px, transparent 1px),
+    var(--paper);
+  background-size: 52px 52px;
+  box-shadow: 0 34px 90px rgba(29, 29, 31, 0.09);
+}
+
+.article-cloud-wrap::after {
+  content: "文";
+  position: absolute;
+  right: -0.07em;
+  bottom: -0.27em;
+  color: rgba(129, 201, 67, 0.12);
+  font-size: clamp(260px, 34vw, 520px);
+  font-weight: 900;
+  line-height: 1;
+}
+
+.article-cloud-heading {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 0.3fr 0.7fr;
+  gap: 28px;
+}
+
+.article-cloud-heading > p:last-child {
+  max-width: 620px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.72;
+}
+
+.article-cloud {
+  position: relative;
+  z-index: 1;
+  margin-top: clamp(62px, 7vw, 94px);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: clamp(26px, 4vw, 58px) clamp(24px, 4vw, 54px);
+}
+
+.article-cloud-link {
+  position: relative;
+  max-width: 100%;
+  display: inline-grid;
+  grid-template-columns: minmax(0, auto) 18px;
+  align-items: start;
+  column-gap: 6px;
+  color: var(--ink);
+  font-weight: 840;
+  line-height: 0.98;
+  letter-spacing: -0.065em;
+  transition:
+    color 180ms ease,
+    transform 180ms ease;
+}
+
+.article-cloud-link > span {
+  max-width: 18em;
+}
+
+.article-cloud-link small {
+  grid-column: 1 / -1;
+  margin-top: 9px;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 720;
+  line-height: 1.3;
+  letter-spacing: 0.08em;
+  opacity: 0.66;
+  transition: opacity 180ms ease;
+}
+
+.article-cloud-link svg {
+  width: 16px;
+  height: 16px;
+  opacity: 0.3;
+}
+
+.article-cloud-link:hover,
+.article-cloud-link:focus-visible {
+  color: var(--red);
+  transform: translateY(-4px);
+}
+
+.article-cloud-link:hover small,
+.article-cloud-link:focus-visible small,
+.article-cloud-link:hover svg,
+.article-cloud-link:focus-visible svg {
+  opacity: 1;
+}
+
+.article-size-hero {
+  font-size: clamp(43px, 5vw, 76px);
+}
+
+.article-size-xl {
+  font-size: clamp(36px, 4vw, 58px);
+}
+
+.article-size-lg {
+  font-size: clamp(29px, 3.2vw, 46px);
+}
+
+.article-size-md {
+  font-size: clamp(24px, 2.5vw, 36px);
+}
+
+.article-cloud-link:nth-child(4n + 2) {
+  color: #397427;
+}
+
+.article-cloud-link:nth-child(6n) {
+  color: var(--red);
+}
+
+.xiaohongshu-section {
+  padding: 0 clamp(20px, 5vw, 80px) clamp(100px, 12vw, 180px);
+  background: var(--warm);
 }
 
 .xiaohongshu-panel {
-  margin-top: 84px;
+  min-height: 620px;
+  padding: clamp(28px, 4vw, 52px);
+  border-radius: clamp(30px, 4vw, 56px);
   background: var(--red);
   color: white;
+}
+
+.xiaohongshu-panel-wide {
+  width: min(1260px, 100%);
+  min-height: 540px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(260px, 0.42fr) minmax(440px, 0.58fr);
+  align-items: center;
+  gap: clamp(36px, 7vw, 100px);
+}
+
+.xiaohongshu-panel-wide .redbook-display {
+  width: 100%;
+  margin: 0;
 }
 
 .channel-title {
@@ -889,28 +1087,6 @@ img {
 
 .xiaohongshu-panel .channel-description {
   color: rgba(255, 255, 255, 0.82);
-}
-
-.qr-stage {
-  width: min(82%, 410px);
-  margin: 40px auto 24px;
-  padding: 22px;
-  border-radius: 36px;
-  background: white;
-  box-shadow: 0 26px 54px rgba(29, 29, 31, 0.11);
-  transform: rotate(-2deg);
-}
-
-.qr-stage img {
-  width: 100%;
-  height: auto;
-  border-radius: 20px;
-}
-
-.scan-label {
-  display: block;
-  text-align: center;
-  font-size: 13px;
 }
 
 .redbook-display {
@@ -1537,15 +1713,70 @@ img {
     display: block;
   }
 
-  .channels-grid {
+  .article-feature-grid {
     grid-template-columns: 1fr;
+    gap: 54px;
   }
 
-  .wechat-panel,
+  .wechat-intro {
+    position: relative;
+    top: auto;
+    min-height: auto;
+    padding: 28px;
+    border-radius: 34px;
+  }
+
+  .wechat-count strong {
+    font-size: 92px;
+  }
+
+  .wechat-qr {
+    grid-template-columns: 104px 1fr;
+  }
+
+  .article-cloud-wrap {
+    min-height: auto;
+    padding: 34px 24px 54px;
+    border-radius: 36px;
+  }
+
+  .article-cloud-heading {
+    display: block;
+  }
+
+  .article-cloud-heading > p:last-child {
+    margin-top: 20px;
+  }
+
+  .article-cloud {
+    margin-top: 52px;
+    display: grid;
+    gap: 34px;
+  }
+
+  .article-size-hero,
+  .article-size-xl,
+  .article-size-lg,
+  .article-size-md {
+    font-size: clamp(28px, 9.5vw, 43px);
+  }
+
+  .article-cloud-link small {
+    opacity: 0.78;
+  }
+
+  .xiaohongshu-section {
+    padding: 0 18px 96px;
+  }
+
   .xiaohongshu-panel {
     min-height: 650px;
     padding: 28px;
     border-radius: 34px;
+  }
+
+  .xiaohongshu-panel-wide {
+    display: block;
   }
 
   .xiaohongshu-panel {
