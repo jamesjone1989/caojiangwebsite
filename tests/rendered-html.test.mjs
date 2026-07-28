@@ -77,15 +77,24 @@ test("server-renders the Cao Jiang works map", async () => {
   assert.match(html, /公众号/);
   assert.match(html, /1947/);
   assert.match(html, /代表长文/);
-  assert.match(html, /复盘｜曹将，你有什么想对过去的自己说的/);
+  assert.match(html, /如何打造个人知识体系/);
+  assert.match(html, /演示设计清单/);
   assert.match(html, /如何快速熟悉一个新领域/);
-  assert.match(html, /AI 时代，我们还可以做什么？/);
-  assert.match(html, /我的甲状腺全切手术全流程/);
+  assert.match(html, /时间管理的10个误区/);
+  assert.match(html, /AI时代，我们还可以做什么？/);
+  assert.match(html, /哪些职场能力可以穿越周期/);
+  assert.doesNotMatch(
+    html,
+    /从 1947 篇文章中，选出这些篇幅较长、也更能代表我长期关注主题的文章。点击标题，直接阅读原文。/,
+  );
   assert.equal(
     html.match(/https:\/\/mp\.weixin\.qq\.com\/s\//g)?.length,
-    15,
+    6,
   );
   assert.match(html, /小红书/);
+  assert.match(html, /6222/);
+  assert.match(html, /4\.2万/);
+  assert.doesNotMatch(html, /日本/);
   assert.match(html, /回声日记/);
   assert.match(html, /小报童/);
   assert.match(html, /如何提升结构化表达能力/);
@@ -122,8 +131,9 @@ test("keeps the finished visual system and removes starter assets", async () => 
   assert.match(page, /https:\/\/huishengriji\.cn/);
   assert.match(page, /wechat-caojiang-qr\.png/);
   assert.match(page, /const featuredArticles = \[/);
-  assert.match(page, /w07WsMtlv84XM6ft7n2O9A/);
-  assert.match(page, /UnJtLgKT0RW5xq7sPtMotw/);
+  assert.match(page, /C4ZCszJtzt-7cRJbtl9K8g/);
+  assert.match(page, /E8qVr2fmeLHNXyoG0yEQPg/);
+  assert.match(page, /xiaohongshu-handdrawn-v2\.png/);
   assert.match(page, /ai-village-qr\.png/);
   assert.match(
     page,
@@ -233,6 +243,12 @@ test("keeps the finished visual system and removes starter assets", async () => 
     ),
     access(
       new URL("../public/editorial/xiaobot-column.png", import.meta.url),
+    ),
+    access(
+      new URL(
+        "../public/editorial/xiaohongshu-handdrawn-v2.png",
+        import.meta.url,
+      ),
     ),
   ]);
 
