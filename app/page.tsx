@@ -256,23 +256,47 @@ export default function Home() {
             </ExternalLink>
           </div>
 
-          <div
-            className="village-stats"
-            data-reveal
-            aria-label="AI 新手村内容规模"
-          >
-            <div>
-              <strong>100+</strong>
-              <span>新手系统课程</span>
+          <div className="village-proof" data-reveal>
+            <div className="village-stats" aria-label="AI 新手村内容规模">
+              <div>
+                <strong>100+</strong>
+                <span>新手系统课程</span>
+              </div>
+              <div>
+                <strong>100+</strong>
+                <span>可复制案例</span>
+              </div>
+              <div>
+                <strong>20+</strong>
+                <span>独家资料</span>
+              </div>
             </div>
-            <div>
-              <strong>100+</strong>
-              <span>可复制案例</span>
-            </div>
-            <div>
-              <strong>20+</strong>
-              <span>独家资料</span>
-            </div>
+
+            <a
+              className="village-qr-card"
+              href={links.aiVillage}
+              target="_blank"
+              rel="noreferrer"
+              aria-label="微信扫码或点击加入 AI 新手村"
+            >
+              <div className="village-qr-copy">
+                <p>AI 新手村</p>
+                <h3>扫码加入，<br />从第一次实践开始。</h3>
+                <span>
+                  微信扫一扫
+                  <ArrowUpRight aria-hidden="true" size={18} strokeWidth={2.2} />
+                </span>
+              </div>
+              <div className="village-qr-image">
+                <img
+                  src="/ai-village-qr.png"
+                  alt="AI 新手村加入二维码"
+                  width={978}
+                  height={976}
+                  loading="lazy"
+                />
+              </div>
+            </a>
           </div>
         </div>
 
@@ -474,9 +498,13 @@ export default function Home() {
         <div className="echo-copy" data-reveal>
           <p className="eyebrow">04 / 独立作品</p>
           <h2>
-            听见自己，
+            听见
             <br />
-            也听见时间的回声。
+            自己，
+            <br />
+            也听见
+            <br />
+            时间的回声。
           </h2>
           <p>
             回声日记围绕对话记录与自我回望展开。

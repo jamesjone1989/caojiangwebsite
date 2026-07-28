@@ -53,6 +53,9 @@ test("server-renders the Cao Jiang works map", async () => {
   assert.match(html, /创意产出/);
   assert.match(html, /生活提质/);
   assert.match(html, /个人成长/);
+  assert.match(html, /扫码加入/);
+  assert.match(html, /微信扫一扫/);
+  assert.match(html, /AI 新手村加入二维码/);
   assert.match(html, /案例与独家资料/);
   assert.match(html, /HR AI启发/);
   assert.match(html, /Codex橙皮书/);
@@ -95,6 +98,11 @@ test("keeps the finished visual system and removes starter assets", async () => 
   );
   assert.match(page, /https:\/\/huishengriji\.cn/);
   assert.match(page, /wechat-caojiang-qr\.png/);
+  assert.match(page, /ai-village-qr\.png/);
+  assert.match(
+    page,
+    /听见\s*<br \/>\s*自己，\s*<br \/>\s*也听见\s*<br \/>\s*时间的回声。/,
+  );
   assert.match(page, /微信扫一扫/);
   assert.match(
     page,
@@ -121,6 +129,7 @@ test("keeps the finished visual system and removes starter assets", async () => 
     access(new URL("../public/xigua-teacher.png", import.meta.url)),
     access(new URL("../public/xigua-teacher-exact.png", import.meta.url)),
     access(new URL("../public/wechat-caojiang-qr.png", import.meta.url)),
+    access(new URL("../public/ai-village-qr.png", import.meta.url)),
     access(new URL("../public/og.png", import.meta.url)),
     access(new URL("../public/favicon.png", import.meta.url)),
     access(
