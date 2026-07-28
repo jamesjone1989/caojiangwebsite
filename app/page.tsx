@@ -24,6 +24,9 @@ const links = {
     "https://xiaobot.net/p/jghbd?refer=c3f68f06-3090-44fa-bf08-434f581889b3",
 };
 
+const assetUrl = (path: string) =>
+  `${import.meta.env.BASE_URL}${path.replace(/^\//, "")}`;
+
 const featuredArticles = [
   {
     title: "如何打造个人知识体系",
@@ -179,7 +182,7 @@ export default function Home() {
             <div className="hero-grid-lines" aria-hidden="true" />
             <img
               className="hero-person"
-              src="/editorial/xigua-teacher-halfbody-cutout.png"
+              src={assetUrl("/editorial/xigua-teacher-halfbody-cutout.png")}
               alt="戴着西瓜帽、穿白色外套的西瓜老师"
               width={702}
               height={1200}
@@ -253,7 +256,7 @@ export default function Home() {
             <div className="book-cover-wrap">
               <img
                 className="book-cover"
-                src="/editorial/book-efficient-learning.jpg"
+                src={assetUrl("/editorial/book-efficient-learning.jpg")}
                 alt="《高效学习：曹将的公开课》书封"
                 width={330}
                 height={495}
@@ -276,7 +279,7 @@ export default function Home() {
             <div className="book-cover-wrap">
               <img
                 className="book-cover"
-                src="/editorial/book-ppt.jpg"
+                src={assetUrl("/editorial/book-ppt.jpg")}
                 alt="《PPT炼成记》书封"
                 width={370}
                 height={500}
@@ -346,7 +349,7 @@ export default function Home() {
               </div>
               <div className="village-qr-image">
                 <img
-                  src="/ai-village-qr.png"
+                  src={assetUrl("/ai-village-qr.png")}
                   alt="AI 新手村加入二维码"
                   width={978}
                   height={976}
@@ -372,7 +375,7 @@ export default function Home() {
         <div className="village-gallery" data-reveal>
           <figure className="village-gallery-item village-gallery-cover">
             <img
-              src="/editorial/ai-village-casebook-cover.png"
+              src={assetUrl("/editorial/ai-village-casebook-cover.png")}
               alt="AI 实践案例集封面"
               width={2880}
               height={4160}
@@ -382,7 +385,7 @@ export default function Home() {
           </figure>
           <figure className="village-gallery-item village-gallery-course">
             <img
-              src="/editorial/ai-village-course-map.png"
+              src={assetUrl("/editorial/ai-village-course-map.png")}
               alt="AI 新手课内容一览图"
               width={1054}
               height={1492}
@@ -392,7 +395,7 @@ export default function Home() {
           </figure>
           <figure className="village-gallery-item village-gallery-cases">
             <img
-              src="/editorial/ai-village-cases-map.png"
+              src={assetUrl("/editorial/ai-village-cases-map.png")}
               alt="AI 真实案例内容一览图"
               width={1054}
               height={1492}
@@ -416,7 +419,7 @@ export default function Home() {
           <div className="village-case-rail" aria-label="AI 新手村案例与独家资料">
             <figure>
               <img
-                src="/editorial/ai-village-resource-hr-ai.jpg"
+                src={assetUrl("/editorial/ai-village-resource-hr-ai.jpg")}
                 alt="《HR AI启发》知识卡片手册"
                 width={1400}
                 height={1980}
@@ -426,7 +429,7 @@ export default function Home() {
             </figure>
             <figure>
               <img
-                src="/editorial/ai-village-resource-chatgpt-prompts.jpg"
+                src={assetUrl("/editorial/ai-village-resource-chatgpt-prompts.jpg")}
                 alt="ChatGPT图片提示词库"
                 width={1400}
                 height={1980}
@@ -436,7 +439,7 @@ export default function Home() {
             </figure>
             <figure>
               <img
-                src="/editorial/ai-village-cases-20260706.jpg"
+                src={assetUrl("/editorial/ai-village-cases-20260706.jpg")}
                 alt="AI新手村优秀案例 2026年7月6日至7月12日"
                 width={1400}
                 height={1980}
@@ -446,7 +449,7 @@ export default function Home() {
             </figure>
             <figure>
               <img
-                src="/editorial/ai-village-cases-20260713.jpg"
+                src={assetUrl("/editorial/ai-village-cases-20260713.jpg")}
                 alt="AI新手村优秀案例 2026年7月13日至7月19日"
                 width={1400}
                 height={1980}
@@ -456,7 +459,7 @@ export default function Home() {
             </figure>
             <figure>
               <img
-                src="/editorial/ai-village-cases-20260720.jpg"
+                src={assetUrl("/editorial/ai-village-cases-20260720.jpg")}
                 alt="AI新手村优秀案例 2026年7月20日至7月26日"
                 width={1400}
                 height={1981}
@@ -502,7 +505,7 @@ export default function Home() {
             </p>
             <div className="wechat-qr">
               <img
-                src="/wechat-caojiang-qr.png"
+                src={assetUrl("/wechat-caojiang-qr.png")}
                 alt="微信公众号曹将二维码"
                 width={906}
                 height={890}
@@ -566,7 +569,7 @@ export default function Home() {
           </div>
           <figure className="xiaohongshu-art">
             <img
-              src="/editorial/xiaohongshu-handdrawn-v2.png"
+              src={assetUrl("/editorial/xiaohongshu-handdrawn-v2.png")}
               alt="西瓜老师与计划本、知识卡片、书和演示板组成的手绘插画"
               width={1536}
               height={1024}
@@ -591,7 +594,7 @@ export default function Home() {
               <span>huishengriji.cn</span>
             </div>
             <img
-              src="/editorial/echo-journal-screen-v3.png"
+              src={assetUrl("/editorial/echo-journal-screen-v3.png")}
               alt="回声日记网页界面"
               width={3006}
               height={1610}
@@ -656,7 +659,7 @@ export default function Home() {
         <div className="xiaobot-phone" data-reveal>
           <div className="phone-speaker" aria-hidden="true" />
           <img
-            src="/editorial/xiaobot-column.png"
+            src={assetUrl("/editorial/xiaobot-column.png")}
             alt="《如何提升结构化表达能力》小报童专栏目录"
             width={780}
             height={5648}
@@ -668,7 +671,7 @@ export default function Home() {
       <section className="closing-section">
         <div className="closing-portrait" aria-hidden="true">
           <img
-            src="/editorial/xigua-teacher-halfbody-cutout.png"
+            src={assetUrl("/editorial/xigua-teacher-halfbody-cutout.png")}
             alt=""
             width={702}
             height={1200}
