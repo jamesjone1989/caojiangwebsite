@@ -426,16 +426,6 @@ export default function Home() {
             </figure>
             <figure>
               <img
-                src="/editorial/ai-village-resource-codex.jpg"
-                alt="《Codex橙皮书》知识卡片手册"
-                width={1400}
-                height={1980}
-                loading="lazy"
-              />
-              <figcaption>《Codex橙皮书》知识卡片手册</figcaption>
-            </figure>
-            <figure>
-              <img
                 src="/editorial/ai-village-resource-chatgpt-prompts.jpg"
                 alt="ChatGPT图片提示词库"
                 width={1400}
@@ -497,10 +487,16 @@ export default function Home() {
                 <h3>曹将</h3>
               </div>
             </div>
-            <p className="wechat-count">
-              <strong>1947</strong>
-              <span>篇文章 · 31万关注</span>
-            </p>
+            <div className="wechat-metrics" aria-label="公众号内容与关注数据">
+              <p className="wechat-count">
+                <strong>1947</strong>
+                <span>篇文章</span>
+              </p>
+              <p className="wechat-count">
+                <strong>31万</strong>
+                <span>关注</span>
+              </p>
+            </div>
             <p className="channel-description">
               写学习、表达、职场、工具，也写一路走来的选择与变化。长文章，是我整理经验和回答问题的主要方式。
             </p>
@@ -612,7 +608,9 @@ export default function Home() {
             <br />
             也听见
             <br />
-            时间的回声。
+            时间的
+            <br />
+            回声。
           </h2>
           <p>
             回声日记围绕对话记录与自我回望展开。

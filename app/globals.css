@@ -838,8 +838,14 @@ img {
   box-shadow: 18px 20px 0 rgba(129, 201, 67, 0.32);
 }
 
-.wechat-count {
+.wechat-metrics {
   margin: clamp(46px, 6vw, 78px) 0 0;
+  display: grid;
+  gap: clamp(28px, 3vw, 42px);
+}
+
+.wechat-count {
+  margin: 0;
 }
 
 .wechat-count strong,

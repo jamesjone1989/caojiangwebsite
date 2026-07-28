@@ -71,12 +71,13 @@ test("server-renders the Cao Jiang works map", async () => {
   assert.match(html, /AI 新手村加入二维码/);
   assert.match(html, /案例与独家资料/);
   assert.match(html, /HR AI启发/);
-  assert.match(html, /Codex橙皮书/);
+  assert.doesNotMatch(html, /Codex橙皮书/);
   assert.match(html, /ChatGPT 图片提示词库/);
   assert.match(html, /07\.20—07\.26/);
   assert.match(html, /公众号/);
   assert.match(html, /1947/);
-  assert.match(html, /31万关注/);
+  assert.match(html, /31万/);
+  assert.match(html, /公众号内容与关注数据/);
   assert.match(html, /代表长文/);
   assert.match(html, /如何打造个人知识体系/);
   assert.match(html, /演示设计清单/);
@@ -139,7 +140,7 @@ test("keeps the finished visual system and removes starter assets", async () => 
   assert.match(page, /ai-village-qr\.png/);
   assert.match(
     page,
-    /听见\s*<br \/>\s*自己，\s*<br \/>\s*也听见\s*<br \/>\s*时间的回声。/,
+    /听见\s*<br \/>\s*自己，\s*<br \/>\s*也听见\s*<br \/>\s*时间的\s*<br \/>\s*回声。/,
   );
   assert.match(page, /微信扫一扫/);
   assert.match(
@@ -197,12 +198,6 @@ test("keeps the finished visual system and removes starter assets", async () => 
     access(
       new URL(
         "../public/editorial/ai-village-resource-hr-ai.jpg",
-        import.meta.url,
-      ),
-    ),
-    access(
-      new URL(
-        "../public/editorial/ai-village-resource-codex.jpg",
         import.meta.url,
       ),
     ),
