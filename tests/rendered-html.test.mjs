@@ -33,20 +33,19 @@ test("server-renders the Cao Jiang works map", async () => {
 
   const html = await response.text();
   assert.match(html, /<html lang="zh-CN">/);
-  assert.match(html, /<title>曹将｜欢迎来到我的作品地图<\/title>/);
+  assert.match(html, /<title>曹将｜把复杂的事情讲清楚<\/title>/);
   assert.match(html, /你好，/);
   assert.match(html, /我是<span>曹将<\/span>。/);
   assert.match(html, /高效学习：曹将的公开课/);
   assert.match(html, /PPT炼成记/);
-  assert.match(html, /AI新手村/);
+  assert.match(html, /AI 新手村/);
   assert.match(html, /公众号/);
   assert.match(html, /小红书/);
   assert.match(html, /回声日记/);
   assert.match(html, /小报童/);
   assert.match(html, /如何提升结构化表达能力/);
-  assert.match(html, /aria-label="曹将作品地图"/);
-  assert.match(html, /aria-label="西瓜老师形象"/);
-  assert.match(html, /aria-pressed="true"/);
+  assert.match(html, /aria-label="页面导航"/);
+  assert.match(html, /戴着西瓜帽、穿白色外套的西瓜老师/);
   assert.doesNotMatch(html, /本站使用 OPPO Sans 4\.0 字体/);
   assert.doesNotMatch(html, /一份可以轻轻转动的自我介绍/);
   assert.doesNotMatch(html, /按住拖动，轻轻转动/);
@@ -62,8 +61,9 @@ test("keeps the finished visual system and removes starter assets", async () => 
     readFile(new URL("../package.json", import.meta.url), "utf8"),
   ]);
 
-  assert.match(page, /three-stage/);
-  assert.match(page, /XiguaTeacher3D/);
+  assert.match(page, /hero-section/);
+  assert.match(page, /highlights-section/);
+  assert.match(page, /IntersectionObserver/);
   assert.match(page, /https:\/\/t\.zsxq\.com\/2IJ1F/);
   assert.match(
     page,
@@ -80,15 +80,15 @@ test("keeps the finished visual system and removes starter assets", async () => 
     page,
     /https:\/\/xiaobot\.net\/p\/jghbd\?refer=c3f68f06-3090-44fa-bf08-434f581889b3/,
   );
-  assert.match(page, /30\+ 个职场常见表达场景/);
+  assert.match(page, /30\+ 个常见场景/);
   assert.match(page, /40\+ 篇内容/);
   assert.doesNotMatch(layout, /@fontsource/);
   assert.match(layout, /og\.png/);
   assert.match(css, /"OPPO Sans"/);
   assert.match(css, /OPPOSans4\.0\.ttf/);
-  assert.match(css, /--red:\s*#ff5b53/i);
-  assert.match(css, /--green:\s*#8fcb57/i);
-  assert.match(css, /--cream:\s*#f7f4ec/i);
+  assert.match(css, /--red:\s*#ff5b50/i);
+  assert.match(css, /--green:\s*#81c943/i);
+  assert.match(css, /--warm:\s*#fff7ec/i);
   assert.match(css, /prefers-reduced-motion:\s*reduce/);
   assert.doesNotMatch(packageJson, /react-loading-skeleton/);
   assert.doesNotMatch(packageJson, /@react-three|["']three["']/);
@@ -103,6 +103,34 @@ test("keeps the finished visual system and removes starter assets", async () => 
     access(new URL("../public/wechat-caojiang-qr.png", import.meta.url)),
     access(new URL("../public/og.png", import.meta.url)),
     access(new URL("../public/favicon.png", import.meta.url)),
+    access(
+      new URL(
+        "../public/editorial/xigua-fullbody-v2.png",
+        import.meta.url,
+      ),
+    ),
+    access(
+      new URL(
+        "../public/editorial/ai-village-editorial.png",
+        import.meta.url,
+      ),
+    ),
+    access(
+      new URL(
+        "../public/editorial/book-efficient-learning.jpg",
+        import.meta.url,
+      ),
+    ),
+    access(new URL("../public/editorial/book-ppt.jpg", import.meta.url)),
+    access(
+      new URL(
+        "../public/editorial/echo-journal-screen-v2.png",
+        import.meta.url,
+      ),
+    ),
+    access(
+      new URL("../public/editorial/xiaobot-column.png", import.meta.url),
+    ),
   ]);
 
   await assert.rejects(

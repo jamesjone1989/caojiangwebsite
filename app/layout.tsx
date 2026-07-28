@@ -7,9 +7,9 @@ export async function generateMetadata(): Promise<Metadata> {
   const host = requestHeaders.get("host") ?? "localhost:3000";
   const protocol = host.startsWith("localhost") ? "http" : "https";
   const origin = `${protocol}://${host}`;
-  const title = "曹将｜欢迎来到我的作品地图";
+  const title = "曹将｜把复杂的事情讲清楚";
   const description =
-    "认识曹将的书、AI新手村、公众号、小红书与独立作品回声日记。";
+    "认识曹将的书、AI新手村、公众号、小红书、回声日记与结构化表达专栏。";
 
   return {
     title,
@@ -26,9 +26,9 @@ export async function generateMetadata(): Promise<Metadata> {
       images: [
         {
           url: `${origin}/og.png`,
-          width: 1743,
-          height: 973,
-          alt: "曹将｜欢迎来到我的作品地图",
+          width: 1672,
+          height: 941,
+          alt: "曹将｜把复杂的事情讲清楚",
         },
       ],
     },
