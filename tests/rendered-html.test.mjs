@@ -45,8 +45,12 @@ test("server-renders the Cao Jiang works map", async () => {
   assert.match(html, /小报童/);
   assert.match(html, /如何提升结构化表达能力/);
   assert.match(html, /aria-label="曹将作品地图"/);
-  assert.match(html, /使用原图呈现、可用鼠标或手指拖拽倾斜的西瓜老师形象/);
+  assert.match(html, /aria-label="西瓜老师形象"/);
   assert.match(html, /aria-pressed="true"/);
+  assert.doesNotMatch(html, /本站使用 OPPO Sans 4\.0 字体/);
+  assert.doesNotMatch(html, /一份可以轻轻转动的自我介绍/);
+  assert.doesNotMatch(html, /按住拖动，轻轻转动/);
+  assert.doesNotMatch(html, />3D<\/span>西瓜老师/);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape/);
 });
 

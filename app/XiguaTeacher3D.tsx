@@ -89,7 +89,7 @@ export default function XiguaTeacher3D({ focus }: { focus: FocusId }) {
       className={`portrait-tilt portrait-focus-${focus} ${isDragging ? "is-dragging" : ""}`}
       style={style}
       role="img"
-      aria-label="西瓜老师原始 3D 形象，可拖动轻轻转动，双击复位"
+      aria-label="西瓜老师形象"
       tabIndex={0}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}

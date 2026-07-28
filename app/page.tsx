@@ -130,11 +130,6 @@ export default function Home() {
           </span>
         </button>
 
-        <div className="topbar-note">
-          <span className="live-dot" aria-hidden="true" />
-          一份可以轻轻转动的自我介绍
-        </div>
-
         <button
           type="button"
           className="overview-button"
@@ -178,14 +173,9 @@ export default function Home() {
 
         <div
           className="canvas-shell"
-          aria-label="使用原图呈现、可用鼠标或手指拖拽倾斜的西瓜老师形象"
+          aria-label="西瓜老师形象"
         >
           <XiguaTeacher3D focus={activeId} />
-        </div>
-
-        <div className="character-sign" aria-hidden="true">
-          <span>3D</span>
-          西瓜老师
         </div>
 
         <nav className="story-nav" aria-label="曹将作品地图">
@@ -209,11 +199,6 @@ export default function Home() {
             );
           })}
         </nav>
-
-        <p className="motion-hint">
-          <Rotate3D size={18} aria-hidden="true" />
-          按住拖动，轻轻转动 · 双击复位 · 点击标签走近看看
-        </p>
 
         <section
           className={`story-detail ${activeItem ? "is-visible" : ""}`}
@@ -299,8 +284,6 @@ export default function Home() {
           <strong>{activeItem?.index ?? "00"}</strong>
           <span>/ 06</span>
         </div>
-
-        <footer className="font-credit">本站使用 OPPO Sans 4.0 字体</footer>
       </section>
     </main>
   );
