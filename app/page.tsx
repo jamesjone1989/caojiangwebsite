@@ -682,7 +682,7 @@ export default function Home() {
           <h2>
             岁月本长，
             <br />
-            忙着自促。
+            忙者自促。
           </h2>
           <p>
             欢迎你从下面任何一个入口加入。

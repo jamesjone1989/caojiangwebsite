@@ -40,7 +40,7 @@ test("server-renders the Cao Jiang works map", async () => {
     /写了14年文章，出过两本书，研究AI，擅长表达，下面是我的一些作品。/,
   );
   assert.match(html, /岁月本长，/);
-  assert.match(html, /忙着自促。/);
+  assert.match(html, /忙者自促。/);
   assert.match(html, /欢迎你从下面任何一个入口加入。/);
   assert.match(html, /一起前行，共同成长。/);
   assert.ok(
