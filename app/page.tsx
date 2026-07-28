@@ -246,29 +246,86 @@ export default function Home() {
       </section>
 
       <section className="chapter village-section" id="village">
-        <div className="village-copy" data-reveal>
-          <p className="eyebrow">02 / 知识星球</p>
-          <h2>
-            AI 新手，
-            <br />
-            也可以慢慢进村。
-          </h2>
-          <p>
-            AI 新手村为刚开始使用 AI 的人准备。这里不追逐抽象概念，
-            从工具入门、真实任务到经验交流，一起把 AI 用进日常工作。
-          </p>
-          <ExternalLink href={links.aiVillage} className="primary-link">
-            加入 AI 新手村
-          </ExternalLink>
+        <div className="village-intro">
+          <div className="village-copy" data-reveal>
+            <p className="eyebrow">02 / 知识星球</p>
+            <h2>
+              零基础，
+              <br />
+              <span>也能快速上手 AI。</span>
+            </h2>
+            <p>
+              从一门系统课程开始，跟着真实案例练习，再把独家资料带回自己的工作与生活。
+              不需要技术背景，也不必一次学会所有工具。
+            </p>
+            <ExternalLink href={links.aiVillage} className="primary-link">
+              加入 AI 新手村
+            </ExternalLink>
+          </div>
+
+          <div
+            className="village-stats"
+            data-reveal
+            aria-label="AI 新手村内容规模"
+          >
+            <div>
+              <strong>100+</strong>
+              <span>新手系统课程</span>
+            </div>
+            <div>
+              <strong>100+</strong>
+              <span>可复制案例</span>
+            </div>
+            <div>
+              <strong>20+</strong>
+              <span>独家资料</span>
+            </div>
+          </div>
         </div>
-        <div className="village-visual" data-reveal>
-          <img
-            src="/editorial/ai-village-editorial.png"
-            alt="西瓜老师在桌前介绍 AI 学习方法的三维场景"
-            width={1672}
-            height={941}
-            loading="lazy"
-          />
+
+        <div
+          className="village-scenes"
+          data-reveal
+          aria-label="AI 新手村应用场景"
+        >
+          <span>办公提效</span>
+          <span>知识管理</span>
+          <span>创意产出</span>
+          <span>生活提质</span>
+          <span>个人成长</span>
+        </div>
+
+        <div className="village-gallery" data-reveal>
+          <figure className="village-gallery-item village-gallery-cover">
+            <img
+              src="/editorial/ai-village-casebook-cover.png"
+              alt="AI 实践案例集封面"
+              width={2880}
+              height={4160}
+              loading="lazy"
+            />
+            <figcaption>AI 实践案例集</figcaption>
+          </figure>
+          <figure className="village-gallery-item village-gallery-course">
+            <img
+              src="/editorial/ai-village-course-map.png"
+              alt="AI 新手课内容一览图"
+              width={1054}
+              height={1492}
+              loading="lazy"
+            />
+            <figcaption>AI 新手课 · 一览图</figcaption>
+          </figure>
+          <figure className="village-gallery-item village-gallery-cases">
+            <img
+              src="/editorial/ai-village-cases-map.png"
+              alt="AI 真实案例内容一览图"
+              width={1054}
+              height={1492}
+              loading="lazy"
+            />
+            <figcaption>AI 真实案例 · 一览图</figcaption>
+          </figure>
         </div>
       </section>
 

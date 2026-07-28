@@ -39,6 +39,18 @@ test("server-renders the Cao Jiang works map", async () => {
   assert.match(html, /高效学习：曹将的公开课/);
   assert.match(html, /PPT炼成记/);
   assert.match(html, /AI 新手村/);
+  assert.match(html, /零基础，/);
+  assert.match(html, /也能快速上手 AI。/);
+  assert.match(html, /100\+/);
+  assert.match(html, /新手系统课程/);
+  assert.match(html, /可复制案例/);
+  assert.match(html, /20\+/);
+  assert.match(html, /独家资料/);
+  assert.match(html, /办公提效/);
+  assert.match(html, /知识管理/);
+  assert.match(html, /创意产出/);
+  assert.match(html, /生活提质/);
+  assert.match(html, /个人成长/);
   assert.match(html, /公众号/);
   assert.match(html, /小红书/);
   assert.match(html, /回声日记/);
@@ -111,7 +123,19 @@ test("keeps the finished visual system and removes starter assets", async () => 
     ),
     access(
       new URL(
-        "../public/editorial/ai-village-editorial.png",
+        "../public/editorial/ai-village-casebook-cover.png",
+        import.meta.url,
+      ),
+    ),
+    access(
+      new URL(
+        "../public/editorial/ai-village-course-map.png",
+        import.meta.url,
+      ),
+    ),
+    access(
+      new URL(
+        "../public/editorial/ai-village-cases-map.png",
         import.meta.url,
       ),
     ),

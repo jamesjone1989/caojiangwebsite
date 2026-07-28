@@ -552,17 +552,22 @@ img {
 }
 
 .village-section {
-  min-height: 100svh;
-  padding-right: 0;
-  display: grid;
-  grid-template-columns: minmax(330px, 0.7fr) minmax(0, 1.3fr);
-  align-items: center;
-  gap: clamp(38px, 5vw, 90px);
+  min-height: auto;
+  overflow: hidden;
   background: #edf5e5;
 }
 
-.village-copy {
-  padding-left: max(0px, calc((100vw - 1440px) / 2));
+.village-intro {
+  width: min(1320px, 100%);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) minmax(480px, 1.08fr);
+  align-items: end;
+  gap: clamp(50px, 7vw, 120px);
+}
+
+.village-copy h2 span {
+  color: #397427;
 }
 
 .village-copy > p:not(.eyebrow),
@@ -583,15 +588,109 @@ img {
   font-size: 13px;
 }
 
-.village-visual {
-  overflow: hidden;
-  border-radius: 48px 0 0 48px;
-  box-shadow: 0 36px 90px rgba(29, 29, 31, 0.1);
+.village-stats {
+  padding: 28px 0 30px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+  border-top: 1px solid rgba(29, 29, 31, 0.18);
+  border-bottom: 1px solid rgba(29, 29, 31, 0.18);
 }
 
-.village-visual img {
+.village-stats div {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.village-stats strong {
+  color: var(--ink);
+  font-size: clamp(52px, 5.7vw, 92px);
+  font-weight: 850;
+  line-height: 0.9;
+  letter-spacing: -0.075em;
+}
+
+.village-stats span {
+  color: #455043;
+  font-size: clamp(13px, 1.15vw, 17px);
+  font-weight: 680;
+}
+
+.village-scenes {
+  width: min(1320px, 100%);
+  margin: clamp(68px, 8vw, 118px) auto 0;
+  padding: 22px 0;
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  border-top: 1px solid rgba(29, 29, 31, 0.16);
+  border-bottom: 1px solid rgba(29, 29, 31, 0.16);
+}
+
+.village-scenes span {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  color: #354233;
+  font-size: clamp(14px, 1.35vw, 19px);
+  font-weight: 720;
+  white-space: nowrap;
+}
+
+.village-scenes span::before {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--green);
+  content: "";
+}
+
+.village-gallery {
+  width: min(1440px, 100%);
+  margin: clamp(60px, 8vw, 120px) auto 0;
+  display: grid;
+  grid-template-columns: minmax(190px, 0.58fr) repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: clamp(20px, 3vw, 46px);
+}
+
+.village-gallery-item {
+  margin: 0;
+  padding: clamp(9px, 1vw, 14px);
+  overflow: hidden;
+  border: 1px solid rgba(29, 29, 31, 0.08);
+  border-radius: clamp(22px, 2.2vw, 34px);
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 30px 80px rgba(29, 29, 31, 0.12);
+}
+
+.village-gallery-item img {
   width: 100%;
   height: auto;
+  display: block;
+  border-radius: clamp(15px, 1.6vw, 24px);
+}
+
+.village-gallery-item figcaption {
+  padding: 14px 7px 7px;
+  color: #585e56;
+  font-size: 12px;
+  font-weight: 720;
+  letter-spacing: 0.08em;
+}
+
+.village-gallery-cover {
+  transform: rotate(-2.2deg);
+}
+
+.village-gallery-course {
+  margin-top: 68px;
+  transform: rotate(1deg);
+}
+
+.village-gallery-cases {
+  transform: rotate(-0.7deg);
 }
 
 .channels-section {
@@ -1019,17 +1118,17 @@ img {
     min-height: 650px;
   }
 
-  .village-section,
   .echo-section {
     grid-template-columns: 1fr;
   }
 
-  .village-section {
-    padding-right: clamp(20px, 5vw, 80px);
+  .village-intro {
+    grid-template-columns: 1fr;
   }
 
-  .village-visual {
-    border-radius: 38px;
+  .village-scenes {
+    overflow-x: auto;
+    justify-content: flex-start;
   }
 
   .echo-section {
@@ -1191,13 +1290,63 @@ img {
     padding-inline: 18px;
   }
 
-  .village-copy {
-    padding-left: 0;
+  .village-intro {
+    gap: 54px;
   }
 
-  .village-visual {
-    margin-inline: -18px;
-    border-radius: 0;
+  .village-copy > p:not(.eyebrow) {
+    margin: 27px 0;
+  }
+
+  .village-stats {
+    padding: 22px 0;
+    gap: 12px;
+  }
+
+  .village-stats strong {
+    font-size: clamp(38px, 13vw, 58px);
+  }
+
+  .village-stats span {
+    font-size: 11px;
+    line-height: 1.35;
+  }
+
+  .village-scenes {
+    margin-top: 62px;
+    padding: 18px 0;
+    gap: 28px;
+    scrollbar-width: none;
+  }
+
+  .village-scenes::-webkit-scrollbar,
+  .village-gallery::-webkit-scrollbar {
+    display: none;
+  }
+
+  .village-gallery {
+    width: auto;
+    margin: 52px -18px 0;
+    padding: 8px 18px 28px;
+    display: flex;
+    gap: 18px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+
+  .village-gallery-item,
+  .village-gallery-cover,
+  .village-gallery-course,
+  .village-gallery-cases {
+    flex: 0 0 82vw;
+    margin-top: 0;
+    transform: none;
+    scroll-snap-align: center;
+  }
+
+  .village-gallery-cover {
+    flex-basis: 70vw;
   }
 
   .channels-heading {
