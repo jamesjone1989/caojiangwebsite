@@ -76,6 +76,7 @@ test("server-renders the Cao Jiang works map", async () => {
   assert.match(html, /07\.20—07\.26/);
   assert.match(html, /公众号/);
   assert.match(html, /1947/);
+  assert.match(html, /31万关注/);
   assert.match(html, /代表长文/);
   assert.match(html, /如何打造个人知识体系/);
   assert.match(html, /演示设计清单/);
@@ -94,6 +95,7 @@ test("server-renders the Cao Jiang works map", async () => {
   assert.match(html, /小红书/);
   assert.match(html, /6222/);
   assert.match(html, /4\.2万/);
+  assert.doesNotMatch(html, />105</);
   assert.doesNotMatch(html, /日本/);
   assert.match(html, /回声日记/);
   assert.match(html, /小报童/);

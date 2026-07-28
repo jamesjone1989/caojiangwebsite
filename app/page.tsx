@@ -499,7 +499,7 @@ export default function Home() {
             </div>
             <p className="wechat-count">
               <strong>1947</strong>
-              <span>篇文章</span>
+              <span>篇文章 · 31万关注</span>
             </p>
             <p className="channel-description">
               写学习、表达、职场、工具，也写一路走来的选择与变化。长文章，是我整理经验和回答问题的主要方式。
@@ -565,10 +565,6 @@ export default function Home() {
               <span>
                 <strong>4.2万</strong>
                 获赞与收藏
-              </span>
-              <span>
-                <strong>105</strong>
-                关注
               </span>
             </div>
           </div>
