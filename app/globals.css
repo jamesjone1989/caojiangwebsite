@@ -1096,11 +1096,11 @@ img {
   }
 
   .hero-person {
-    width: min(82vw, 520px);
+    width: auto;
     max-width: none;
-    height: auto;
-    right: -3vw;
-    bottom: -4%;
+    height: calc(100% - 20px);
+    right: 12vw;
+    bottom: 0;
   }
 
   .disc-red {

@@ -105,7 +105,7 @@ test("keeps the finished visual system and removes starter assets", async () => 
     access(new URL("../public/favicon.png", import.meta.url)),
     access(
       new URL(
-        "../public/editorial/xigua-fullbody-v2.png",
+        "../public/editorial/xigua-fullbody-transparent-v3-cropped.png",
         import.meta.url,
       ),
     ),
@@ -124,7 +124,7 @@ test("keeps the finished visual system and removes starter assets", async () => 
     access(new URL("../public/editorial/book-ppt.jpg", import.meta.url)),
     access(
       new URL(
-        "../public/editorial/echo-journal-screen-v2.png",
+        "../public/editorial/echo-journal-screen-v3.png",
         import.meta.url,
       ),
     ),

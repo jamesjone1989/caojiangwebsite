@@ -128,10 +128,10 @@ export default function Home() {
             <div className="hero-grid-lines" aria-hidden="true" />
             <img
               className="hero-person"
-              src="/editorial/xigua-fullbody-v2.png"
+              src="/editorial/xigua-fullbody-transparent-v3-cropped.png"
               alt="戴着西瓜帽、穿白色外套的西瓜老师"
-              width={1024}
-              height={1536}
+              width={520}
+              height={1460}
               fetchPriority="high"
             />
             <span className="hero-caption">西瓜老师</span>
@@ -338,10 +338,10 @@ export default function Home() {
               <span>huishengriji.cn</span>
             </div>
             <img
-              src="/editorial/echo-journal-screen-v2.png"
+              src="/editorial/echo-journal-screen-v3.png"
               alt="回声日记网页界面"
-              width={1440}
-              height={980}
+              width={3006}
+              height={1610}
               loading="lazy"
             />
           </div>
