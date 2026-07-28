@@ -26,6 +26,7 @@ type StoryItem = {
   note: string;
   icon: LucideIcon;
   href?: string;
+  actionLabel?: string;
 };
 
 const storyItems: StoryItem[] = [
@@ -50,6 +51,8 @@ const storyItems: StoryItem[] = [
       "一个为 AI 新手准备的知识星球。从工具入门、真实任务到经验交流，一起把 AI 用进日常工作。",
     note: "从第一次尝试，到完成一件事",
     icon: TentTree,
+    href: "https://t.zsxq.com/2IJ1F",
+    actionLabel: "加入 AI 新手村",
   },
   {
     id: "wechat",
@@ -219,8 +222,26 @@ export default function Home() {
 
               {activeItem.id === "books" ? (
                 <div className="book-titles" aria-label="曹将出版的两本书">
-                  <span>《高效学习：曹将的公开课》</span>
-                  <span>《PPT炼成记》</span>
+                  <span>
+                    <a
+                      href="https://3.cn/-2X6z7RF?jkl=@L46a40PajHTk@ ZH1997"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      《高效学习：曹将的公开课》
+                      <ArrowUpRight size={14} aria-hidden="true" />
+                    </a>
+                  </span>
+                  <span>
+                    <a
+                      href="https://www.douban.com/doubanapp/dispatch/book/25852784?dt_dapp=1"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      《PPT炼成记》
+                      <ArrowUpRight size={14} aria-hidden="true" />
+                    </a>
+                  </span>
                 </div>
               ) : null}
 
@@ -228,7 +249,7 @@ export default function Home() {
                 <span>{activeItem.note}</span>
                 {activeItem.href ? (
                   <a href={activeItem.href} target="_blank" rel="noreferrer">
-                    访问作品
+                    {activeItem.actionLabel ?? "访问作品"}
                     <ArrowUpRight size={17} aria-hidden="true" />
                   </a>
                 ) : (

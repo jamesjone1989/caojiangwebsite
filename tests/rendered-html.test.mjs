@@ -58,6 +58,15 @@ test("keeps the finished visual system and removes starter assets", async () => 
 
   assert.match(page, /three-stage/);
   assert.match(page, /XiguaTeacher3D/);
+  assert.match(page, /https:\/\/t\.zsxq\.com\/2IJ1F/);
+  assert.match(
+    page,
+    /https:\/\/3\.cn\/-2X6z7RF\?jkl=@L46a40PajHTk@ ZH1997/,
+  );
+  assert.match(
+    page,
+    /https:\/\/www\.douban\.com\/doubanapp\/dispatch\/book\/25852784\?dt_dapp=1/,
+  );
   assert.match(page, /https:\/\/huishengriji\.cn/);
   assert.doesNotMatch(layout, /@fontsource/);
   assert.match(layout, /og\.png/);
