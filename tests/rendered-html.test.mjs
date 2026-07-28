@@ -68,6 +68,8 @@ test("keeps the finished visual system and removes starter assets", async () => 
     /https:\/\/www\.douban\.com\/doubanapp\/dispatch\/book\/25852784\?dt_dapp=1/,
   );
   assert.match(page, /https:\/\/huishengriji\.cn/);
+  assert.match(page, /wechat-caojiang-qr\.png/);
+  assert.match(page, /微信扫一扫/);
   assert.doesNotMatch(layout, /@fontsource/);
   assert.match(layout, /og\.png/);
   assert.match(css, /"OPPO Sans"/);
@@ -86,6 +88,7 @@ test("keeps the finished visual system and removes starter assets", async () => 
     access(new URL("../public/fonts/OPPOSans4.0-License.txt", import.meta.url)),
     access(new URL("../public/xigua-teacher.png", import.meta.url)),
     access(new URL("../public/xigua-teacher-exact.png", import.meta.url)),
+    access(new URL("../public/wechat-caojiang-qr.png", import.meta.url)),
     access(new URL("../public/og.png", import.meta.url)),
     access(new URL("../public/favicon.png", import.meta.url)),
   ]);

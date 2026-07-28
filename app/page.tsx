@@ -11,6 +11,7 @@ import {
   Rotate3D,
   TentTree,
 } from "lucide-react";
+import Image from "next/image";
 import { useState } from "react";
 import XiguaTeacher3D, { type FocusId } from "./XiguaTeacher3D";
 
@@ -219,6 +220,25 @@ export default function Home() {
               </p>
               <h2>{activeItem.title}</h2>
               <p className="detail-description">{activeItem.description}</p>
+
+              {activeItem.id === "wechat" ? (
+                <div className="wechat-follow-card">
+                  <Image
+                    className="wechat-qr"
+                    src="/wechat-caojiang-qr.png"
+                    alt="微信公众号曹将二维码"
+                    width={760}
+                    height={980}
+                    sizes="(max-width: 560px) 190px, 138px"
+                    unoptimized
+                  />
+                  <div className="wechat-scan-copy">
+                    <span>微信扫一扫</span>
+                    <strong>关注公众号「曹将」</strong>
+                    <small>学习 · 表达 · 职场 · AI 实践</small>
+                  </div>
+                </div>
+              ) : null}
 
               {activeItem.id === "books" ? (
                 <div className="book-titles" aria-label="曹将出版的两本书">

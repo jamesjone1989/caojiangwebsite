@@ -551,6 +551,54 @@ a {
   line-height: 1.9;
 }
 
+.wechat-follow-card {
+  width: min(100%, 440px);
+  margin: 22px 0 0;
+  padding: 10px 16px 10px 10px;
+  display: grid;
+  grid-template-columns: 138px minmax(0, 1fr);
+  align-items: center;
+  gap: 18px;
+  border: 1px solid rgba(18, 19, 17, 0.22);
+  border-radius: 18px 12px 18px 10px;
+  background: #fffdf8;
+  box-shadow: 4px 4px 0 rgba(18, 19, 17, 0.86);
+  transform: rotate(-0.6deg);
+}
+
+.wechat-qr {
+  width: 138px;
+  height: auto;
+  display: block;
+  border-radius: 11px;
+}
+
+.wechat-scan-copy {
+  display: grid;
+  gap: 7px;
+}
+
+.wechat-scan-copy span {
+  color: var(--red);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+}
+
+.wechat-scan-copy strong {
+  font-family: var(--font-display);
+  font-size: 21px;
+  font-weight: 400;
+  line-height: 1.25;
+}
+
+.wechat-scan-copy small {
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 750;
+  line-height: 1.6;
+}
+
 .book-titles {
   margin: 22px 0 0;
   display: grid;
@@ -838,6 +886,21 @@ a {
 
   .book-titles {
     margin-top: 13px;
+  }
+
+  .wechat-follow-card {
+    width: min(100%, 260px);
+    margin: 16px auto 0;
+    padding: 12px;
+    grid-template-columns: 1fr;
+    justify-items: center;
+    gap: 11px;
+    text-align: center;
+    transform: none;
+  }
+
+  .wechat-qr {
+    width: 190px;
   }
 
   .detail-footer {
