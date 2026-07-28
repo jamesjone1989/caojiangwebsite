@@ -568,13 +568,16 @@ export default function Home() {
           曹
         </div>
         <div className="closing-copy" data-reveal>
-          <p className="eyebrow">很高兴认识你</p>
           <h2>
-            继续学习，
+            岁月本长，
             <br />
-            继续表达。
+            忙着自促。
           </h2>
-          <p>这里是曹将。也欢迎你从任何一个入口，继续认识我。</p>
+          <p>
+            欢迎你从下面任何一个入口加入。
+            <br />
+            一起前行，共同成长。
+          </p>
           <div className="closing-links">
             <ExternalLink href={links.aiVillage}>AI 新手村</ExternalLink>
             <ExternalLink href={links.echoJournal}>回声日记</ExternalLink>
