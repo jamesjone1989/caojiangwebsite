@@ -42,6 +42,8 @@ test("server-renders the Cao Jiang works map", async () => {
   assert.match(html, /公众号/);
   assert.match(html, /小红书/);
   assert.match(html, /回声日记/);
+  assert.match(html, /小报童/);
+  assert.match(html, /如何提升结构化表达能力/);
   assert.match(html, /aria-label="曹将作品地图"/);
   assert.match(html, /使用原图呈现、可用鼠标或手指拖拽倾斜的西瓜老师形象/);
   assert.match(html, /aria-pressed="true"/);
@@ -70,6 +72,12 @@ test("keeps the finished visual system and removes starter assets", async () => 
   assert.match(page, /https:\/\/huishengriji\.cn/);
   assert.match(page, /wechat-caojiang-qr\.png/);
   assert.match(page, /微信扫一扫/);
+  assert.match(
+    page,
+    /https:\/\/xiaobot\.net\/p\/jghbd\?refer=c3f68f06-3090-44fa-bf08-434f581889b3/,
+  );
+  assert.match(page, /30\+ 个职场常见表达场景/);
+  assert.match(page, /40\+ 篇内容/);
   assert.doesNotMatch(layout, /@fontsource/);
   assert.match(layout, /og\.png/);
   assert.match(css, /"OPPO Sans"/);

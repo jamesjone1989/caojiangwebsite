@@ -411,7 +411,8 @@ a {
 }
 
 .trigger-village .trigger-icon,
-.trigger-echo .trigger-icon {
+.trigger-echo .trigger-icon,
+.trigger-xiaobot .trigger-icon {
   background: var(--green);
 }
 
@@ -440,8 +441,14 @@ a {
   bottom: 10%;
 }
 
+.trigger-xiaobot {
+  left: 25%;
+  bottom: 16%;
+}
+
 .trigger-books::after,
-.trigger-echo::after {
+.trigger-echo::after,
+.trigger-xiaobot::after {
   right: 100%;
 }
 
@@ -738,6 +745,11 @@ a {
   .trigger-echo {
     left: 4%;
     bottom: 18%;
+  }
+
+  .trigger-xiaobot {
+    left: 27%;
+    bottom: 10%;
   }
 
   .character-sign {

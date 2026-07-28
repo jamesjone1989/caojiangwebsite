@@ -10,7 +10,8 @@ export type FocusId =
   | "village"
   | "wechat"
   | "xiaohongshu"
-  | "echo";
+  | "echo"
+  | "xiaobot";
 
 type Tilt = {
   x: number;

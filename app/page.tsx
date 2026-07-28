@@ -7,6 +7,7 @@ import {
   BookHeart,
   BookOpen,
   MessageCircle,
+  Newspaper,
   Radio,
   Rotate3D,
   TentTree,
@@ -89,6 +90,19 @@ const storyItems: StoryItem[] = [
     icon: Radio,
     href: "https://huishengriji.cn",
   },
+  {
+    id: "xiaobot",
+    index: "06",
+    eyebrow: "小报童专栏",
+    shortTitle: "小报童",
+    title: "把结构化表达，练进真实职场",
+    description:
+      "专栏《如何提升结构化表达能力》，覆盖竞聘演讲、年终总结、研究报告、会议纪要等 30+ 个职场常见表达场景。用 40+ 篇内容拆解真实案例，并提供可以直接复用的写作模板。",
+    note: "30+ 场景 · 40+ 篇内容",
+    icon: Newspaper,
+    href: "https://xiaobot.net/p/jghbd?refer=c3f68f06-3090-44fa-bf08-434f581889b3",
+    actionLabel: "查看专栏",
+  },
 ];
 
 export default function Home() {
@@ -141,6 +155,7 @@ export default function Home() {
             <li>微信公众号：曹将</li>
             <li>小红书账号：曹将</li>
             <li>独立作品：回声日记，huishengriji.cn</li>
+            <li>小报童专栏：如何提升结构化表达能力</li>
           </ul>
         </div>
         <div className="stage-glow glow-red" aria-hidden="true" />
@@ -227,8 +242,8 @@ export default function Home() {
                     className="wechat-qr"
                     src="/wechat-caojiang-qr.png"
                     alt="微信公众号曹将二维码"
-                    width={760}
-                    height={980}
+                    width={906}
+                    height={890}
                     sizes="(max-width: 560px) 190px, 138px"
                     unoptimized
                   />
@@ -282,7 +297,7 @@ export default function Home() {
 
         <div className="stage-counter" aria-hidden="true">
           <strong>{activeItem?.index ?? "00"}</strong>
-          <span>/ 05</span>
+          <span>/ 06</span>
         </div>
 
         <footer className="font-credit">本站使用 OPPO Sans 4.0 字体</footer>
