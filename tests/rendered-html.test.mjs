@@ -34,8 +34,10 @@ test("server-renders the Cao Jiang works map", async () => {
   const html = await response.text();
   assert.match(html, /<html lang="zh-CN">/);
   assert.match(html, /<title>曹将｜把复杂的事情讲清楚<\/title>/);
-  assert.match(html, /你好，/);
   assert.match(html, /我是<span>曹将<\/span>。/);
+  assert.match(html, /写了14年文章，出过两本书/);
+  assert.doesNotMatch(html, /我写作、做产品/);
+  assert.doesNotMatch(html, /也一直在研究怎样把复杂的事情讲清楚/);
   assert.match(html, /高效学习：曹将的公开课/);
   assert.match(html, /PPT炼成记/);
   assert.match(html, /AI 新手村/);

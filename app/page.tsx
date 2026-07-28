@@ -107,15 +107,9 @@ export default function Home() {
           <div className="hero-copy" data-reveal>
             <p className="eyebrow">HELLO, I&apos;M CAO JIANG</p>
             <h1>
-              你好，
-              <br />
               我是<span>曹将</span>。
             </h1>
-            <p className="hero-lede">
-              我写作、做产品，
-              <br />
-              也一直在研究怎样把复杂的事情讲清楚。
-            </p>
+            <p className="hero-lede">写了14年文章，出过两本书</p>
             <a className="scroll-cue" href="#highlights">
               <ArrowDown aria-hidden="true" size={18} />
               <span>认识我做过的事</span>
