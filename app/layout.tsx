@@ -7,10 +7,13 @@ export async function generateMetadata(): Promise<Metadata> {
   const host = requestHeaders.get("host") ?? "localhost:3000";
   const protocol = host.startsWith("localhost") ? "http" : "https";
   const isGitHubPages = process.env.GITHUB_PAGES === "true";
-  const publicBase = isGitHubPages ? "/caojiangwebsite" : "";
-  const origin = isGitHubPages
-    ? "https://jamesjone1989.github.io/caojiangwebsite"
-    : `${protocol}://${host}`;
+  const isCustomDomain = process.env.CUSTOM_DOMAIN === "true";
+  const origin = isCustomDomain
+    ? "https://caojiang.cn"
+    : isGitHubPages
+      ? "https://jamesjone1989.github.io/caojiangwebsite"
+      : `${protocol}://${host}`;
+  const iconPath = isGitHubPages ? "./favicon.png" : "/favicon.png";
   const title = "曹将｜把复杂的事情讲清楚";
   const description =
     "认识曹将的书、AI新手村、公众号、小红书、回声日记与结构化表达专栏。";
@@ -19,8 +22,8 @@ export async function generateMetadata(): Promise<Metadata> {
     title,
     description,
     icons: {
-      icon: `${publicBase}/favicon.png`,
-      shortcut: `${publicBase}/favicon.png`,
+      icon: iconPath,
+      shortcut: iconPath,
     },
     openGraph: {
       title,
