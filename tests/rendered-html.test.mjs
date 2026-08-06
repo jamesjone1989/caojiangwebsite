@@ -99,6 +99,10 @@ test("server-renders the Cao Jiang works map", async () => {
   assert.doesNotMatch(html, />105</);
   assert.doesNotMatch(html, /日本/);
   assert.match(html, /回声日记/);
+  assert.match(html, /职场新人挑战地图/);
+  assert.match(html, /href="(?:\.\/|\/)tiaozhan\/"/);
+  assert.match(html, /<strong>20<\/strong> 个办公室挑战/);
+  assert.match(html, /<strong>04<\/strong> 个成长阶段/);
   assert.match(html, /小报童/);
   assert.match(html, /如何提升结构化表达能力/);
   assert.match(html, /aria-label="页面导航"/);
@@ -171,6 +175,15 @@ test("keeps the finished visual system and removes starter assets", async () => 
     access(new URL("../public/ai-village-qr.png", import.meta.url)),
     access(new URL("../public/og.png", import.meta.url)),
     access(new URL("../public/favicon.png", import.meta.url)),
+    access(new URL("../public/tiaozhan/index.html", import.meta.url)),
+    access(new URL("../public/tiaozhan/app.js", import.meta.url)),
+    access(new URL("../public/tiaozhan/story-data.js", import.meta.url)),
+    access(
+      new URL(
+        "../public/tiaozhan/assets/images/scene-event-01-task.webp",
+        import.meta.url,
+      ),
+    ),
     access(
       new URL(
         "../public/editorial/xigua-teacher-halfbody-cutout.png",

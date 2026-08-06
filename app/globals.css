@@ -1341,6 +1341,164 @@ img {
   transform: rotate(-3deg);
 }
 
+.challenge-map-section {
+  min-height: 100svh;
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(380px, 0.8fr);
+  align-items: center;
+  gap: clamp(48px, 7vw, 112px);
+  overflow: hidden;
+  background: #e7f1df;
+}
+
+.challenge-map-art {
+  position: relative;
+  display: block;
+  margin-left: clamp(-80px, -5vw, -28px);
+  color: var(--ink);
+  transform: rotate(-1.6deg);
+  transition: transform 240ms ease;
+}
+
+.challenge-map-art:hover,
+.challenge-map-art:focus-visible {
+  transform: translate(8px, -4px) rotate(-0.3deg);
+}
+
+.challenge-map-browser {
+  overflow: hidden;
+  border: 3px solid var(--ink);
+  background: #fffdf7;
+  box-shadow: 20px 24px 0 var(--ink);
+}
+
+.challenge-map-browser-bar {
+  height: 48px;
+  padding: 0 18px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  border-bottom: 3px solid var(--ink);
+  background: #f4c95d;
+}
+
+.challenge-map-browser-bar i {
+  width: 10px;
+  height: 10px;
+  border: 2px solid var(--ink);
+  border-radius: 50%;
+  background: #fffdf7;
+}
+
+.challenge-map-browser-bar i:first-child {
+  background: #f5534f;
+}
+
+.challenge-map-browser-bar i:nth-child(2) {
+  background: #79b84b;
+}
+
+.challenge-map-browser-bar span {
+  margin-left: 9px;
+  font-size: 11px;
+  font-weight: 760;
+  letter-spacing: 0.04em;
+}
+
+.challenge-map-browser img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  object-position: center;
+}
+
+.challenge-map-stamp {
+  position: absolute;
+  right: -4%;
+  top: -9%;
+  width: clamp(92px, 10vw, 142px);
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  border: 3px solid var(--ink);
+  border-radius: 50%;
+  background: #f5534f;
+  color: white;
+  box-shadow: 7px 7px 0 var(--ink);
+  font-size: clamp(19px, 2vw, 28px);
+  font-weight: 900;
+  transform: rotate(8deg);
+}
+
+.challenge-map-caption {
+  position: absolute;
+  left: 8%;
+  bottom: -8%;
+  padding: 12px 18px;
+  border: 3px solid var(--ink);
+  background: #f4c95d;
+  box-shadow: 6px 6px 0 var(--ink);
+  font-size: clamp(12px, 1.2vw, 16px);
+  font-weight: 850;
+  transform: rotate(2.5deg);
+}
+
+.challenge-map-copy {
+  position: relative;
+  z-index: 2;
+  max-width: 650px;
+}
+
+.challenge-map-copy h2 {
+  margin: 0;
+  font-size: clamp(54px, 6.2vw, 98px);
+  font-weight: 860;
+  line-height: 0.94;
+  letter-spacing: -0.075em;
+}
+
+.challenge-map-copy > p:not(.eyebrow) {
+  max-width: 610px;
+  margin: 34px 0 0;
+  color: #3e4938;
+  font-size: clamp(17px, 1.5vw, 23px);
+  line-height: 1.72;
+}
+
+.challenge-map-meta {
+  margin: 34px 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-block: 1px solid rgba(29, 29, 31, 0.24);
+}
+
+.challenge-map-meta span {
+  min-height: 86px;
+  padding: 15px 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  color: #52604b;
+  font-size: 11px;
+  font-weight: 720;
+}
+
+.challenge-map-meta span + span {
+  border-left: 1px solid rgba(29, 29, 31, 0.18);
+}
+
+.challenge-map-meta strong {
+  color: var(--ink);
+  font-size: clamp(25px, 2.7vw, 40px);
+  line-height: 1;
+}
+
+.challenge-map-link {
+  background: #111111;
+}
+
 .xiaobot-section {
   min-height: 110svh;
   display: grid;
@@ -1570,6 +1728,11 @@ img {
   .good-habits-section {
     grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
     gap: 34px;
+  }
+
+  .challenge-map-section {
+    grid-template-columns: minmax(0, 1.08fr) minmax(350px, 0.92fr);
+    gap: 42px;
   }
 
   .village-intro {
@@ -1950,6 +2113,40 @@ img {
   .good-habits-count {
     left: -3%;
     top: -13%;
+  }
+
+  .challenge-map-section {
+    min-height: auto;
+    grid-template-columns: 1fr;
+    gap: 80px;
+  }
+
+  .challenge-map-art {
+    width: calc(100% - 8px);
+    margin: 18px 0 12px;
+    transform: rotate(-0.8deg);
+  }
+
+  .challenge-map-browser {
+    box-shadow: 10px 12px 0 var(--ink);
+  }
+
+  .challenge-map-stamp {
+    right: -2%;
+    top: -12%;
+  }
+
+  .challenge-map-caption {
+    left: 4%;
+    bottom: -10%;
+  }
+
+  .challenge-map-copy h2 {
+    font-size: 13vw;
+  }
+
+  .challenge-map-meta {
+    margin-top: 28px;
   }
 
   .browser-frame {

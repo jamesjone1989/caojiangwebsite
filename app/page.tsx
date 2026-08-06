@@ -21,6 +21,7 @@ const links = {
   aiVillage: "https://t.zsxq.com/2IJ1F",
   echoJournal: "https://huishengriji.cn",
   goodHabits: "/goodhabits/",
+  challengeMap: "/tiaozhan/",
   xiaobot:
     "https://xiaobot.net/p/jghbd?refer=c3f68f06-3090-44fa-bf08-434f581889b3",
 };
@@ -662,9 +663,63 @@ export default function Home() {
         </a>
       </section>
 
+      <section className="chapter challenge-map-section">
+        <a
+          className="challenge-map-art"
+          href={assetUrl(links.challengeMap)}
+          aria-label="打开职场新人挑战地图"
+          data-reveal
+        >
+          <div className="challenge-map-browser">
+            <div className="challenge-map-browser-bar" aria-hidden="true">
+              <i />
+              <i />
+              <i />
+              <span>caojiang.cn/tiaozhan</span>
+            </div>
+            <img
+              src={assetUrl("/tiaozhan/assets/images/scene-event-01-task.webp")}
+              alt="小明在办公室接受第一项职场任务的漫画场景"
+              width={1536}
+              height={1024}
+              loading="lazy"
+            />
+          </div>
+          <span className="challenge-map-stamp">可互动</span>
+          <span className="challenge-map-caption">办公室剧情 · 西瓜老师拆解</span>
+        </a>
+
+        <div className="challenge-map-copy" data-reveal>
+          <p className="eyebrow">06 / 互动学习</p>
+          <h2>
+            跟着小明，
+            <br />
+            走一遍
+            <br />
+            职场第一年。
+          </h2>
+          <p>
+            从第一天接到模糊任务，到独立处理复杂协作。每一次挑战，
+            都先发生在真实办公室里；再去找西瓜老师，把问题拆成下一步。
+          </p>
+          <div className="challenge-map-meta" aria-label="职场新人挑战地图内容概览">
+            <span><strong>20</strong> 个办公室挑战</span>
+            <span><strong>04</strong> 个成长阶段</span>
+            <span><strong>20</strong> 套方法与话术</span>
+          </div>
+          <a
+            className="primary-link challenge-map-link"
+            href={assetUrl(links.challengeMap)}
+          >
+            打开职场新人挑战地图
+            <ArrowUpRight aria-hidden="true" size={18} strokeWidth={2.2} />
+          </a>
+        </div>
+      </section>
+
       <section className="chapter xiaobot-section">
         <div className="xiaobot-copy" data-reveal>
-          <p className="eyebrow">06 / 小报童专栏</p>
+          <p className="eyebrow">07 / 小报童专栏</p>
           <h2>
             把结构化表达，
             <br />
