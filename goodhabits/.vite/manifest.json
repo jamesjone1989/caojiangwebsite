@@ -10,10 +10,10 @@
     "file": "assets/rolldown-runtime-S-ySWqyJ.js",
     "name": "rolldown-runtime"
   },
-  "app/page.tsx": {
-    "file": "assets/page-CeRgR3N9.js",
-    "name": "page",
-    "src": "app/page.tsx",
+  "app/components/HabitExperience.tsx": {
+    "file": "assets/HabitExperience-DMsf6_fe.js",
+    "name": "HabitExperience",
+    "src": "app/components/HabitExperience.tsx",
     "isDynamicEntry": true,
     "imports": [
       "_rolldown-runtime-S-ySWqyJ.js",
@@ -21,7 +21,7 @@
     ]
   },
   "node_modules/vinext/dist/shims/layout-segment-context.js": {
-    "file": "assets/layout-segment-context-xp1PTZfv.js",
+    "file": "assets/layout-segment-context-CQLymEDf.js",
     "name": "layout-segment-context",
     "src": "node_modules/vinext/dist/shims/layout-segment-context.js",
     "isDynamicEntry": true,
@@ -32,7 +32,7 @@
     ]
   },
   "virtual:vinext-app-browser-entry": {
-    "file": "assets/index-BbLEPlv6.js",
+    "file": "assets/index-COslD19F.js",
     "name": "index",
     "src": "virtual:vinext-app-browser-entry",
     "isEntry": true,
@@ -41,9 +41,9 @@
       "_framework-DjPHiq1u.js"
     ],
     "dynamicImports": [
+      "app/components/HabitExperience.tsx",
       "node_modules/vinext/dist/shims/layout-segment-context.js",
-      "virtual:vinext-app-browser-entry",
-      "app/page.tsx"
+      "virtual:vinext-app-browser-entry"
     ]
   }
 }
