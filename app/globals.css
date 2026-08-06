@@ -1227,6 +1227,120 @@ img {
   color: var(--ink);
 }
 
+.good-habits-section {
+  min-height: 100svh;
+  display: grid;
+  grid-template-columns: minmax(340px, 0.7fr) minmax(0, 1.3fr);
+  align-items: center;
+  gap: clamp(42px, 7vw, 120px);
+  overflow: hidden;
+  background: #fffdf7;
+}
+
+.good-habits-copy {
+  position: relative;
+  z-index: 2;
+  max-width: 620px;
+}
+
+.good-habits-copy h2 {
+  margin: 0;
+  font-size: clamp(50px, 6.4vw, 96px);
+  font-weight: 850;
+  line-height: 0.95;
+  letter-spacing: -0.075em;
+}
+
+.good-habits-copy h2::after {
+  content: "";
+  display: block;
+  width: clamp(92px, 11vw, 164px);
+  height: 12px;
+  margin: 26px 0 0 4px;
+  border-radius: 999px;
+  background: var(--red);
+  transform: rotate(-2deg);
+}
+
+.good-habits-copy > p:not(.eyebrow) {
+  max-width: 530px;
+  margin: 34px 0 0;
+  color: #454548;
+  font-size: clamp(17px, 1.5vw, 23px);
+  font-weight: 520;
+  line-height: 1.68;
+}
+
+.good-habits-link {
+  margin-top: 36px;
+}
+
+.good-habits-art {
+  position: relative;
+  display: block;
+  isolation: isolate;
+  margin-right: clamp(-42px, -3vw, -12px);
+  padding: clamp(12px, 1.5vw, 20px);
+  border: 2px solid var(--ink);
+  background: var(--green);
+  box-shadow: 18px 22px 0 var(--ink);
+  transform: rotate(1.8deg);
+  transition: transform 220ms ease, box-shadow 220ms ease;
+}
+
+.good-habits-art::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  width: 42%;
+  aspect-ratio: 1;
+  right: -9%;
+  top: -12%;
+  border-radius: 50%;
+  background: var(--red);
+}
+
+.good-habits-art:hover,
+.good-habits-art:focus-visible {
+  box-shadow: 10px 13px 0 var(--ink);
+  transform: translate(7px, 7px) rotate(0.4deg);
+}
+
+.good-habits-art img {
+  width: 100%;
+  height: auto;
+  border: 2px solid var(--ink);
+  background: var(--paper);
+}
+
+.good-habits-count {
+  position: absolute;
+  z-index: 2;
+  left: -7%;
+  top: 7%;
+  color: var(--red);
+  font-size: clamp(76px, 12vw, 184px);
+  font-weight: 900;
+  letter-spacing: -0.12em;
+  line-height: 0.8;
+  text-shadow: 4px 4px 0 var(--ink);
+  pointer-events: none;
+}
+
+.good-habits-caption {
+  position: absolute;
+  z-index: 3;
+  right: 4%;
+  bottom: -8%;
+  padding: 11px 16px;
+  border: 2px solid var(--ink);
+  background: var(--yellow);
+  box-shadow: 5px 5px 0 var(--ink);
+  font-size: clamp(12px, 1.2vw, 16px);
+  font-weight: 850;
+  transform: rotate(-3deg);
+}
+
 .xiaobot-section {
   min-height: 110svh;
   display: grid;
@@ -1433,6 +1547,11 @@ img {
 
   .echo-section {
     grid-template-columns: 1fr;
+  }
+
+  .good-habits-section {
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    gap: 34px;
   }
 
   .village-intro {
@@ -1797,6 +1916,22 @@ img {
   .echo-visual {
     margin-inline: -18px;
     order: 2;
+  }
+
+  .good-habits-section {
+    min-height: auto;
+    grid-template-columns: 1fr;
+    gap: 58px;
+  }
+
+  .good-habits-art {
+    width: calc(100% - 14px);
+    margin: 0 0 28px 8px;
+  }
+
+  .good-habits-count {
+    left: -3%;
+    top: -13%;
   }
 
   .browser-frame {

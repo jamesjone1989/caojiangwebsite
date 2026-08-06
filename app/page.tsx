@@ -20,6 +20,7 @@ const links = {
     "https://www.douban.com/doubanapp/dispatch/book/25852784?dt_dapp=1",
   aiVillage: "https://t.zsxq.com/2IJ1F",
   echoJournal: "https://huishengriji.cn",
+  goodHabits: "/goodhabits/",
   xiaobot:
     "https://xiaobot.net/p/jghbd?refer=c3f68f06-3090-44fa-bf08-434f581889b3",
 };
@@ -625,9 +626,45 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="chapter good-habits-section">
+        <div className="good-habits-copy" data-reveal>
+          <p className="eyebrow">05 / 互动作品</p>
+          <h2>
+            职场加分，
+            <br />
+            从一个好习惯开始。
+          </h2>
+          <p>
+            16 个主题，321 张职场好习惯卡片。把有用的方法逐张拆开，
+            收进自己的卡片盒；暂时用不上的，也可以先让它飞走。
+          </p>
+          <a className="primary-link good-habits-link" href={assetUrl(links.goodHabits)}>
+            打开职场好习惯
+            <ArrowUpRight aria-hidden="true" size={18} strokeWidth={2.2} />
+          </a>
+        </div>
+
+        <a
+          className="good-habits-art"
+          href={assetUrl(links.goodHabits)}
+          aria-label="打开职场加分好习惯互动卡片"
+          data-reveal
+        >
+          <span className="good-habits-count">321</span>
+          <img
+            src={assetUrl("/editorial/good-habits-cover.png")}
+            alt="职场加分好习惯互动卡片，包含西瓜老师与主题卡片"
+            width={1200}
+            height={630}
+            loading="lazy"
+          />
+          <span className="good-habits-caption">16 个主题 · 321 张卡</span>
+        </a>
+      </section>
+
       <section className="chapter xiaobot-section">
         <div className="xiaobot-copy" data-reveal>
-          <p className="eyebrow">05 / 小报童专栏</p>
+          <p className="eyebrow">06 / 小报童专栏</p>
           <h2>
             把结构化表达，
             <br />
