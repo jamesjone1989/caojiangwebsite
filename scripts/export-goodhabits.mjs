@@ -55,7 +55,13 @@ async function rewriteClientAssetPaths(directory) {
 
     if (entry.name.endsWith(".js")) {
       const source = await readFile(entryUrl, "utf8");
-      await writeFile(entryUrl, source.replaceAll("/assets/", "./assets/"));
+      const rewritten = source
+        .replaceAll("/assets/", "./assets/")
+        // Vite's module-preload helper prepends a root slash to dependency
+        // names. In this nested static export, dependencies must resolve from
+        // /goodhabits/ instead of the site's root.
+        .replaceAll("return`/`+e", "return`./`+e");
+      await writeFile(entryUrl, rewritten);
     }
 
     if (entry.name.endsWith(".css")) {
