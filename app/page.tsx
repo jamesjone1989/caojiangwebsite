@@ -737,6 +737,18 @@ export default function Home() {
       <footer className="footer">
         <span>曹将</span>
         <span>学习 · 表达 · 职场 · AI 实践</span>
+        <span className="footer-records">
+          <a href="https://beian.miit.gov.cn/" rel="noreferrer" target="_blank">
+            粤ICP备2026089255号-2
+          </a>
+          <a
+            href="https://beian.mps.gov.cn/#/query/webSearch?code=44010502004258"
+            rel="noreferrer"
+            target="_blank"
+          >
+            粤公网安备44010502004258号
+          </a>
+        </span>
       </footer>
     </main>
   );
