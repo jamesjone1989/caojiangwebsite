@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="18 款好用的 AI 与效率工具，一份可搜索、可筛选、可直接访问的数字工具手册。" />
+    <meta name="theme-color" content="#f4f1e8" />
+    <title>好用工具手册｜18 款 AI 与效率工具</title>
+    <link rel="icon" href="./assets/logos/tiangong.cn.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;600;700;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#tool-grid">跳到工具列表</a>
+    <div class="page-shell">
+      <header class="topbar">
+        <a class="wordmark" href="#top" aria-label="返回顶部">
+          <span class="wordmark-mark">CJ</span>
+          <span>TOOL NOTES</span>
+        </a>
+        <div class="topbar-meta">
+          <span>18 TOOLS</span>
+          <span class="meta-dot"></span>
+          <span>2026 EDITION</span>
+        </div>
+      </header>
+
+      <main id="top">
+        <section class="hero" aria-labelledby="page-title">
+          <div class="hero-copy">
+            <p class="eyebrow"><span></span> 一份真正能用起来的数字工具手册</p>
+            <h1 id="page-title">把工具，<br /><em>放回真实场景</em>里。</h1>
+            <p class="hero-intro">不是又一份让人收藏后吃灰的清单。这里收录 18 款经过筛选的 AI 与效率工具，从创作、搜索到知识管理，帮你在需要时快速找到它。</p>
+            <a class="hero-cta" href="#tool-grid">
+              <span>开始查找</span>
+              <i data-lucide="arrow-down-right" aria-hidden="true"></i>
+            </a>
+          </div>
+
+          <aside class="hero-index" aria-label="工具手册索引">
+            <div class="index-number">18</div>
+            <div class="index-caption">款工具<br />8 类场景</div>
+            <div class="index-rule"></div>
+            <ol>
+              <li><span>01</span>创作表达</li>
+              <li><span>02</span>学习研究</li>
+              <li><span>03</span>办公写作</li>
+              <li><span>04</span>搜索核验</li>
+              <li><span>05</span>知识管理</li>
+              <li><span>06</span>图像处理</li>
+              <li><span>07</span>音视频</li>
+              <li><span>08</span>思维整理</li>
+            </ol>
+          </aside>
+        </section>
+
+        <section class="directory" aria-labelledby="directory-title">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">THE DIRECTORY / 工具目录</p>
+              <h2 id="directory-title">今天，你想解决什么问题？</h2>
+            </div>
+            <p class="result-copy"><strong id="result-count">18</strong> 个结果</p>
+          </div>
+
+          <div class="tool-controls">
+            <label class="search-box" for="tool-search">
+              <i data-lucide="search" aria-hidden="true"></i>
+              <input id="tool-search" type="search" placeholder="搜索工具或用途，例如：PPT、翻译、灵感…" autocomplete="off" />
+              <kbd>⌘ K</kbd>
+            </label>
+            <div class="filters" id="category-filters" aria-label="按使用场景筛选"></div>
+          </div>
+
+          <div class="tool-grid" id="tool-grid" aria-live="polite"></div>
+          <div class="empty-state" id="empty-state" hidden>
+            <i data-lucide="search-x" aria-hidden="true"></i>
+            <h3>没有找到对应工具</h3>
+            <p>换个关键词试试，或查看“全部工具”。</p>
+            <button type="button" id="reset-search">查看全部工具</button>
+          </div>
+        </section>
+
+        <section class="field-note" aria-label="使用建议">
+          <div class="field-note-label">FIELD NOTE<br />使用建议</div>
+          <blockquote>“别先问哪个工具最强。先说清楚，你现在想完成什么。”</blockquote>
+          <p>工具的价值不在收藏数量，而在它是否能进入你的工作流。这份清单按真实任务分类，希望每次打开时，你都能少找五分钟，多完成一件事。</p>
+        </section>
+      </main>
+
+      <footer>
+        <div>
+          <span class="footer-mark">CJ</span>
+          <p>好用工具手册<br /><small>持续更新 · 保持判断</small></p>
+        </div>
+        <a href="#top">回到顶部 <i data-lucide="arrow-up" aria-hidden="true"></i></a>
+      </footer>
+    </div>
+
+    <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
