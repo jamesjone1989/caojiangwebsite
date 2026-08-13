@@ -28,7 +28,6 @@ function createFilters() {
 }
 
 function createCard(tool, index) {
-  const initials = tool.name.replace(/[^A-Za-z\u4e00-\u9fff]/g, "").slice(0, 2);
   return `
     <a
       class="tool-card"
@@ -45,8 +44,7 @@ function createCard(tool, index) {
       </div>
       <div class="tool-identity">
         <div class="logo-wrap">
-          <img src="${tool.logo}" alt="${tool.name} logo" />
-          <span class="logo-fallback">${initials}</span>
+          <img src="${tool.logo}" alt="${tool.name} 品牌图标" />
         </div>
         <h3>${tool.name}</h3>
       </div>
@@ -71,10 +69,6 @@ function render() {
   resultCount.textContent = String(visibleTools.length).padStart(2, "0");
   emptyState.hidden = visibleTools.length !== 0;
   grid.hidden = visibleTools.length === 0;
-
-  document.querySelectorAll(".logo-wrap img").forEach((image) => {
-    image.addEventListener("error", () => image.classList.add("is-hidden"), { once: true });
-  });
 
   if (window.lucide) window.lucide.createIcons();
 }

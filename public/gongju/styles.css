@@ -491,17 +491,6 @@ h2 {
   object-fit: contain;
 }
 
-.logo-wrap img.is-hidden {
-  display: none;
-}
-
-.logo-fallback {
-  position: absolute;
-  z-index: 1;
-  color: var(--brand);
-  font: 600 0.75rem/1 "IBM Plex Mono", "Noto Sans SC", monospace;
-}
-
 .tool-identity h3 {
   margin: 0;
   font-size: clamp(1.35rem, 2.1vw, 2rem);
