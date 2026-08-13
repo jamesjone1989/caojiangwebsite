@@ -590,39 +590,6 @@ h2 {
   cursor: pointer;
 }
 
-.field-note {
-  display: grid;
-  grid-template-columns: 0.5fr 1.4fr 1fr;
-  gap: clamp(30px, 5vw, 80px);
-  align-items: start;
-  padding: 80px 40px;
-  border-block: 1px solid var(--ink);
-  color: var(--white);
-  background: var(--orange);
-}
-
-.field-note-label {
-  padding-top: 8px;
-  font: 500 0.74rem/1.7 "IBM Plex Mono", "Noto Sans SC", monospace;
-  letter-spacing: 0.06em;
-}
-
-.field-note blockquote {
-  margin: 0;
-  font-size: clamp(2rem, 3.5vw, 3.8rem);
-  font-weight: 900;
-  line-height: 1.25;
-  letter-spacing: -0.04em;
-}
-
-.field-note p {
-  margin: 0;
-  padding-top: 8px;
-  border-top: 1px solid rgba(255, 255, 255, 0.65);
-  font-size: 0.88rem;
-  line-height: 1.9;
-}
-
 footer {
   display: flex;
   align-items: center;
@@ -690,13 +657,6 @@ footer > a {
     grid-column: span 6;
   }
 
-  .field-note {
-    grid-template-columns: 0.4fr 1.4fr;
-  }
-
-  .field-note p {
-    grid-column: 2;
-  }
 }
 
 @media (max-width: 760px) {
@@ -783,15 +743,6 @@ footer > a {
 
   .tool-identity h3 {
     font-size: 1.65rem;
-  }
-
-  .field-note {
-    display: block;
-    padding: 60px 22px;
-  }
-
-  .field-note blockquote {
-    margin: 34px 0;
   }
 
   footer {
