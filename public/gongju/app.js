@@ -45,7 +45,7 @@ function createCard(tool, index) {
       </div>
       <div class="tool-identity">
         <div class="logo-wrap">
-          <img src="${tool.logo}" alt="${tool.name} logo" loading="lazy" />
+          <img src="${tool.logo}" alt="${tool.name} logo" />
           <span class="logo-fallback">${initials}</span>
         </div>
         <h3>${tool.name}</h3>
