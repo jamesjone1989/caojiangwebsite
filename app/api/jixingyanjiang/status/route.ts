@@ -5,9 +5,10 @@ export async function OPTIONS(request: Request) {
 }
 
 export async function GET(request: Request) {
+  const requestApiKey = request.headers.get("x-deepseek-api-key")?.trim() || "";
   return json(request, {
     provider: "DeepSeek",
-    configured: Boolean(process.env.DEEPSEEK_API_KEY),
+    configured: Boolean(requestApiKey || process.env.DEEPSEEK_API_KEY),
     baseUrl: process.env.DEEPSEEK_BASE_URL || "https://api.deepseek.com",
     model: process.env.DEEPSEEK_MODEL || "deepseek-v4-flash",
     transcription: "browser",

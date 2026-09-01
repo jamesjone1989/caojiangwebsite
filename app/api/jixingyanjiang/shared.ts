@@ -9,7 +9,7 @@ export function corsHeaders(request: Request) {
   return {
     "Access-Control-Allow-Origin": origin && allowedOrigins.has(origin) ? origin : "https://caojiang.cn",
     "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Allow-Headers": "Content-Type, X-DeepSeek-Api-Key",
     "Access-Control-Max-Age": "86400",
     Vary: "Origin",
     "Cache-Control": "no-store",

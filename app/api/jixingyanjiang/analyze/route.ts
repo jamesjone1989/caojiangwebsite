@@ -6,7 +6,7 @@ export async function OPTIONS(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    const apiKey = process.env.DEEPSEEK_API_KEY || "";
+    const apiKey = request.headers.get("x-deepseek-api-key")?.trim() || process.env.DEEPSEEK_API_KEY || "";
     if (!apiKey) return json(request, { error: "尚未配置 DeepSeek API Key", code: "not_configured" }, 503);
 
     const input = await request.json() as Record<string, unknown>;
