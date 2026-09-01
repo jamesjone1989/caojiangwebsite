@@ -1,4 +1,5 @@
 import { cleanJsonText, corsHeaders, json, normalizeBaseUrl } from "../shared";
+import { savePracticeSession } from "../history-store";
 
 export async function OPTIONS(request: Request) {
   return new Response(null, { status: 204, headers: corsHeaders(request) });
@@ -31,7 +32,7 @@ export async function POST(request: Request) {
         messages: [
           {
             role: "system",
-            content: "你是一位克制、直接的中文即兴演讲教练。只依据用户的真实转写做判断，不臆测语气、停顿和肢体表现，也不要替用户润色、美化或重写。严格按以下原则分析：1.先复述你听到的核心观点，不要替用户美化；2.只指出一个最明显的问题；3.从结构、具体性、简洁度和说服力四方面简评。只输出JSON对象，必须包含summary、main_problem、dimensions。dimensions固定4项，每项包含name、rating、comment；name依次为结构、具体性、简洁度、说服力；rating只能是清晰、基本清晰或需加强；comment是基于原文的一句状态描述。四项简评不要各自提出新的改进要求。",
+            content: "你是一位克制、直接的中文即兴演讲教练。只依据用户的真实转写做判断，不臆测语气、停顿和肢体表现，也不要替用户美化。严格按以下原则分析：1.先复述你听到的核心观点，不要替用户美化；2.只指出一个最明显的问题；3.从结构、具体性、简洁度和说服力四方面简评；4.给出3条基于本次原话的具体修改建议。只输出JSON对象，必须包含summary、main_problem、dimensions、suggestions。dimensions固定4项，每项包含name、rating、comment；name依次为结构、具体性、简洁度、说服力；rating只能是清晰、基本清晰或需加强；comment是基于原文的一句状态描述。suggestions固定3项，每项包含title、evidence、action、example：title概括修改方向；evidence引用或忠实转述一小段原话；action说明具体怎么改；example给出基于原内容的示范说法，不得添加用户没有讲过的事实。建议必须分别回应本次表达中的真实问题，不能使用空泛模板。",
           },
           {
             role: "user",
@@ -41,7 +42,7 @@ export async function POST(request: Request) {
         thinking: { type: "disabled" },
         response_format: { type: "json_object" },
         temperature: 0.35,
-        max_tokens: 1200,
+        max_tokens: 1800,
         stream: false,
       }),
       signal: AbortSignal.timeout(45_000),
@@ -67,7 +68,21 @@ export async function POST(request: Request) {
       return json(request, { error: "DeepSeek 返回格式无法解析，请重试" }, 502);
     }
 
-    return json(request, { analysis, model: payload.model || model, usage: payload.usage || null });
+    const resolvedModel = payload.model || model;
+    let record = null;
+    try {
+      record = await savePracticeSession(request, {
+        topic: String(input.prompt || ""),
+        transcript,
+        elapsed: Number(input.elapsed || 0),
+        model: resolvedModel,
+        analysis,
+      });
+    } catch (error) {
+      console.error("Failed to save practice history", error);
+    }
+
+    return json(request, { analysis, model: resolvedModel, usage: payload.usage || null, record });
   } catch (error) {
     const message = error instanceof Error ? error.message : "分析失败，请稍后重试";
     return json(request, { error: message }, 400);
