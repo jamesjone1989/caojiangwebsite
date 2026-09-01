@@ -83,6 +83,7 @@
     .mic-preflight.ready i { background: #38a777; }
     .practice-wrap { width: 100%; text-align: center; }
     .phase-label { margin: 0 0 12px; color: var(--muted); font-weight: 700; }
+    .prep-topic { max-width: 620px; margin: 0 auto 24px; color: var(--ink); font-family: "Songti SC", STSong, "Noto Serif CJK SC", serif; font-size: clamp(20px, 4.6vw, 30px); font-weight: 700; line-height: 1.45; letter-spacing: -.025em; }
     .prep-ring {
       --progress: 100; width: clamp(190px, 45vw, 250px); aspect-ratio: 1; margin: 0 auto;
       display: grid; place-items: center; border-radius: 50%;
@@ -121,6 +122,8 @@
     .loading h2 { margin: 0 0 8px; }
     .loading p { margin: 0; color: var(--muted); }
     .review-card h2 { margin: 0 0 28px; font-size: 30px; letter-spacing: -.04em; }
+    .review-tools { display: flex; gap: 10px; margin: -10px 0 26px; flex-wrap: wrap; }
+    .review-tools button { min-height: 44px; padding: 0 18px; }
     .review-section { padding: 22px 0; border-top: 1px solid var(--line); }
     .review-section:first-of-type { border-top: 0; padding-top: 0; }
     .review-section h3 { margin: 0 0 10px; color: var(--green); font-size: 13px; letter-spacing: .08em; }
@@ -175,6 +178,8 @@
     .history-detail h4 { margin: 18px 0 7px; color: var(--green); font-size: 13px; }
     .history-detail p { margin: 0; line-height: 1.75; white-space: pre-wrap; }
     .history-suggestion { margin-top: 10px; padding: 12px 14px; border-radius: 12px; background: rgba(20,92,70,.055); }
+    .history-export-actions { display: flex; gap: 8px; margin-top: 18px; flex-wrap: wrap; }
+    .history-export-actions button { min-height: 40px; padding: 0 14px; }
     .toast {
       position: fixed; left: 50%; bottom: max(24px, env(safe-area-inset-bottom)); z-index: 10;
       transform: translate(-50%, 14px); padding: 11px 16px; border-radius: 999px; color: white;
@@ -188,6 +193,7 @@
       .topic-card, .review-card { border-radius: 24px; padding: 26px 22px; }
       .topic-actions, .review-actions { flex-direction: column; }
       .topic-actions button, .review-actions button { width: 100%; }
+      .review-tools button { flex: 1; }
       .dimensions { grid-template-columns: 1fr; }
       .speech-bottom { align-items: center; flex-wrap: wrap; }
       .speech-bottom .danger { width: 100%; order: 3; }
@@ -248,6 +254,7 @@
     <section class="screen" id="prepScreen">
       <div class="practice-wrap">
         <p class="phase-label" id="prepLabel">正在打开麦克风</p>
+        <p class="prep-topic" id="prepTopic"></p>
         <div class="prep-ring" id="prepRing"><p class="countdown" id="prepCount">…</p></div>
         <p class="prep-hint">想清楚：你的观点是什么？准备举哪个例子？</p>
       </div>
@@ -281,6 +288,10 @@
         <p class="eyebrow">本轮复盘</p>
         <article class="review-card">
           <h2>先看清楚，再练一遍</h2>
+          <div class="review-tools">
+            <button class="secondary" id="copyMarkdownBtn" disabled>复制 Markdown</button>
+            <button class="secondary" id="exportMarkdownBtn" disabled>导出 .md</button>
+          </div>
           <div id="reviewContent"></div>
           <div class="review-actions">
             <button class="primary" id="retryBtn">同题再练</button>
@@ -352,16 +363,18 @@
       const $ = id => document.getElementById(id);
       const screens = [...document.querySelectorAll(".screen")];
       const els = {
-        topic: $("topicText"), prep: $("prepCount"), time: $("speechTime"), transcript: $("transcript"),
+        topic: $("topicText"), prepTopic: $("prepTopic"), prep: $("prepCount"), time: $("speechTime"), transcript: $("transcript"),
         prepLabel: $("prepLabel"), prepRing: $("prepRing"), speechState: $("speechState"), speechNote: $("speechNote"), dictate: $("dictateBtn"),
         micPreflight: $("micPreflight"),
         review: $("reviewContent"), settings: $("settingsDialog"), apiKey: $("apiKey"), baseUrl: $("apiBaseUrl"),
         model: $("apiModel"), connection: $("connectionText"), apiDot: $("apiDot"), toast: $("toast"),
-        history: $("historyDialog"), historyContent: $("historyContent")
+        history: $("historyDialog"), historyContent: $("historyContent"),
+        copyMarkdown: $("copyMarkdownBtn"), exportMarkdown: $("exportMarkdownBtn")
       };
       let currentTopic = "", prepTimer = null, speechTimer = null, speechStartedAt = 0;
       let recognition = null, recognitionWanted = false, finalTranscript = "", lastTopicIndex = -1;
       let pendingCountdown = false, countdownStarted = false, fallbackMode = false;
+      let lastReviewMarkdown = "", loadedHistoryRecords = [];
       const apiStorageKey = "kaikoulian.deepseek.v2";
       const apiKeyStorageKey = "kaikoulian.deepseek.key.session.v1";
       const deviceTokenStorageKey = "kaikoulian.practice.device.v1";
@@ -456,8 +469,9 @@
       }
       function startPractice() {
         clearInterval(prepTimer); clearInterval(speechTimer); finalTranscript = ""; els.transcript.value = "";
+        lastReviewMarkdown = ""; els.copyMarkdown.disabled = true; els.exportMarkdown.disabled = true;
         pendingCountdown = true; countdownStarted = false; fallbackMode = false;
-        els.prep.textContent = "…"; els.prepLabel.textContent = "正在打开麦克风"; els.prepRing.style.setProperty("--progress", 0);
+        els.prep.textContent = "…"; els.prepLabel.textContent = "正在打开麦克风"; els.prepTopic.textContent = currentTopic; els.prepRing.style.setProperty("--progress", 0);
         els.speechState.textContent = "正在转写"; els.speechNote.textContent = "浏览器正在识别你的声音";
         els.dictate.hidden = true;
         showScreen("prepScreen"); startRecognition();
@@ -558,8 +572,53 @@
           example: item?.example || item?.rewrite || "暂无示范说法。"
         }));
       }
-      function renderReview(payload) {
+      function markdownText(value, fallback = "暂无") {
+        const text = String(value ?? "").trim();
+        return text || fallback;
+      }
+      function buildReviewMarkdown(record) {
+        const analysis = record.analysis || {}, dimensions = normalizeDimensions(analysis.dimensions), suggestions = normalizeSuggestions(analysis.suggestions);
+        const date = new Intl.DateTimeFormat("zh-CN", { year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" }).format(new Date(record.createdAt || Date.now()));
+        const lines = [
+          "# 开口练｜即兴演讲复盘", "",
+          `- 日期：${date}`,
+          `- 题目：${markdownText(record.topic, "即兴演讲练习")}`,
+          `- 时长：${formatTime(Number(record.elapsed) || 0)}`,
+          `- 模型：${markdownText(record.model)}`, "",
+          "## 1. 核心观点", "", markdownText(analysis.summary), "",
+          "## 2. 最明显的问题", "", markdownText(analysis.main_problem), "",
+          "## 3. 四方面简评", ""
+        ];
+        dimensions.forEach(item => lines.push(`- **${markdownText(item.name)}｜${markdownText(item.rating)}**：${markdownText(item.comment)}`));
+        lines.push("", "## 4. 基于原话的修改建议", "");
+        if (suggestions.length) suggestions.forEach((item, index) => {
+          lines.push(`### ${index + 1}. ${markdownText(item.title)}`, "", `- **对应原话：** ${markdownText(item.evidence)}`, `- **怎么改：** ${markdownText(item.action)}`, `- **可以这样讲：** ${markdownText(item.example)}`, "");
+        });
+        else lines.push("暂无具体建议。", "");
+        lines.push("## 5. 转写原文", "", ...markdownText(record.transcript).split(/\r?\n/).map(line => `> ${line}`), "");
+        return lines.join("\n");
+      }
+      async function copyMarkdown(markdown) {
+        if (!markdown) return toast("暂无可复制的复盘内容");
+        try { await navigator.clipboard.writeText(markdown); }
+        catch {
+          const helper = document.createElement("textarea"); helper.value = markdown; helper.style.position = "fixed"; helper.style.opacity = "0";
+          document.body.appendChild(helper); helper.select(); document.execCommand("copy"); helper.remove();
+        }
+        toast("Markdown 已复制");
+      }
+      function exportMarkdown(markdown, topic) {
+        if (!markdown) return toast("暂无可导出的复盘内容");
+        const safeTopic = markdownText(topic, "即兴演讲复盘").replace(/[\\/:*?"<>|]/g, "").slice(0, 28);
+        const url = URL.createObjectURL(new Blob([markdown], { type: "text/markdown;charset=utf-8" }));
+        const link = document.createElement("a"); link.href = url; link.download = `开口练-${safeTopic}.md`;
+        document.body.appendChild(link); link.click(); link.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+        toast("Markdown 文件已导出");
+      }
+      function renderReview(payload, elapsed) {
         const analysis = payload.analysis || {}, dimensions = normalizeDimensions(analysis.dimensions), suggestions = normalizeSuggestions(analysis.suggestions);
+        lastReviewMarkdown = buildReviewMarkdown({ topic: currentTopic, transcript: els.transcript.value.trim(), elapsed, model: payload.model, createdAt: payload.record?.createdAt || Date.now(), analysis });
+        els.copyMarkdown.disabled = false; els.exportMarkdown.disabled = false;
         els.review.innerHTML = `
           <section class="review-section"><h3>01 · 核心观点</h3><p>${escapeHtml(analysis.summary || "未能提取清晰的核心观点。")}</p></section>
           <section class="review-section"><h3>02 · 最明显的问题</h3><p class="problem">${escapeHtml(analysis.main_problem || "这次表达暂时没有形成一个足够清晰的中心。")}</p></section>
@@ -577,6 +636,7 @@
         catch { return "最近一次训练"; }
       }
       function renderHistory(records) {
+        loadedHistoryRecords = Array.isArray(records) ? records : [];
         if (!Array.isArray(records) || records.length === 0) {
           els.historyContent.innerHTML = `<p class="history-empty">还没有训练记录。完成一次复盘后，会自动保存在这里。</p>`;
           return;
@@ -588,6 +648,7 @@
             <h4>最明显的问题</h4><p>${escapeHtml(analysis.main_problem || "暂无")}</p>
             ${suggestions.length ? `<h4>修改建议</h4>${suggestions.map(item => `<div class="history-suggestion"><strong>${escapeHtml(item.title)}</strong><p>${escapeHtml(item.action)}</p><p>示范：${escapeHtml(item.example)}</p></div>`).join("")}` : ""}
             <h4>转写原文</h4><p>${escapeHtml(record.transcript || "暂无")}</p>
+            <div class="history-export-actions"><button class="secondary" data-history-copy="${escapeHtml(record.id)}">复制 Markdown</button><button class="secondary" data-history-export="${escapeHtml(record.id)}">导出 .md</button></div>
           </div></details>`;
         }).join("")}</div>`;
       }
@@ -604,6 +665,7 @@
         }
       }
       function renderError(message) {
+        lastReviewMarkdown = ""; els.copyMarkdown.disabled = true; els.exportMarkdown.disabled = true;
         els.review.innerHTML = `<div class="error-box">${escapeHtml(message)}<br><br>请点击右上角“API 设置”，填写 DeepSeek API Key 后重试。</div>`;
         showScreen("reviewScreen");
       }
@@ -621,7 +683,7 @@
           });
           const payload = await response.json().catch(() => ({}));
           if (!response.ok) throw new Error(payload.error || "DeepSeek 复盘失败，请稍后重试");
-          renderReview(payload);
+          renderReview(payload, elapsed);
         } catch (error) { renderError(error.message); }
       }
 
@@ -634,6 +696,17 @@
       $("nextBtn").addEventListener("click", drawTopic);
       $("historyBtn").addEventListener("click", openHistory);
       $("closeHistoryBtn").addEventListener("click", () => els.history.close());
+      els.copyMarkdown.addEventListener("click", () => copyMarkdown(lastReviewMarkdown));
+      els.exportMarkdown.addEventListener("click", () => exportMarkdown(lastReviewMarkdown, currentTopic));
+      els.historyContent.addEventListener("click", event => {
+        const button = event.target.closest("[data-history-copy], [data-history-export]");
+        if (!button) return;
+        const id = button.dataset.historyCopy || button.dataset.historyExport;
+        const record = loadedHistoryRecords.find(item => item.id === id);
+        if (!record) return toast("未找到这条训练记录");
+        const markdown = buildReviewMarkdown(record);
+        if (button.dataset.historyCopy) copyMarkdown(markdown); else exportMarkdown(markdown, record.topic);
+      });
       $("settingsBtn").addEventListener("click", () => els.settings.showModal());
       $("closeSettingsBtn").addEventListener("click", () => els.settings.close());
       $("saveSettingsBtn").addEventListener("click", saveSettings);
