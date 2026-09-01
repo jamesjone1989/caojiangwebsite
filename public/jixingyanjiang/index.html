@@ -1,0 +1,529 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f7f3ea">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23145c46'/%3E%3Cpath d='M17 16h30v25H32l-10 8v-8h-5z' fill='none' stroke='white' stroke-width='5' stroke-linejoin='round'/%3E%3Cpath d='M26 31v-6m7 6V20m7 11v-9' stroke='%23e7654f' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E">
+  <title>开口练｜即兴演讲练习</title>
+  <style>
+    :root {
+      --paper: #f7f3ea; --ink: #173a2e; --muted: #5d6962; --green: #145c46;
+      --green-dark: #0e4535; --coral: #e7654f; --line: rgba(23, 58, 46, .14); --white: #fffdf8;
+      --shadow: 0 18px 48px rgba(30, 58, 47, .10);
+    }
+    * { box-sizing: border-box; }
+    html, body { min-height: 100%; }
+    body {
+      margin: 0; color: var(--ink);
+      background: radial-gradient(circle at 18% 8%, rgba(59, 127, 99, .08), transparent 28%), var(--paper);
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+    button, input, textarea { font: inherit; }
+    button { -webkit-tap-highlight-color: transparent; }
+    [hidden] { display: none !important; }
+    .app {
+      width: min(760px, calc(100% - 32px)); min-height: 100dvh; margin: 0 auto;
+      padding: max(24px, env(safe-area-inset-top)) 0 max(30px, env(safe-area-inset-bottom));
+      display: flex; flex-direction: column;
+    }
+    .topbar { height: 44px; display: flex; align-items: center; justify-content: space-between; }
+    .brand { display: inline-flex; align-items: center; gap: 10px; color: var(--ink); font-weight: 800; letter-spacing: -.04em; }
+    .brand-mark { width: 34px; height: 34px; flex: 0 0 auto; filter: drop-shadow(0 7px 12px rgba(20,92,70,.13)); }
+    .brand-name { font-size: 17px; }
+    .settings-btn {
+      width: 38px; height: 38px; border: 0; border-radius: 50%; color: var(--muted);
+      position: relative; display: grid; place-items: center; background: transparent; cursor: pointer;
+    }
+    .settings-btn:hover { background: rgba(255,255,255,.66); color: var(--ink); }
+    .settings-btn svg { width: 20px; height: 20px; }
+    .api-dot { position: absolute; right: 4px; bottom: 4px; width: 7px; height: 7px; border: 2px solid var(--paper); border-radius: 50%; background: #a3aaa5; }
+    .api-dot.ready { background: #38a777; }
+    .screen {
+      flex: 1; display: none; align-items: center; justify-content: center;
+      padding: 40px 0; animation: enter .38s ease both;
+    }
+    .screen.active { display: flex; }
+    @keyframes enter { from { opacity: 0; transform: translateY(8px); } }
+    .home { text-align: center; }
+    .home .primary { min-width: 184px; min-height: 64px; font-size: 17px; }
+    .primary, .secondary, .danger {
+      border: 0; border-radius: 999px; min-height: 56px; padding: 0 30px;
+      font-weight: 750; cursor: pointer; transition: transform .18s ease, box-shadow .18s ease, opacity .18s ease;
+    }
+    .primary { color: white; background: var(--green); box-shadow: 0 14px 32px rgba(20, 92, 70, .20); }
+    .primary:hover { background: var(--green-dark); transform: translateY(-2px); }
+    .secondary { color: var(--green); background: rgba(255,255,255,.72); border: 1px solid var(--line); }
+    .danger { color: white; background: #b94c3c; box-shadow: 0 12px 28px rgba(185, 76, 60, .18); }
+    button:disabled { opacity: .45; cursor: not-allowed; transform: none !important; }
+    button:focus-visible, input:focus-visible, textarea:focus-visible, summary:focus-visible { outline: 3px solid rgba(231, 101, 79, .38); outline-offset: 3px; }
+    .topic-wrap, .review-wrap { width: 100%; }
+    .topic-meta { display: flex; align-items: center; justify-content: space-between; margin: 0 2px 16px; }
+    .eyebrow { margin: 0; color: var(--green); font-size: 13px; font-weight: 800; letter-spacing: .12em; }
+    .text-action { border: 0; padding: 8px 4px; color: var(--green); background: transparent; font-weight: 750; cursor: pointer; }
+    .topic-card, .review-card {
+      padding: clamp(28px, 7vw, 54px); border: 1px solid var(--line);
+      border-radius: 30px; background: var(--white); box-shadow: var(--shadow);
+    }
+    .topic-card h2 {
+      margin: 0; font-family: "Songti SC", STSong, "Noto Serif CJK SC", serif; font-size: clamp(28px, 6vw, 44px);
+      line-height: 1.35; letter-spacing: -.035em;
+    }
+    .topic-actions, .review-actions { display: flex; gap: 12px; margin-top: 28px; flex-wrap: wrap; }
+    .topic-actions .primary { flex: 1; }
+    .mic-preflight { margin: 18px 0 0; display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 13px; }
+    .mic-preflight i { width: 7px; height: 7px; border-radius: 50%; background: #a3aaa5; }
+    .mic-preflight.ready i { background: #38a777; }
+    .practice-wrap { width: 100%; text-align: center; }
+    .phase-label { margin: 0 0 12px; color: var(--muted); font-weight: 700; }
+    .prep-ring {
+      --progress: 100; width: clamp(190px, 45vw, 250px); aspect-ratio: 1; margin: 0 auto;
+      display: grid; place-items: center; border-radius: 50%;
+      background: conic-gradient(var(--green) calc(var(--progress) * 1%), rgba(20,92,70,.10) 0);
+      transition: background .28s linear;
+    }
+    .prep-ring::before { content: ""; grid-area: 1 / 1; width: calc(100% - 16px); aspect-ratio: 1; border-radius: 50%; background: var(--paper); }
+    .countdown { grid-area: 1 / 1; position: relative; margin: 0; font: 750 clamp(70px, 18vw, 108px)/1 -apple-system, BlinkMacSystemFont, sans-serif; letter-spacing: -.07em; color: var(--green); font-variant-numeric: tabular-nums; }
+    .prep-ring.cue .countdown { animation: countCue .35s ease; }
+    @keyframes countCue { 50% { transform: scale(1.12); color: var(--coral); } }
+    .prep-hint { margin: 22px auto 0; color: var(--muted); font-size: 16px; }
+    .speech-panel { width: 100%; }
+    .speech-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+    .speech-time { font: 750 30px/1 -apple-system, BlinkMacSystemFont, sans-serif; font-variant-numeric: tabular-nums; }
+    .listening { display: flex; align-items: center; gap: 8px; color: var(--green); font-size: 13px; font-weight: 750; }
+    .listening i {
+      width: 9px; height: 9px; border-radius: 50%; background: var(--coral);
+      box-shadow: 0 0 0 5px rgba(231,101,79,.12); animation: pulse 1.2s infinite;
+    }
+    @keyframes pulse { 50% { opacity: .35; transform: scale(.75); } }
+    .transcript-glance {
+      min-height: min(36dvh, 300px); display: flex; align-items: flex-end; overflow: hidden;
+      border: 1px solid var(--line); border-radius: 26px; padding: 28px; background: rgba(255,253,248,.78);
+      box-shadow: var(--shadow); color: #365247; font-size: clamp(18px, 4vw, 22px); line-height: 1.75;
+    }
+    .transcript-glance p { margin: 0; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; }
+    .transcript {
+      width: 100%; min-height: min(48dvh, 420px); resize: none; border: 1px solid var(--line);
+      border-radius: 28px; padding: 28px; outline: none; color: var(--ink); background: rgba(255,255,255,.75);
+      font-size: clamp(17px, 4vw, 21px); line-height: 1.8; box-shadow: var(--shadow);
+    }
+    .transcript:focus { border-color: rgba(29,99,78,.48); box-shadow: 0 0 0 4px rgba(29,99,78,.08), var(--shadow); }
+    .speech-bottom { position: sticky; bottom: max(10px, env(safe-area-inset-bottom)); z-index: 3; margin-top: 18px; padding: 12px; display: flex; align-items: center; justify-content: space-between; gap: 14px; border: 1px solid var(--line); border-radius: 22px; background: rgba(247,243,234,.94); box-shadow: 0 12px 30px rgba(30,58,47,.12); backdrop-filter: blur(12px); }
+    .speech-note { margin: 0; color: var(--muted); font-size: 13px; text-align: left; }
+    .dictate-fallback { border: 0; background: transparent; color: var(--green); font-weight: 750; padding: 8px 0; cursor: pointer; }
+    .transcript-toggle { border: 0; background: transparent; color: var(--green); font-weight: 750; padding: 8px 0; cursor: pointer; }
+    .loading { padding: 50px 20px; text-align: center; }
+    .loader {
+      width: 42px; height: 42px; margin: 0 auto 22px; border: 3px solid rgba(29,99,78,.14);
+      border-top-color: var(--green); border-radius: 50%; animation: spin .8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading h2 { margin: 0 0 8px; }
+    .loading p { margin: 0; color: var(--muted); }
+    .review-card h2 { margin: 0 0 28px; font-size: 30px; letter-spacing: -.04em; }
+    .review-section { padding: 22px 0; border-top: 1px solid var(--line); }
+    .review-section:first-of-type { border-top: 0; padding-top: 0; }
+    .review-section h3 { margin: 0 0 10px; color: var(--green); font-size: 13px; letter-spacing: .08em; }
+    .review-section p { margin: 0; font-size: 17px; line-height: 1.75; }
+    .problem { padding: 18px 20px; border-radius: 18px; background: #fff1ed; color: #7b2f24; }
+    .dimensions { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .dimension { padding: 18px; border: 1px solid var(--line); border-radius: 18px; background: rgba(255,255,255,.58); }
+    .dimension-head { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 8px; font-weight: 800; }
+    .dimension-rating { padding: 3px 9px; border-radius: 999px; color: var(--green); background: rgba(20,92,70,.09); font-size: 12px; }
+    .dimension p { color: #59635e; font-size: 14px; line-height: 1.6; }
+    .error-box { padding: 20px; border-radius: 18px; background: #fff1ed; color: #7b2f24; line-height: 1.65; }
+    .transcript-details { margin-top: 22px; border-top: 1px solid var(--line); padding-top: 18px; }
+    .transcript-details summary { color: var(--green); font-weight: 750; cursor: pointer; }
+    .transcript-details p { margin: 14px 0 0; color: #516058; white-space: pre-wrap; font-size: 14px; line-height: 1.8; }
+    dialog {
+      width: min(480px, calc(100% - 28px)); border: 0; border-radius: 26px; padding: 28px;
+      color: var(--ink); background: #fbfaf6; box-shadow: 0 26px 90px rgba(17,39,31,.28);
+    }
+    dialog::backdrop { background: rgba(17,39,31,.28); backdrop-filter: blur(5px); }
+    dialog h2 { margin: 0 0 22px; }
+    .field { display: grid; gap: 8px; margin-bottom: 16px; }
+    .field label { color: var(--muted); font-size: 13px; font-weight: 700; }
+    .field input { width: 100%; height: 50px; border: 1px solid var(--line); border-radius: 14px; padding: 0 15px; outline: none; background: white; }
+    .field input:focus { border-color: var(--green); }
+    .connection { margin: 6px 0 20px; color: var(--muted); font-size: 13px; line-height: 1.6; }
+    .dialog-actions { display: flex; gap: 10px; justify-content: flex-end; }
+    .dialog-actions button { min-height: 46px; padding: 0 20px; }
+    .toast {
+      position: fixed; left: 50%; bottom: max(24px, env(safe-area-inset-bottom)); z-index: 10;
+      transform: translate(-50%, 14px); padding: 11px 16px; border-radius: 999px; color: white;
+      background: rgba(18,69,54,.94); opacity: 0; pointer-events: none; transition: .2s ease; font-size: 13px;
+    }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+    @media (max-width: 560px) {
+      .app { width: min(100% - 24px, 760px); }
+      .screen { padding: 24px 0; align-items: flex-start; }
+      #homeScreen { align-items: center; }
+      .topic-card, .review-card { border-radius: 24px; padding: 26px 22px; }
+      .topic-actions, .review-actions { flex-direction: column; }
+      .topic-actions button, .review-actions button { width: 100%; }
+      .dimensions { grid-template-columns: 1fr; }
+      .speech-bottom { align-items: center; flex-wrap: wrap; }
+      .speech-bottom .danger { width: 100%; order: 3; }
+      .transcript { min-height: 52dvh; border-radius: 22px; padding: 22px; }
+      .transcript-glance { min-height: 40dvh; border-radius: 22px; padding: 22px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <div class="brand" aria-label="开口练">
+        <svg class="brand-mark" viewBox="0 0 64 64" aria-hidden="true">
+          <rect width="64" height="64" rx="18" fill="#145c46"/>
+          <path d="M17 16h30v25H32l-10 8v-8h-5z" fill="none" stroke="#fff" stroke-width="5" stroke-linejoin="round"/>
+          <path d="M26 31v-6m7 6V20m7 11v-9" fill="none" stroke="#e7654f" stroke-width="4" stroke-linecap="round"/>
+        </svg>
+        <span class="brand-name">开口练</span>
+      </div>
+      <button class="settings-btn" id="settingsBtn" aria-label="DeepSeek 设置">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.3a3.7 3.7 0 1 0 0 7.4 3.7 3.7 0 0 0 0-7.4Zm8 3.7-.1-1.2 2-1.6-2-3.4-2.5 1a8 8 0 0 0-2-1.2L15 3h-4l-.4 2.6a8 8 0 0 0-2 1.2l-2.5-1-2 3.4 2 1.6L6 12l.1 1.2-2 1.6 2 3.4 2.5-1a8 8 0 0 0 2 1.2L11 21h4l.4-2.6a8 8 0 0 0 2-1.2l2.5 1 2-3.4-2-1.6.1-1.2Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+        <span class="api-dot" id="apiDot" aria-hidden="true"></span>
+      </button>
+    </header>
+
+    <section class="screen active" id="homeScreen">
+      <div class="home">
+        <button class="primary" id="drawBtn">抽一道题</button>
+      </div>
+    </section>
+
+    <section class="screen" id="topicScreen">
+      <div class="topic-wrap">
+        <div class="topic-meta">
+          <p class="eyebrow">今天的题目</p>
+          <button class="text-action" id="redrawBtn">换一题</button>
+        </div>
+        <article class="topic-card">
+          <h2 id="topicText"></h2>
+          <p class="mic-preflight" id="micPreflight"><i></i><span>点击开始后，将先检查麦克风</span></p>
+          <div class="topic-actions">
+            <button class="primary" id="startBtn">开始</button>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="screen" id="prepScreen">
+      <div class="practice-wrap">
+        <p class="phase-label" id="prepLabel">正在打开麦克风</p>
+        <div class="prep-ring" id="prepRing"><p class="countdown" id="prepCount">…</p></div>
+        <p class="prep-hint">想清楚：你的观点是什么？准备举哪个例子？</p>
+      </div>
+    </section>
+
+    <section class="screen" id="speechScreen">
+      <div class="speech-panel">
+        <div class="speech-head">
+          <div class="speech-time" id="speechTime">00:00</div>
+          <div class="listening"><i></i><span id="speechState">正在转写</span></div>
+        </div>
+        <div class="transcript-glance" id="transcriptGlance" aria-live="polite"><p id="liveText">开始说话后，最近几句话会出现在这里……</p></div>
+        <textarea class="transcript" id="transcript" aria-label="演讲转写内容" placeholder="开始说话后，文字会出现在这里……" hidden></textarea>
+        <div class="speech-bottom">
+          <p class="speech-note" id="speechNote">浏览器正在识别你的声音</p>
+          <button class="transcript-toggle" id="transcriptToggle">查看完整转写</button>
+          <button class="dictate-fallback" id="dictateBtn" hidden>使用手机听写</button>
+          <button class="danger" id="finishBtn">结束演讲</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen" id="loadingScreen">
+      <div class="loading">
+        <div class="loader"></div>
+        <h2>DeepSeek 正在复盘</h2>
+        <p>复述观点、找到一个核心问题，再从四个方面简评。</p>
+      </div>
+    </section>
+
+    <section class="screen" id="reviewScreen">
+      <div class="review-wrap">
+        <p class="eyebrow">本轮复盘</p>
+        <article class="review-card">
+          <h2>先看清楚，再练一遍</h2>
+          <div id="reviewContent"></div>
+          <div class="review-actions">
+            <button class="primary" id="retryBtn">同题再练</button>
+            <button class="secondary" id="nextBtn">再抽一题</button>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="settingsDialog">
+    <h2>DeepSeek 设置</h2>
+    <div class="field">
+      <label for="apiBaseUrl">API 地址</label>
+      <input id="apiBaseUrl" value="https://api.deepseek.com" inputmode="url" autocomplete="url">
+    </div>
+    <div class="field">
+      <label for="apiModel">模型</label>
+      <input id="apiModel" value="deepseek-v4-flash" autocomplete="off">
+    </div>
+    <p class="connection" id="connectionText">正在检查连接……</p>
+    <div class="dialog-actions">
+      <button class="secondary" id="closeSettingsBtn">取消</button>
+      <button class="primary" id="saveSettingsBtn">保存</button>
+    </div>
+  </dialog>
+
+  <div class="toast" id="toast" role="status"></div>
+
+  <script>
+    (() => {
+      const topics = [
+        "如果你能改变公司里的一条默认规则，你会改变什么？为什么？",
+        "讲一件最近改变了你对某个人判断的小事。",
+        "你认为一个好领导最重要的能力是什么？",
+        "选择一个你不同意的常见职场建议，并说明理由。",
+        "如果必须删除手机里的一个常用 App，你会删掉哪个？",
+        "讲一次结果不理想，但让你学到很多的经历。",
+        "你最近做过的最值得坚持的一个小决定是什么？",
+        "向刚入职的新人解释：怎样才算一次好的工作汇报？",
+        "你认为效率和体验发生冲突时，应该优先选择什么？",
+        "讲一个你曾经深信、后来却改变看法的观点。",
+        "如果给现在的团队增加一个新习惯，你会选择什么？",
+        "用一个真实例子说明：知道和做到为什么是两回事。",
+        "最近哪一个瞬间，让你意识到自己正在发生变化？",
+        "如果要向十二岁的孩子解释你的工作，你会怎么说？",
+        "你更愿意和能力强但难沟通的人，还是能力普通但可靠的人合作？"
+      ];
+      const $ = id => document.getElementById(id);
+      const screens = [...document.querySelectorAll(".screen")];
+      const els = {
+        topic: $("topicText"), prep: $("prepCount"), time: $("speechTime"), transcript: $("transcript"),
+        prepLabel: $("prepLabel"), prepRing: $("prepRing"), speechState: $("speechState"), speechNote: $("speechNote"), dictate: $("dictateBtn"),
+        glance: $("transcriptGlance"), liveText: $("liveText"), transcriptToggle: $("transcriptToggle"), micPreflight: $("micPreflight"),
+        review: $("reviewContent"), settings: $("settingsDialog"), baseUrl: $("apiBaseUrl"),
+        model: $("apiModel"), connection: $("connectionText"), apiDot: $("apiDot"), toast: $("toast")
+      };
+      let currentTopic = "", prepTimer = null, speechTimer = null, speechStartedAt = 0;
+      let recognition = null, recognitionWanted = false, finalTranscript = "", lastTopicIndex = -1;
+      let pendingCountdown = false, countdownStarted = false, fallbackMode = false, fullTranscriptVisible = false;
+      const apiStorageKey = "kaikoulian.deepseek.v2";
+      const isStandaloneLocal = ["127.0.0.1", "localhost"].includes(location.hostname) && location.port === "8766";
+      const publicApiOrigin = "https://caojiang-works-map.jone19890801.chatgpt.site";
+      const statusEndpoint = isStandaloneLocal ? "/api/status" : `${publicApiOrigin}/api/jixingyanjiang/status`;
+      const analyzeEndpoint = isStandaloneLocal ? "/api/analyze" : `${publicApiOrigin}/api/jixingyanjiang/analyze`;
+
+      function showScreen(id) {
+        screens.forEach(screen => screen.classList.toggle("active", screen.id === id));
+        window.scrollTo({ top: 0, behavior: "instant" });
+      }
+      function toast(message) {
+        els.toast.textContent = message; els.toast.classList.add("show"); clearTimeout(toast.timer);
+        toast.timer = setTimeout(() => els.toast.classList.remove("show"), 1800);
+      }
+      function escapeHtml(value) {
+        return String(value ?? "").replace(/[&<>"']/g, char => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[char]));
+      }
+      function drawTopic() {
+        let index;
+        do index = Math.floor(Math.random() * topics.length); while (topics.length > 1 && index === lastTopicIndex);
+        lastTopicIndex = index; currentTopic = topics[index]; els.topic.textContent = currentTopic; showScreen("topicScreen");
+      }
+      function formatTime(seconds) {
+        return `${String(Math.floor(seconds / 60)).padStart(2,"0")}:${String(seconds % 60).padStart(2,"0")}`;
+      }
+      function setupRecognition() {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRecognition) return false;
+        recognition = new SpeechRecognition();
+        recognition.lang = "zh-CN"; recognition.continuous = true; recognition.interimResults = true;
+        recognition.onstart = () => {
+          els.micPreflight.classList.add("ready");
+          els.micPreflight.querySelector("span").textContent = "麦克风已准备";
+          if (pendingCountdown && !countdownStarted) beginCountdown();
+        };
+        recognition.onresult = event => {
+          let interim = "";
+          for (let i = event.resultIndex; i < event.results.length; i++) {
+            const text = event.results[i][0].transcript;
+            if (event.results[i].isFinal) finalTranscript += text; else interim += text;
+          }
+          els.transcript.value = finalTranscript + interim;
+          els.transcript.scrollTop = els.transcript.scrollHeight;
+          updateTranscriptView();
+        };
+        recognition.onerror = event => {
+          if (["not-allowed", "service-not-allowed"].includes(event.error)) {
+            recognitionWanted = false; showDictationFallback("麦克风未开启，请使用手机系统听写");
+            if (pendingCountdown && !countdownStarted) beginCountdown();
+          } else if (pendingCountdown && !countdownStarted && event.error !== "aborted") {
+            recognitionWanted = false; showDictationFallback("自动语音识别暂时不可用，请使用手机系统听写");
+            beginCountdown();
+          }
+        };
+        recognition.onend = () => {
+          if (recognitionWanted) setTimeout(() => { try { recognition.start(); } catch {} }, 250);
+        };
+        return true;
+      }
+      function showDictationFallback(message = "当前浏览器不支持自动识别，请使用手机系统听写") {
+        fallbackMode = true; els.speechState.textContent = "等待听写"; els.speechNote.textContent = message;
+        els.dictate.hidden = false; els.transcriptToggle.hidden = true; els.glance.hidden = true; els.transcript.hidden = false;
+      }
+      function startRecognition() {
+        if (!recognition && !setupRecognition()) {
+          showDictationFallback();
+          if (pendingCountdown && !countdownStarted) beginCountdown();
+          return;
+        }
+        recognitionWanted = true;
+        try { recognition.start(); }
+        catch {
+          showDictationFallback("语音识别未能启动，请使用手机系统听写");
+          if (pendingCountdown && !countdownStarted) beginCountdown();
+        }
+      }
+      function stopRecognition() {
+        recognitionWanted = false;
+        if (recognition) try { recognition.stop(); } catch {}
+      }
+      function startPractice() {
+        clearInterval(prepTimer); clearInterval(speechTimer); finalTranscript = ""; els.transcript.value = "";
+        pendingCountdown = true; countdownStarted = false; fallbackMode = false; fullTranscriptVisible = false;
+        els.prep.textContent = "…"; els.prepLabel.textContent = "正在打开麦克风"; els.prepRing.style.setProperty("--progress", 0);
+        els.speechState.textContent = "正在转写"; els.speechNote.textContent = "浏览器正在识别你的声音";
+        els.dictate.hidden = true; els.transcriptToggle.hidden = false; els.glance.hidden = false; els.transcript.hidden = true;
+        els.liveText.textContent = "开始说话后，最近几句话会出现在这里……";
+        showScreen("prepScreen"); startRecognition();
+      }
+      function beginCountdown() {
+        if (countdownStarted) return;
+        countdownStarted = true; pendingCountdown = false;
+        let left = 10;
+        els.prepLabel.textContent = "准备时间"; els.prep.textContent = String(left); els.prepRing.style.setProperty("--progress", 100);
+        prepTimer = setInterval(() => {
+          left -= 1; els.prep.textContent = String(Math.max(0, left));
+          els.prepRing.style.setProperty("--progress", Math.max(0, left * 10));
+          if (left <= 3 && left > 0) {
+            els.prepRing.classList.remove("cue"); void els.prepRing.offsetWidth; els.prepRing.classList.add("cue");
+            if (navigator.vibrate) navigator.vibrate(25);
+          }
+          if (left <= 0) {
+            clearInterval(prepTimer); els.prep.textContent = "开始"; els.prepRing.classList.add("cue");
+            setTimeout(beginSpeech, 420);
+          }
+        }, 1000);
+      }
+      function beginSpeech() {
+        finalTranscript = ""; els.transcript.value = ""; speechStartedAt = Date.now(); els.time.textContent = "00:00";
+        updateTranscriptView();
+        showScreen("speechScreen");
+        speechTimer = setInterval(() => { els.time.textContent = formatTime(Math.floor((Date.now() - speechStartedAt) / 1000)); }, 500);
+      }
+      function updateTranscriptView() {
+        const text = els.transcript.value.trim();
+        els.liveText.textContent = text ? text.slice(-120) : "开始说话后，最近几句话会出现在这里……";
+      }
+      function toggleTranscript() {
+        fullTranscriptVisible = !fullTranscriptVisible;
+        els.glance.hidden = fullTranscriptVisible;
+        els.transcript.hidden = !fullTranscriptVisible;
+        els.transcriptToggle.textContent = fullTranscriptVisible ? "收起完整转写" : "查看完整转写";
+        if (fullTranscriptVisible) els.transcript.focus();
+      }
+      function openPhoneDictation() {
+        fullTranscriptVisible = true; els.glance.hidden = true; els.transcript.hidden = false;
+        els.transcriptToggle.hidden = true; els.transcript.focus(); toast("请点击手机键盘上的麦克风");
+      }
+      async function finishSpeech() {
+        clearInterval(speechTimer); stopRecognition(); finalTranscript = els.transcript.value.trim();
+        const elapsed = Math.max(1, Math.round((Date.now() - speechStartedAt) / 1000));
+        showScreen("loadingScreen"); await requestReview(elapsed);
+      }
+      function savedApiConfig() {
+        try { return JSON.parse(localStorage.getItem(apiStorageKey) || "{}"); } catch { return {}; }
+      }
+      async function initApiConfig() {
+        const saved = savedApiConfig();
+        if (saved.baseUrl) els.baseUrl.value = saved.baseUrl;
+        if (saved.model) els.model.value = saved.model;
+        try {
+          const response = await fetch(statusEndpoint, { cache: "no-store" }); const status = await response.json();
+          if (!saved.baseUrl && status.baseUrl) els.baseUrl.value = status.baseUrl;
+          if (!saved.model && status.model) els.model.value = status.model;
+          els.connection.textContent = status.configured
+            ? "DeepSeek 已连接。API Key 只保存在本地服务中。"
+            : "尚未配置 API Key。请在项目 .env 文件中填写后重启服务。";
+          els.apiDot.classList.toggle("ready", Boolean(status.configured));
+        } catch { els.connection.textContent = "请通过本地服务打开页面，才能调用 DeepSeek。"; }
+      }
+      function saveSettings() {
+        const baseUrl = els.baseUrl.value.trim().replace(/\/+$/, ""), model = els.model.value.trim();
+        if (baseUrl !== "https://api.deepseek.com") return toast("当前 Demo 仅支持 DeepSeek 官方地址");
+        if (!/^deepseek-[a-z0-9._-]+$/i.test(model)) return toast("请输入有效的 DeepSeek 模型名称");
+        localStorage.setItem(apiStorageKey, JSON.stringify({ baseUrl, model })); els.settings.close(); toast("设置已保存");
+      }
+      function normalizeDimensions(value) {
+        const names = ["结构", "具体性", "简洁度", "说服力"];
+        if (Array.isArray(value)) return names.map(name => {
+          const item = value.find(entry => entry.name === name) || {};
+          return { name, rating: item.rating || scoreToRating(item.score), comment: item.comment || "暂无评价" };
+        });
+        return names.map(name => {
+          const key = {"结构":"structure","具体性":"specificity","简洁度":"conciseness","说服力":"persuasiveness"}[name];
+          const item = value?.[name] || value?.[key];
+          return { name, rating: item?.rating || scoreToRating(item?.score), comment: item?.comment || item?.brief || "暂无评价" };
+        });
+      }
+      function scoreToRating(score) {
+        if (!Number.isFinite(Number(score))) return "待观察";
+        return Number(score) >= 78 ? "清晰" : Number(score) >= 60 ? "基本清晰" : "需加强";
+      }
+      function renderReview(payload) {
+        const analysis = payload.analysis || {}, dimensions = normalizeDimensions(analysis.dimensions);
+        els.review.innerHTML = `
+          <section class="review-section"><h3>01 · 核心观点</h3><p>${escapeHtml(analysis.summary || "未能提取清晰的核心观点。")}</p></section>
+          <section class="review-section"><h3>02 · 最明显的问题</h3><p class="problem">${escapeHtml(analysis.main_problem || "这次表达暂时没有形成一个足够清晰的中心。")}</p></section>
+          <section class="review-section"><h3>03 · 四方面简评</h3><div class="dimensions">
+            ${dimensions.map(item => `<div class="dimension"><div class="dimension-head"><span>${escapeHtml(item.name)}</span><span class="dimension-rating">${escapeHtml(item.rating)}</span></div><p>${escapeHtml(item.comment)}</p></div>`).join("")}
+          </div></section>
+          <details class="transcript-details"><summary>查看本轮转写原文</summary><p>${escapeHtml(els.transcript.value.trim())}</p></details>`;
+        showScreen("reviewScreen");
+      }
+      function renderError(message) {
+        els.review.innerHTML = `<div class="error-box">${escapeHtml(message)}<br><br>请打开右上角设置检查 API 地址，并在本地 .env 中配置 DeepSeek API Key。</div>`;
+        showScreen("reviewScreen");
+      }
+      async function requestReview(elapsed) {
+        const transcript = els.transcript.value.trim();
+        if (transcript.length < 8) return renderError("没有识别到足够的演讲文字。你可以返回同题再练，并使用手机系统听写补充文字。");
+        try {
+          const response = await fetch(analyzeEndpoint, {
+            method: "POST", headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ baseUrl: els.baseUrl.value.trim(), model: els.model.value.trim(), prompt: currentTopic, context: "即兴演讲练习", transcript, elapsed })
+          });
+          const payload = await response.json().catch(() => ({}));
+          if (!response.ok) throw new Error(payload.error || "DeepSeek 复盘失败，请稍后重试");
+          renderReview(payload);
+        } catch (error) { renderError(error.message); }
+      }
+
+      $("drawBtn").addEventListener("click", drawTopic);
+      $("redrawBtn").addEventListener("click", drawTopic);
+      $("startBtn").addEventListener("click", startPractice);
+      $("finishBtn").addEventListener("click", finishSpeech);
+      $("dictateBtn").addEventListener("click", openPhoneDictation);
+      $("transcriptToggle").addEventListener("click", toggleTranscript);
+      $("retryBtn").addEventListener("click", startPractice);
+      $("nextBtn").addEventListener("click", drawTopic);
+      $("settingsBtn").addEventListener("click", () => els.settings.showModal());
+      $("closeSettingsBtn").addEventListener("click", () => els.settings.close());
+      $("saveSettingsBtn").addEventListener("click", saveSettings);
+      els.transcript.addEventListener("input", () => { finalTranscript = els.transcript.value; updateTranscriptView(); });
+      initApiConfig();
+    })();
+  </script>
+</body>
+</html>
