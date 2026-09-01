@@ -32,12 +32,13 @@
     .brand-mark { width: 34px; height: 34px; flex: 0 0 auto; filter: drop-shadow(0 7px 12px rgba(20,92,70,.13)); }
     .brand-name { font-size: 17px; }
     .settings-btn {
-      width: 38px; height: 38px; border: 0; border-radius: 50%; color: var(--muted);
-      position: relative; display: grid; place-items: center; background: transparent; cursor: pointer;
+      min-height: 40px; padding: 0 13px; border: 1px solid var(--line); border-radius: 999px; color: var(--green);
+      display: inline-flex; align-items: center; gap: 7px; background: rgba(255,253,248,.78); cursor: pointer;
+      font-size: 13px; font-weight: 750;
     }
     .settings-btn:hover { background: rgba(255,255,255,.66); color: var(--ink); }
     .settings-btn svg { width: 20px; height: 20px; }
-    .api-dot { position: absolute; right: 4px; bottom: 4px; width: 7px; height: 7px; border: 2px solid var(--paper); border-radius: 50%; background: #a3aaa5; }
+    .api-dot { width: 7px; height: 7px; border-radius: 50%; background: #a3aaa5; }
     .api-dot.ready { background: #38a777; }
     .screen {
       flex: 1; display: none; align-items: center; justify-content: center;
@@ -145,6 +146,10 @@
     .field label { color: var(--muted); font-size: 13px; font-weight: 700; }
     .field input { width: 100%; height: 50px; border: 1px solid var(--line); border-radius: 14px; padding: 0 15px; outline: none; background: white; }
     .field input:focus { border-color: var(--green); }
+    .secret-field { display: flex; gap: 8px; }
+    .secret-field input { flex: 1; min-width: 0; }
+    .secret-toggle { flex: 0 0 auto; min-width: 60px; border: 1px solid var(--line); border-radius: 14px; color: var(--green); background: white; cursor: pointer; font-weight: 700; }
+    .api-privacy { margin: -6px 0 18px; color: var(--muted); font-size: 12px; line-height: 1.6; }
     .connection { margin: 6px 0 20px; color: var(--muted); font-size: 13px; line-height: 1.6; }
     .dialog-actions { display: flex; gap: 10px; justify-content: flex-end; }
     .dialog-actions button { min-height: 46px; padding: 0 20px; }
@@ -186,6 +191,7 @@
       <button class="settings-btn" id="settingsBtn" aria-label="DeepSeek 设置">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.3a3.7 3.7 0 1 0 0 7.4 3.7 3.7 0 0 0 0-7.4Zm8 3.7-.1-1.2 2-1.6-2-3.4-2.5 1a8 8 0 0 0-2-1.2L15 3h-4l-.4 2.6a8 8 0 0 0-2 1.2l-2.5-1-2 3.4 2 1.6L6 12l.1 1.2-2 1.6 2 3.4 2.5-1a8 8 0 0 0 2 1.2L11 21h4l.4-2.6a8 8 0 0 0 2-1.2l2.5 1 2-3.4-2-1.6.1-1.2Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
         <span class="api-dot" id="apiDot" aria-hidden="true"></span>
+        <span>API 设置</span>
       </button>
     </header>
 
@@ -262,6 +268,14 @@
   <dialog id="settingsDialog">
     <h2>DeepSeek 设置</h2>
     <div class="field">
+      <label for="apiKey">DeepSeek API Key</label>
+      <div class="secret-field">
+        <input id="apiKey" type="password" placeholder="sk-..." autocomplete="off" autocapitalize="off" spellcheck="false">
+        <button class="secret-toggle" id="toggleKeyBtn" type="button">显示</button>
+      </div>
+    </div>
+    <p class="api-privacy">仅保存在当前浏览器会话中，关闭标签页后自动清除；不会写入网站源码。</p>
+    <div class="field">
       <label for="apiBaseUrl">API 地址</label>
       <input id="apiBaseUrl" value="https://api.deepseek.com" inputmode="url" autocomplete="url">
     </div>
@@ -303,13 +317,14 @@
         topic: $("topicText"), prep: $("prepCount"), time: $("speechTime"), transcript: $("transcript"),
         prepLabel: $("prepLabel"), prepRing: $("prepRing"), speechState: $("speechState"), speechNote: $("speechNote"), dictate: $("dictateBtn"),
         glance: $("transcriptGlance"), liveText: $("liveText"), transcriptToggle: $("transcriptToggle"), micPreflight: $("micPreflight"),
-        review: $("reviewContent"), settings: $("settingsDialog"), baseUrl: $("apiBaseUrl"),
+        review: $("reviewContent"), settings: $("settingsDialog"), apiKey: $("apiKey"), baseUrl: $("apiBaseUrl"),
         model: $("apiModel"), connection: $("connectionText"), apiDot: $("apiDot"), toast: $("toast")
       };
       let currentTopic = "", prepTimer = null, speechTimer = null, speechStartedAt = 0;
       let recognition = null, recognitionWanted = false, finalTranscript = "", lastTopicIndex = -1;
       let pendingCountdown = false, countdownStarted = false, fallbackMode = false, fullTranscriptVisible = false;
       const apiStorageKey = "kaikoulian.deepseek.v2";
+      const apiKeyStorageKey = "kaikoulian.deepseek.key.session.v1";
       const isStandaloneLocal = ["127.0.0.1", "localhost"].includes(location.hostname) && location.port === "8766";
       const publicApiOrigin = "https://caojiang-works-map.jone19890801.chatgpt.site";
       const statusEndpoint = isStandaloneLocal ? "/api/status" : `${publicApiOrigin}/api/jixingyanjiang/status`;
@@ -447,23 +462,36 @@
       }
       async function initApiConfig() {
         const saved = savedApiConfig();
+        const sessionApiKey = sessionStorage.getItem(apiKeyStorageKey) || "";
+        els.apiKey.value = sessionApiKey;
         if (saved.baseUrl) els.baseUrl.value = saved.baseUrl;
         if (saved.model) els.model.value = saved.model;
         try {
-          const response = await fetch(statusEndpoint, { cache: "no-store" }); const status = await response.json();
+          const response = await fetch(statusEndpoint, {
+            cache: "no-store",
+            headers: sessionApiKey ? { "X-DeepSeek-Api-Key": sessionApiKey } : {}
+          });
+          const status = await response.json();
           if (!saved.baseUrl && status.baseUrl) els.baseUrl.value = status.baseUrl;
           if (!saved.model && status.model) els.model.value = status.model;
-          els.connection.textContent = status.configured
-            ? "DeepSeek 已连接。API Key 只保存在本地服务中。"
-            : "尚未配置 API Key。请在项目 .env 文件中填写后重启服务。";
-          els.apiDot.classList.toggle("ready", Boolean(status.configured));
+          const configured = Boolean(sessionApiKey || status.configured);
+          els.connection.textContent = configured
+            ? sessionApiKey ? "API Key 已加入当前浏览器会话，可以开始复盘。" : "DeepSeek 已由服务器安全配置。"
+            : "请输入 DeepSeek API Key 后保存。";
+          els.apiDot.classList.toggle("ready", configured);
         } catch { els.connection.textContent = "请通过本地服务打开页面，才能调用 DeepSeek。"; }
       }
       function saveSettings() {
+        const apiKey = els.apiKey.value.trim();
         const baseUrl = els.baseUrl.value.trim().replace(/\/+$/, ""), model = els.model.value.trim();
+        if (apiKey && apiKey.length < 10) return toast("API Key 看起来不完整");
         if (baseUrl !== "https://api.deepseek.com") return toast("当前 Demo 仅支持 DeepSeek 官方地址");
         if (!/^deepseek-[a-z0-9._-]+$/i.test(model)) return toast("请输入有效的 DeepSeek 模型名称");
-        localStorage.setItem(apiStorageKey, JSON.stringify({ baseUrl, model })); els.settings.close(); toast("设置已保存");
+        if (apiKey) sessionStorage.setItem(apiKeyStorageKey, apiKey);
+        else sessionStorage.removeItem(apiKeyStorageKey);
+        localStorage.setItem(apiStorageKey, JSON.stringify({ baseUrl, model }));
+        els.apiDot.classList.toggle("ready", Boolean(apiKey));
+        els.settings.close(); toast(apiKey ? "API Key 已保存到当前浏览器会话" : "API 设置已保存");
       }
       function normalizeDimensions(value) {
         const names = ["结构", "具体性", "简洁度", "说服力"];
@@ -493,7 +521,7 @@
         showScreen("reviewScreen");
       }
       function renderError(message) {
-        els.review.innerHTML = `<div class="error-box">${escapeHtml(message)}<br><br>请打开右上角设置检查 API 地址，并在本地 .env 中配置 DeepSeek API Key。</div>`;
+        els.review.innerHTML = `<div class="error-box">${escapeHtml(message)}<br><br>请点击右上角“API 设置”，填写 DeepSeek API Key 后重试。</div>`;
         showScreen("reviewScreen");
       }
       async function requestReview(elapsed) {
@@ -501,7 +529,10 @@
         if (transcript.length < 8) return renderError("没有识别到足够的演讲文字。你可以返回同题再练，并使用手机系统听写补充文字。");
         try {
           const response = await fetch(analyzeEndpoint, {
-            method: "POST", headers: { "Content-Type": "application/json" },
+            method: "POST", headers: {
+              "Content-Type": "application/json",
+              ...(sessionStorage.getItem(apiKeyStorageKey) ? { "X-DeepSeek-Api-Key": sessionStorage.getItem(apiKeyStorageKey) } : {})
+            },
             body: JSON.stringify({ baseUrl: els.baseUrl.value.trim(), model: els.model.value.trim(), prompt: currentTopic, context: "即兴演讲练习", transcript, elapsed })
           });
           const payload = await response.json().catch(() => ({}));
@@ -521,6 +552,11 @@
       $("settingsBtn").addEventListener("click", () => els.settings.showModal());
       $("closeSettingsBtn").addEventListener("click", () => els.settings.close());
       $("saveSettingsBtn").addEventListener("click", saveSettings);
+      $("toggleKeyBtn").addEventListener("click", event => {
+        const showing = els.apiKey.type === "text";
+        els.apiKey.type = showing ? "password" : "text";
+        event.currentTarget.textContent = showing ? "显示" : "隐藏";
+      });
       els.transcript.addEventListener("input", () => { finalTranscript = els.transcript.value; updateTranscriptView(); });
       initApiConfig();
     })();
