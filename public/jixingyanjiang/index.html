@@ -144,8 +144,8 @@
     dialog h2 { margin: 0 0 22px; }
     .field { display: grid; gap: 8px; margin-bottom: 16px; }
     .field label { color: var(--muted); font-size: 13px; font-weight: 700; }
-    .field input { width: 100%; height: 50px; border: 1px solid var(--line); border-radius: 14px; padding: 0 15px; outline: none; background: white; }
-    .field input:focus { border-color: var(--green); }
+    .field input, .field select { width: 100%; height: 50px; border: 1px solid var(--line); border-radius: 14px; padding: 0 15px; outline: none; background: white; color: var(--ink); font: inherit; }
+    .field input:focus, .field select:focus { border-color: var(--green); }
     .secret-field { display: flex; gap: 8px; }
     .secret-field input { flex: 1; min-width: 0; }
     .secret-toggle { flex: 0 0 auto; min-width: 60px; border: 1px solid var(--line); border-radius: 14px; color: var(--green); background: white; cursor: pointer; font-weight: 700; }
@@ -281,7 +281,10 @@
     </div>
     <div class="field">
       <label for="apiModel">模型</label>
-      <input id="apiModel" value="deepseek-v4-flash" autocomplete="off">
+      <select id="apiModel" aria-label="选择 DeepSeek 模型">
+        <option value="deepseek-v4-flash">DeepSeek V4 Flash（更快，适合日常复盘）</option>
+        <option value="deepseek-v4-pro">DeepSeek V4 Pro（更深入，适合重点复盘）</option>
+      </select>
     </div>
     <p class="connection" id="connectionText">正在检查连接……</p>
     <div class="dialog-actions">
@@ -465,7 +468,7 @@
         const sessionApiKey = sessionStorage.getItem(apiKeyStorageKey) || "";
         els.apiKey.value = sessionApiKey;
         if (saved.baseUrl) els.baseUrl.value = saved.baseUrl;
-        if (saved.model) els.model.value = saved.model;
+        if (["deepseek-v4-flash", "deepseek-v4-pro"].includes(saved.model)) els.model.value = saved.model;
         try {
           const response = await fetch(statusEndpoint, {
             cache: "no-store",
@@ -473,7 +476,7 @@
           });
           const status = await response.json();
           if (!saved.baseUrl && status.baseUrl) els.baseUrl.value = status.baseUrl;
-          if (!saved.model && status.model) els.model.value = status.model;
+          if (!saved.model && ["deepseek-v4-flash", "deepseek-v4-pro"].includes(status.model)) els.model.value = status.model;
           const configured = Boolean(sessionApiKey || status.configured);
           els.connection.textContent = configured
             ? sessionApiKey ? "API Key 已加入当前浏览器会话，可以开始复盘。" : "DeepSeek 已由服务器安全配置。"
@@ -486,7 +489,7 @@
         const baseUrl = els.baseUrl.value.trim().replace(/\/+$/, ""), model = els.model.value.trim();
         if (apiKey && apiKey.length < 10) return toast("API Key 看起来不完整");
         if (baseUrl !== "https://api.deepseek.com") return toast("当前 Demo 仅支持 DeepSeek 官方地址");
-        if (!/^deepseek-[a-z0-9._-]+$/i.test(model)) return toast("请输入有效的 DeepSeek 模型名称");
+        if (!["deepseek-v4-flash", "deepseek-v4-pro"].includes(model)) return toast("请选择 DeepSeek Flash 或 Pro");
         if (apiKey) sessionStorage.setItem(apiKeyStorageKey, apiKey);
         else sessionStorage.removeItem(apiKeyStorageKey);
         localStorage.setItem(apiStorageKey, JSON.stringify({ baseUrl, model }));
