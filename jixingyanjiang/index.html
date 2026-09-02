@@ -78,6 +78,17 @@
     }
     .topic-actions, .review-actions { display: flex; gap: 12px; margin-top: 28px; flex-wrap: wrap; }
     .topic-actions .primary { flex: 1; }
+    .mode-label { margin: 28px 0 10px; color: var(--muted); font-size: 13px; font-weight: 750; }
+    .mode-picker { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .mode-option {
+      min-height: 74px; padding: 14px 16px; border: 1px solid var(--line); border-radius: 17px;
+      color: var(--ink); background: rgba(255,255,255,.6); cursor: pointer; text-align: left;
+    }
+    .mode-option strong, .mode-option span { display: block; }
+    .mode-option strong { margin-bottom: 5px; font-size: 15px; }
+    .mode-option span { color: var(--muted); font-size: 12px; line-height: 1.45; }
+    .mode-option.active { border-color: rgba(20,92,70,.52); background: rgba(20,92,70,.075); box-shadow: inset 0 0 0 1px rgba(20,92,70,.08); }
+    .mode-option.active strong { color: var(--green); }
     .mic-preflight { margin: 18px 0 0; display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 13px; }
     .mic-preflight i { width: 7px; height: 7px; border-radius: 50%; background: #a3aaa5; }
     .mic-preflight.ready i { background: #38a777; }
@@ -103,6 +114,7 @@
       width: 9px; height: 9px; border-radius: 50%; background: var(--coral);
       box-shadow: 0 0 0 5px rgba(231,101,79,.12); animation: pulse 1.2s infinite;
     }
+    .listening.text-mode i { background: var(--green); box-shadow: none; animation: none; }
     @keyframes pulse { 50% { opacity: .35; transform: scale(.75); } }
     .transcript {
       width: 100%; min-height: min(48dvh, 420px); resize: none; border: 1px solid var(--line);
@@ -122,6 +134,7 @@
     .loading h2 { margin: 0 0 8px; }
     .loading p { margin: 0; color: var(--muted); }
     .review-card h2 { margin: 0 0 28px; font-size: 30px; letter-spacing: -.04em; }
+    .ted-note { margin: -17px 0 27px; color: var(--muted); font-size: 12px; line-height: 1.65; }
     .review-tools { display: flex; gap: 10px; margin: -10px 0 26px; flex-wrap: wrap; }
     .review-tools button { min-height: 44px; padding: 0 18px; }
     .review-section { padding: 22px 0; border-top: 1px solid var(--line); }
@@ -129,12 +142,19 @@
     .review-section h3 { margin: 0 0 10px; color: var(--green); font-size: 13px; letter-spacing: .08em; }
     .review-section p { margin: 0; font-size: 17px; line-height: 1.75; }
     .problem { padding: 18px 20px; border-radius: 18px; background: #fff1ed; color: #7b2f24; }
+    .throughline { padding: 18px 20px; border-left: 4px solid var(--green); border-radius: 0 16px 16px 0; background: rgba(20,92,70,.06); }
     .dimensions { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
     .dimension { padding: 18px; border: 1px solid var(--line); border-radius: 18px; background: rgba(255,255,255,.58); }
     .dimension-head { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 8px; font-weight: 800; }
     .dimension-rating { padding: 3px 9px; border-radius: 999px; color: var(--green); background: rgba(20,92,70,.09); font-size: 12px; }
     .dimension p { color: #59635e; font-size: 14px; line-height: 1.6; }
     .suggestions { display: grid; gap: 12px; }
+    .ted-outline { display: grid; gap: 10px; counter-reset: tedstep; }
+    .ted-step { position: relative; padding: 17px 18px 17px 54px; border: 1px solid var(--line); border-radius: 17px; background: rgba(255,255,255,.58); }
+    .ted-step::before { counter-increment: tedstep; content: counter(tedstep); position: absolute; left: 17px; top: 17px; display: grid; place-items: center; width: 25px; height: 25px; border-radius: 50%; color: white; background: var(--green); font-size: 12px; font-weight: 800; }
+    .ted-step h4 { margin: 0 0 6px; font-size: 15px; }
+    .ted-step p { color: #59635e; font-size: 14px; line-height: 1.65; }
+    .ted-step .ted-purpose { margin-bottom: 5px; color: var(--green); font-weight: 700; }
     .suggestion { padding: 18px; border: 1px solid rgba(20,92,70,.14); border-radius: 18px; background: rgba(20,92,70,.045); }
     .suggestion h4 { margin: 0 0 10px; font-size: 16px; }
     .suggestion p { margin: 8px 0 0; color: #59635e; font-size: 14px; line-height: 1.7; }
@@ -195,6 +215,7 @@
       .topic-actions button, .review-actions button { width: 100%; }
       .review-tools button { flex: 1; }
       .dimensions { grid-template-columns: 1fr; }
+      .mode-picker { grid-template-columns: 1fr; }
       .speech-bottom { align-items: center; flex-wrap: wrap; }
       .speech-bottom .danger { width: 100%; order: 3; }
       .transcript { min-height: 52dvh; border-radius: 22px; padding: 22px; }
@@ -243,6 +264,11 @@
         </div>
         <article class="topic-card">
           <h2 id="topicText"></h2>
+          <p class="mode-label">选择作答方式</p>
+          <div class="mode-picker" role="radiogroup" aria-label="选择作答方式">
+            <button class="mode-option active" type="button" data-mode="voice" role="radio" aria-checked="true"><strong>语音输入</strong><span>边说边转写，不保存音频</span></button>
+            <button class="mode-option" type="button" data-mode="text" role="radio" aria-checked="false"><strong>文字输入</strong><span>准备结束后，直接打字作答</span></button>
+          </div>
           <p class="mic-preflight" id="micPreflight"><i></i><span>点击开始后，将先检查麦克风</span></p>
           <div class="topic-actions">
             <button class="primary" id="startBtn">开始</button>
@@ -278,8 +304,8 @@
     <section class="screen" id="loadingScreen">
       <div class="loading">
         <div class="loader"></div>
-        <h2>DeepSeek 正在复盘</h2>
-        <p>复述观点、找到核心问题，再结合原话给出具体修改建议。</p>
+        <h2>DeepSeek 正在进行 TED 式复盘</h2>
+        <p>提炼核心主线，检查听众连接与证据，再用原话设计重组路线。</p>
       </div>
     </section>
 
@@ -288,6 +314,7 @@
         <p class="eyebrow">本轮复盘</p>
         <article class="review-card">
           <h2>先看清楚，再练一遍</h2>
+          <p class="ted-note">参考 TED/TEDx 演讲指南的内容逻辑，只评估文字内容，不代表 TED 官方评分或认证。</p>
           <div class="review-tools">
             <button class="secondary" id="copyMarkdownBtn" disabled>复制 Markdown</button>
             <button class="secondary" id="exportMarkdownBtn" disabled>导出 .md</button>
@@ -371,7 +398,7 @@
         history: $("historyDialog"), historyContent: $("historyContent"),
         copyMarkdown: $("copyMarkdownBtn"), exportMarkdown: $("exportMarkdownBtn")
       };
-      let currentTopic = "", prepTimer = null, speechTimer = null, speechStartedAt = 0;
+      let currentTopic = "", practiceMode = "voice", prepTimer = null, speechTimer = null, speechStartedAt = 0;
       let recognition = null, recognitionWanted = false, finalTranscript = "", lastTopicIndex = -1;
       let pendingCountdown = false, countdownStarted = false, fallbackMode = false;
       let lastReviewMarkdown = "", loadedHistoryRecords = [];
@@ -408,6 +435,17 @@
         let index;
         do index = Math.floor(Math.random() * topics.length); while (topics.length > 1 && index === lastTopicIndex);
         lastTopicIndex = index; currentTopic = topics[index]; els.topic.textContent = currentTopic; showScreen("topicScreen");
+      }
+      function setPracticeMode(mode) {
+        practiceMode = mode === "text" ? "text" : "voice";
+        document.querySelectorAll("[data-mode]").forEach(button => {
+          const active = button.dataset.mode === practiceMode;
+          button.classList.toggle("active", active); button.setAttribute("aria-checked", String(active));
+        });
+        els.micPreflight.classList.remove("ready");
+        els.micPreflight.querySelector("span").textContent = practiceMode === "voice"
+          ? "点击开始后，将先检查麦克风"
+          : "文字模式不启用麦克风";
       }
       function formatTime(seconds) {
         return `${String(Math.floor(seconds / 60)).padStart(2,"0")}:${String(seconds % 60).padStart(2,"0")}`;
@@ -471,10 +509,15 @@
         clearInterval(prepTimer); clearInterval(speechTimer); finalTranscript = ""; els.transcript.value = "";
         lastReviewMarkdown = ""; els.copyMarkdown.disabled = true; els.exportMarkdown.disabled = true;
         pendingCountdown = true; countdownStarted = false; fallbackMode = false;
-        els.prep.textContent = "…"; els.prepLabel.textContent = "正在打开麦克风"; els.prepTopic.textContent = currentTopic; els.prepRing.style.setProperty("--progress", 0);
-        els.speechState.textContent = "正在转写"; els.speechNote.textContent = "浏览器正在识别你的声音";
+        els.prep.textContent = "…"; els.prepLabel.textContent = practiceMode === "voice" ? "正在打开麦克风" : "准备开始"; els.prepTopic.textContent = currentTopic; els.prepRing.style.setProperty("--progress", 0);
+        els.speechState.textContent = practiceMode === "voice" ? "正在转写" : "文字输入";
+        els.speechState.parentElement.classList.toggle("text-mode", practiceMode === "text");
+        els.speechNote.textContent = practiceMode === "voice" ? "浏览器正在识别你的声音" : "请完整写下你的表达，写完后提交复盘";
+        els.transcript.placeholder = practiceMode === "voice" ? "开始说话后，完整转写会持续显示在这里……" : "在这里写下你的完整表达……";
+        $("finishBtn").textContent = practiceMode === "voice" ? "结束演讲" : "提交复盘";
         els.dictate.hidden = true;
-        showScreen("prepScreen"); startRecognition();
+        showScreen("prepScreen");
+        if (practiceMode === "voice") startRecognition(); else beginCountdown();
       }
       function beginCountdown() {
         if (countdownStarted) return;
@@ -498,6 +541,7 @@
         finalTranscript = ""; els.transcript.value = ""; speechStartedAt = Date.now(); els.time.textContent = "00:00";
         updateTranscriptView();
         showScreen("speechScreen");
+        if (practiceMode === "text") setTimeout(() => els.transcript.focus(), 80);
         speechTimer = setInterval(() => { els.time.textContent = formatTime(Math.floor((Date.now() - speechStartedAt) / 1000)); }, 500);
       }
       function updateTranscriptView() {
@@ -507,7 +551,7 @@
         els.transcript.focus(); toast("请点击手机键盘上的麦克风");
       }
       async function finishSpeech() {
-        clearInterval(speechTimer); stopRecognition(); finalTranscript = els.transcript.value.trim();
+        clearInterval(speechTimer); if (practiceMode === "voice") stopRecognition(); finalTranscript = els.transcript.value.trim();
         const elapsed = Math.max(1, Math.round((Date.now() - speechStartedAt) / 1000));
         showScreen("loadingScreen"); await requestReview(elapsed);
       }
@@ -548,7 +592,11 @@
         els.settings.close(); toast(apiKey ? "API Key 已保存到当前浏览器会话" : "API 设置已保存");
       }
       function normalizeDimensions(value) {
-        const names = ["结构", "具体性", "简洁度", "说服力"];
+        const tedNames = ["核心主张", "听众连接", "叙事推进", "证据支撑", "收束与启发"];
+        const legacyNames = ["结构", "具体性", "简洁度", "说服力"];
+        const entries = Array.isArray(value) ? value : [];
+        const hasTed = entries.some(item => tedNames.includes(item?.name)) || tedNames.some(name => value?.[name]);
+        const names = hasTed || !value ? tedNames : legacyNames;
         if (Array.isArray(value)) return names.map(name => {
           const item = value.find(entry => entry.name === name) || {};
           return { name, rating: item.rating || scoreToRating(item.score), comment: item.comment || "暂无评价" };
@@ -558,6 +606,14 @@
           const item = value?.[name] || value?.[key];
           return { name, rating: item?.rating || scoreToRating(item?.score), comment: item?.comment || item?.brief || "暂无评价" };
         });
+      }
+      function normalizeTedOutline(value) {
+        const stages = ["让听众在意", "说清核心观点", "用例子或证据展开", "收束到听众启发"];
+        const source = Array.isArray(value) ? value : [];
+        return stages.map((stage, index) => {
+          const item = source.find(entry => entry?.stage === stage) || source[index] || {};
+          return { stage, purpose: item.purpose || "", content: item.content || item.example || "" };
+        }).filter(item => item.purpose || item.content);
       }
       function scoreToRating(score) {
         if (!Number.isFinite(Number(score))) return "待观察";
@@ -577,25 +633,30 @@
         return text || fallback;
       }
       function buildReviewMarkdown(record) {
-        const analysis = record.analysis || {}, dimensions = normalizeDimensions(analysis.dimensions), suggestions = normalizeSuggestions(analysis.suggestions);
+        const analysis = record.analysis || {}, dimensions = normalizeDimensions(analysis.dimensions), outline = normalizeTedOutline(analysis.ted_outline), suggestions = normalizeSuggestions(analysis.suggestions);
         const date = new Intl.DateTimeFormat("zh-CN", { year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" }).format(new Date(record.createdAt || Date.now()));
         const lines = [
           "# 开口练｜即兴演讲复盘", "",
           `- 日期：${date}`,
           `- 题目：${markdownText(record.topic, "即兴演讲练习")}`,
+          ...(record.inputMode ? [`- 输入方式：${record.inputMode === "text" ? "文字输入" : "语音输入"}`] : []),
           `- 时长：${formatTime(Number(record.elapsed) || 0)}`,
           `- 模型：${markdownText(record.model)}`, "",
-          "## 1. 核心观点", "", markdownText(analysis.summary), "",
-          "## 2. 最明显的问题", "", markdownText(analysis.main_problem), "",
-          "## 3. 四方面简评", ""
+          "## 1. 核心观点（忠实复述）", "", markdownText(analysis.summary), "",
+          "## 2. TED式核心主线", "", markdownText(analysis.throughline), "",
+          "## 3. 最明显的问题", "", markdownText(analysis.main_problem), "",
+          "## 4. TED五维评估", ""
         ];
         dimensions.forEach(item => lines.push(`- **${markdownText(item.name)}｜${markdownText(item.rating)}**：${markdownText(item.comment)}`));
-        lines.push("", "## 4. 基于原话的修改建议", "");
+        lines.push("", "## 5. TED式重组路线", "");
+        if (outline.length) outline.forEach((item, index) => lines.push(`### ${index + 1}. ${markdownText(item.stage)}`, "", `- **目的：** ${markdownText(item.purpose)}`, `- **本次可以这样组织：** ${markdownText(item.content)}`, ""));
+        else lines.push("暂无重组路线。", "");
+        lines.push("## 6. 基于原话的修改建议", "");
         if (suggestions.length) suggestions.forEach((item, index) => {
           lines.push(`### ${index + 1}. ${markdownText(item.title)}`, "", `- **对应原话：** ${markdownText(item.evidence)}`, `- **怎么改：** ${markdownText(item.action)}`, `- **可以这样讲：** ${markdownText(item.example)}`, "");
         });
         else lines.push("暂无具体建议。", "");
-        lines.push("## 5. 转写原文", "", ...markdownText(record.transcript).split(/\r?\n/).map(line => `> ${line}`), "");
+        lines.push("## 7. 转写原文", "", ...markdownText(record.transcript).split(/\r?\n/).map(line => `> ${line}`), "");
         return lines.join("\n");
       }
       async function copyMarkdown(markdown) {
@@ -616,16 +677,20 @@
         toast("Markdown 文件已导出");
       }
       function renderReview(payload, elapsed) {
-        const analysis = payload.analysis || {}, dimensions = normalizeDimensions(analysis.dimensions), suggestions = normalizeSuggestions(analysis.suggestions);
-        lastReviewMarkdown = buildReviewMarkdown({ topic: currentTopic, transcript: els.transcript.value.trim(), elapsed, model: payload.model, createdAt: payload.record?.createdAt || Date.now(), analysis });
+        const analysis = payload.analysis || {}, dimensions = normalizeDimensions(analysis.dimensions), outline = normalizeTedOutline(analysis.ted_outline), suggestions = normalizeSuggestions(analysis.suggestions);
+        lastReviewMarkdown = buildReviewMarkdown({ topic: currentTopic, transcript: els.transcript.value.trim(), inputMode: practiceMode, elapsed, model: payload.model, createdAt: payload.record?.createdAt || Date.now(), analysis });
         els.copyMarkdown.disabled = false; els.exportMarkdown.disabled = false;
         els.review.innerHTML = `
-          <section class="review-section"><h3>01 · 核心观点</h3><p>${escapeHtml(analysis.summary || "未能提取清晰的核心观点。")}</p></section>
-          <section class="review-section"><h3>02 · 最明显的问题</h3><p class="problem">${escapeHtml(analysis.main_problem || "这次表达暂时没有形成一个足够清晰的中心。")}</p></section>
-          <section class="review-section"><h3>03 · 四方面简评</h3><div class="dimensions">
+          <section class="review-section"><h3>01 · 核心观点（忠实复述）</h3><p>${escapeHtml(analysis.summary || "未能提取清晰的核心观点。")}</p></section>
+          <section class="review-section"><h3>02 · TED式核心主线</h3><p class="throughline">${escapeHtml(analysis.throughline || "这次表达还没有形成一句清晰、可带走的主张。")}</p></section>
+          <section class="review-section"><h3>03 · 最明显的问题</h3><p class="problem">${escapeHtml(analysis.main_problem || "这次表达暂时没有形成一个足够清晰的中心。")}</p></section>
+          <section class="review-section"><h3>04 · TED五维评估</h3><div class="dimensions">
             ${dimensions.map(item => `<div class="dimension"><div class="dimension-head"><span>${escapeHtml(item.name)}</span><span class="dimension-rating">${escapeHtml(item.rating)}</span></div><p>${escapeHtml(item.comment)}</p></div>`).join("")}
           </div></section>
-          <section class="review-section"><h3>04 · 基于原话的修改建议</h3><div class="suggestions">
+          <section class="review-section"><h3>05 · TED式重组路线</h3><div class="ted-outline">
+            ${outline.length ? outline.map(item => `<article class="ted-step"><h4>${escapeHtml(item.stage)}</h4><p class="ted-purpose">${escapeHtml(item.purpose)}</p><p>${escapeHtml(item.content)}</p></article>`).join("") : `<p>这次没有生成可用的重组路线，请重试复盘。</p>`}
+          </div></section>
+          <section class="review-section"><h3>06 · 基于原话的修改建议</h3><div class="suggestions">
             ${suggestions.length ? suggestions.map(item => `<article class="suggestion"><h4>${escapeHtml(item.title)}</h4><p><strong>对应原话：</strong>${escapeHtml(item.evidence)}</p><p><strong>怎么改：</strong>${escapeHtml(item.action)}</p><p class="suggestion-example"><strong>可以这样讲：</strong>${escapeHtml(item.example)}</p></article>`).join("") : `<p>这次没有生成可用的具体建议，请重试复盘。</p>`}
           </div></section>
           <details class="transcript-details"><summary>查看本轮转写原文</summary><p>${escapeHtml(els.transcript.value.trim())}</p></details>`;
@@ -642,10 +707,12 @@
           return;
         }
         els.historyContent.innerHTML = `<div class="history-list">${records.map(record => {
-          const analysis = record.analysis || {}, suggestions = normalizeSuggestions(analysis.suggestions);
+          const analysis = record.analysis || {}, outline = normalizeTedOutline(analysis.ted_outline), suggestions = normalizeSuggestions(analysis.suggestions);
           return `<details class="history-card"><summary><span class="history-date">${escapeHtml(formatHistoryDate(record.createdAt))} · ${escapeHtml(formatTime(Number(record.elapsed) || 0))}</span><span class="history-topic">${escapeHtml(record.topic || "即兴演讲练习")}</span></summary><div class="history-detail">
             <h4>核心观点</h4><p>${escapeHtml(analysis.summary || "暂无")}</p>
+            ${analysis.throughline ? `<h4>TED式核心主线</h4><p>${escapeHtml(analysis.throughline)}</p>` : ""}
             <h4>最明显的问题</h4><p>${escapeHtml(analysis.main_problem || "暂无")}</p>
+            ${outline.length ? `<h4>TED式重组路线</h4>${outline.map(item => `<div class="history-suggestion"><strong>${escapeHtml(item.stage)}</strong><p>${escapeHtml(item.content)}</p></div>`).join("")}` : ""}
             ${suggestions.length ? `<h4>修改建议</h4>${suggestions.map(item => `<div class="history-suggestion"><strong>${escapeHtml(item.title)}</strong><p>${escapeHtml(item.action)}</p><p>示范：${escapeHtml(item.example)}</p></div>`).join("")}` : ""}
             <h4>转写原文</h4><p>${escapeHtml(record.transcript || "暂无")}</p>
             <div class="history-export-actions"><button class="secondary" data-history-copy="${escapeHtml(record.id)}">复制 Markdown</button><button class="secondary" data-history-export="${escapeHtml(record.id)}">导出 .md</button></div>
@@ -679,7 +746,7 @@
               "X-Practice-Device-Token": deviceToken(),
               ...(sessionStorage.getItem(apiKeyStorageKey) ? { "X-DeepSeek-Api-Key": sessionStorage.getItem(apiKeyStorageKey) } : {})
             },
-            body: JSON.stringify({ baseUrl: els.baseUrl.value.trim(), model: els.model.value.trim(), prompt: currentTopic, context: "即兴演讲练习", transcript, elapsed })
+            body: JSON.stringify({ baseUrl: els.baseUrl.value.trim(), model: els.model.value.trim(), prompt: currentTopic, context: "TED式即兴演讲练习", inputMode: practiceMode, transcript, elapsed })
           });
           const payload = await response.json().catch(() => ({}));
           if (!response.ok) throw new Error(payload.error || "DeepSeek 复盘失败，请稍后重试");
@@ -689,6 +756,7 @@
 
       $("drawBtn").addEventListener("click", drawTopic);
       $("redrawBtn").addEventListener("click", drawTopic);
+      document.querySelectorAll("[data-mode]").forEach(button => button.addEventListener("click", () => setPracticeMode(button.dataset.mode)));
       $("startBtn").addEventListener("click", startPractice);
       $("finishBtn").addEventListener("click", finishSpeech);
       $("dictateBtn").addEventListener("click", openPhoneDictation);
