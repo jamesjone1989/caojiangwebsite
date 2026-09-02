@@ -259,7 +259,7 @@
     <section class="screen" id="topicScreen">
       <div class="topic-wrap">
         <div class="topic-meta">
-          <p class="eyebrow">今天的题目</p>
+          <p class="eyebrow" id="topicSource">今天的题目</p>
           <button class="text-action" id="redrawBtn">换一题</button>
         </div>
         <article class="topic-card">
@@ -385,12 +385,112 @@
         "用一个真实例子说明：知道和做到为什么是两回事。",
         "最近哪一个瞬间，让你意识到自己正在发生变化？",
         "如果要向十二岁的孩子解释你的工作，你会怎么说？",
-        "你更愿意和能力强但难沟通的人，还是能力普通但可靠的人合作？"
+        "你更愿意和能力强但难沟通的人，还是能力普通但可靠的人合作？",
+        "最近哪一次拒绝，让你反而更轻松了？",
+        "如果每天只能保留一个小时的独处时间，你会怎么使用？",
+        "讲一件你花了很久才承认自己做错了的事。",
+        "你认为成年人最容易被忽略的一种能力是什么？",
+        "如果要给过去一年的自己颁一个奖，你会颁什么奖？",
+        "你最近一次因为好奇心而获得意外收获是什么？",
+        "如果可以重新学习一项基础技能，你会选择什么？",
+        "什么事情看起来浪费时间，却对你很重要？",
+        "你愿意用一年的稳定，交换一次高风险的尝试吗？",
+        "讲一个你没有坚持到底，但并不后悔的决定。",
+        "你认为准时更体现能力，还是更体现尊重？",
+        "如果团队会议只能保留一种，你会保留哪一种？",
+        "讲一次你主动暴露问题，反而赢得信任的经历。",
+        "面对一项陌生任务，你更倾向于先问人还是先自己研究？",
+        "你认为工作中最值得被自动化的一件小事是什么？",
+        "如果你是新任管理者，第一周最应该做什么？",
+        "同事犯错时，公开讨论和私下提醒应该如何选择？",
+        "你更看重一个方案完成得快，还是解释得清楚？",
+        "讲一次别人给你的反馈起初刺耳、后来有用的经历。",
+        "如果只能用一个指标衡量团队状态，你会选什么？",
+        "你认为职场中应该主动展示成绩吗？",
+        "一份好汇报应该先讲过程，还是先讲结论？",
+        "如果所有会议都缩短一半，会发生什么？",
+        "你如何判断一件事值得做到九十分，还是六十分就够？",
+        "讲一次你通过改变沟通方式解决问题的经历。",
+        "朋友向你抱怨同一件事很多次，你会继续倾听还是直接建议？",
+        "关系中，及时回应和认真回应哪个更重要？",
+        "讲一件别人记得、你自己却几乎忘了的善意。",
+        "当朋友做出你不认同的决定时，你会怎么表达？",
+        "你认为道歉最重要的是态度、解释还是补救？",
+        "如果只能保留三位联系人，你会依据什么选择？",
+        "讲一次沉默比说话更有效的时刻。",
+        "你更愿意被人认为可靠，还是有趣？",
+        "与很久没联系的朋友重逢，什么最容易让关系重新靠近？",
+        "你认为边界感是拉远关系，还是保护关系？",
+        "讲一次你误解别人，也被别人误解的经历。",
+        "如果家人和你对成功的定义不同，你会如何沟通？",
+        "什么样的赞美最容易让你真正相信？",
+        "如果人工智能替你完成一半工作，你会把时间用在哪里？",
+        "你愿意让 AI 替你做重要决定吗？边界在哪里？",
+        "未来十年，哪一种今天常见的东西可能消失？",
+        "如果手机每天只能联网两个小时，你的生活会怎样变化？",
+        "你认为推荐算法更懂你，还是正在塑造你？",
+        "当 AI 给出与你相反的建议时，你会如何判断？",
+        "如果可以给未来的智能助手设定一条原则，你会写什么？",
+        "科技让人与人更近了，还是更容易保持距离？",
+        "你最希望哪一种生活琐事被机器人接管？",
+        "如果所有网络内容都必须实名发布，会有什么变化？",
+        "你愿意为了便利，放弃多少个人隐私？",
+        "AI 生成的作品打动了你，这份感动是真的吗？",
+        "如果记忆可以像文件一样备份，你会选择备份吗？",
+        "什么技术看起来先进，却让生活变得更复杂？",
+        "如果明天开始没有短视频，你会多出什么？",
+        "你认为选择太多是一种自由，还是一种负担？",
+        "当诚实可能伤害别人时，还应该完全诚实吗？",
+        "如果努力没有被看见，它还有价值吗？",
+        "你更愿意做正确但不受欢迎的事，还是妥协以推动事情？",
+        "稳定和成长发生冲突时，你通常如何选择？",
+        "一个人应该先照顾好自己，还是先承担责任？",
+        "你认为运气在个人成就中占多大作用？",
+        "结果正确但过程不合理，值得认可吗？",
+        "如果一件事没有明确回报，你还愿意长期投入吗？",
+        "你更在意别人理解你，还是尊重你？",
+        "善意的谎言在什么情况下可以被接受？",
+        "如果失败不会被任何人知道，你会更敢尝试吗？",
+        "你认为坚持和固执之间的分界线是什么？",
+        "拥有更多和需要更少，哪一个更接近自由？",
+        "如果可以删除一种日常礼貌，你会删掉什么？",
+        "为什么很多人明知疲惫，却仍然不愿意休息？",
+        "排队时最能看出一个人的什么？",
+        "你所在城市最值得保留的一种生活方式是什么？",
+        "如果公共场所完全禁止外放声音，你赞成吗？",
+        "什么样的小店最容易让你产生归属感？",
+        "你认为邻里关系变淡是进步还是遗憾？",
+        "如果周末商场全部关闭一天，城市会发生什么？",
+        "为什么人们愿意为体验付费，却不愿意为时间付费？",
+        "你最希望社会重新重视哪一种普通职业？",
+        "如果城市里没有广告牌，生活会变得更好吗？",
+        "一座城市真正吸引人的，是机会还是生活感？",
+        "你认为陌生人之间最需要恢复哪一种信任？",
+        "如果可以给所有电梯增加一个按钮，你会增加什么？",
+        "假如你的一天可以暂停三次，每次十分钟，你会在何时使用？",
+        "如果动物能说话，你最想采访哪一种动物？",
+        "如果必须把家搬到一艘船上，你会带哪三样东西？",
+        "假如每个人头顶都会显示一种情绪，世界会更好吗？",
+        "如果周一可以改名，你会给它取什么名字？",
+        "如果一年只能庆祝一个节日，你会保留哪个？",
+        "假如你能设计一种新的货币，它奖励什么行为？",
+        "如果梦境可以共享，你愿意把梦给别人看吗？",
+        "如果可以和十年后的自己通话三分钟，你会问什么？",
+        "假如所有人每天必须安静一小时，会发生什么？",
+        "如果生活是一款游戏，你现在最想解锁什么技能？",
+        "如果你能给世界增加一个小规则，你会增加什么？",
+        "假如时间可以赠送，你会把一天送给谁？",
+        "如果你的房间会说话，它最想提醒你什么？",
+        "如果可以把一种声音永久收藏，你会选择什么？",
+        "如果可以让一种气味成为城市名片，你会选择什么？",
+        "如果明天醒来多了一项天赋，你希望它是什么？",
+        "如果只能用三个词介绍现在的自己，你会选哪三个？",
+        "假如所有承诺都有保质期，人与人会如何相处？"
       ];
       const $ = id => document.getElementById(id);
       const screens = [...document.querySelectorAll(".screen")];
       const els = {
-        topic: $("topicText"), prepTopic: $("prepTopic"), prep: $("prepCount"), time: $("speechTime"), transcript: $("transcript"),
+        topic: $("topicText"), topicSource: $("topicSource"), redraw: $("redrawBtn"), start: $("startBtn"), prepTopic: $("prepTopic"), prep: $("prepCount"), time: $("speechTime"), transcript: $("transcript"),
         prepLabel: $("prepLabel"), prepRing: $("prepRing"), speechState: $("speechState"), speechNote: $("speechNote"), dictate: $("dictateBtn"),
         micPreflight: $("micPreflight"),
         review: $("reviewContent"), settings: $("settingsDialog"), apiKey: $("apiKey"), baseUrl: $("apiBaseUrl"),
@@ -400,6 +500,7 @@
       };
       let currentTopic = "", practiceMode = "voice", prepTimer = null, speechTimer = null, speechStartedAt = 0;
       let recognition = null, recognitionWanted = false, finalTranscript = "", lastTopicIndex = -1;
+      let drawingTopic = false, recentTopics = [];
       let pendingCountdown = false, countdownStarted = false, fallbackMode = false;
       let lastReviewMarkdown = "", loadedHistoryRecords = [];
       const apiStorageKey = "kaikoulian.deepseek.v2";
@@ -409,6 +510,7 @@
       const publicApiOrigin = "https://caojiang-works-map.jone19890801.chatgpt.site";
       const statusEndpoint = isStandaloneLocal ? "/api/status" : `${publicApiOrigin}/api/jixingyanjiang/status`;
       const analyzeEndpoint = isStandaloneLocal ? "/api/analyze" : `${publicApiOrigin}/api/jixingyanjiang/analyze`;
+      const topicEndpoint = isStandaloneLocal ? "/api/topic" : `${publicApiOrigin}/api/jixingyanjiang/topic`;
       const historyEndpoint = isStandaloneLocal ? "/api/history" : `${publicApiOrigin}/api/jixingyanjiang/history`;
 
       function deviceToken() {
@@ -431,10 +533,42 @@
       function escapeHtml(value) {
         return String(value ?? "").replace(/[&<>"']/g, char => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[char]));
       }
-      function drawTopic() {
+      function drawLocalTopic() {
         let index;
         do index = Math.floor(Math.random() * topics.length); while (topics.length > 1 && index === lastTopicIndex);
-        lastTopicIndex = index; currentTopic = topics[index]; els.topic.textContent = currentTopic; showScreen("topicScreen");
+        lastTopicIndex = index;
+        return topics[index];
+      }
+      async function drawTopic() {
+        if (drawingTopic) return;
+        drawingTopic = true; currentTopic = "";
+        els.topicSource.textContent = "DeepSeek 正在出题";
+        els.topic.textContent = "正在想一道有趣的题目……";
+        els.redraw.disabled = true; els.start.disabled = true; els.redraw.textContent = "生成中";
+        showScreen("topicScreen");
+        try {
+          const response = await fetch(topicEndpoint, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              ...(sessionStorage.getItem(apiKeyStorageKey) ? { "X-DeepSeek-Api-Key": sessionStorage.getItem(apiKeyStorageKey) } : {})
+            },
+            body: JSON.stringify({ baseUrl: els.baseUrl.value.trim(), model: els.model.value.trim(), recentTopics })
+          });
+          const payload = await response.json().catch(() => ({}));
+          if (!response.ok || !String(payload.topic || "").trim()) throw new Error(payload.error || "题目生成失败");
+          currentTopic = String(payload.topic).trim();
+          els.topicSource.textContent = "DeepSeek 随机题目";
+        } catch (error) {
+          currentTopic = drawLocalTopic();
+          els.topicSource.textContent = "115 道备用题库";
+          toast(error?.message?.includes("API Key") ? "尚未配置 DeepSeek，已使用备用题库" : "DeepSeek 暂时不可用，已使用备用题库");
+        } finally {
+          recentTopics = [...recentTopics, currentTopic].filter(Boolean).slice(-8);
+          els.topic.textContent = currentTopic;
+          els.redraw.disabled = false; els.start.disabled = false; els.redraw.textContent = "换一题";
+          drawingTopic = false;
+        }
       }
       function setPracticeMode(mode) {
         practiceMode = mode === "text" ? "text" : "voice";
