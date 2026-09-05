@@ -228,6 +228,66 @@
       *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }
     }
   </style>
+  <style>
+    /* A quiet practice notebook: clear stages, generous writing space. */
+    :root { --paper:#f4f6f3; --white:#ffffff; --ink:#183c32; --muted:#566960; --line:rgba(24,60,50,.13); --shadow:0 10px 36px rgba(24,60,50,.045); }
+    body { background:var(--paper); }
+    .app { width:min(820px,calc(100% - 40px)); }
+    .topbar { height:auto; min-height:52px; gap:12px; padding-bottom:18px; border-bottom:1px solid var(--line); }
+    .settings-btn,.history-btn { font-size:14px; min-height:44px; background:white; }
+    .journey { display:flex; gap:22px; padding:24px 0 0; color:var(--muted); font-size:14px; }
+    .journey span { padding-bottom:9px; border-bottom:2px solid transparent; }
+    .journey .current { color:var(--green); border-color:var(--green); font-weight:750; }
+    .screen { padding:30px 0; }
+    .home { width:100%; }
+    .home-note { color:var(--muted); font-size:14px; margin:20px 0 0; line-height:1.7; }
+    .topic-card,.review-card { border-radius:20px; padding:clamp(24px,6vw,46px); }
+    .topic-card h2 { font-family:inherit; font-weight:650; font-size:clamp(25px,4.5vw,36px); line-height:1.5; letter-spacing:-.025em; }
+    .topic-meta .eyebrow { letter-spacing:.02em; }
+    .mode-label { font-size:14px; }
+    .mode-option { min-height:82px; border-radius:12px; }
+    .mode-option span { font-size:14px; }
+    .mode-option.active { background:#eaf2ed; border-color:var(--green); }
+    .primary,.secondary,.danger { border-radius:14px; }
+    .connection-panel { margin-top:24px; padding:16px 18px; border:1px solid var(--line); border-radius:12px; background:#f7f9f7; }
+    .connection-panel p { margin:0; font-size:14px; line-height:1.6; }
+    .connection-panel .text-action { padding:8px 0 0; font-size:14px; }
+    .connection-panel[data-state="error"] { background:#fff2ee; border-color:#d9ada0; }
+    .connection-panel[data-state="ready"] { background:#edf5ef; }
+    .mic-preflight { font-size:14px; line-height:1.6; }
+    .topic-actions { margin-top:20px; }
+    .practice-topic { padding:18px 20px; margin:0 0 20px; border-left:3px solid var(--green); background:#eaf2ed; border-radius:0 12px 12px 0; line-height:1.65; font-size:18px; font-weight:600; }
+    .speech-time { font-size:36px; }
+    .transcript { border-radius:16px; background:white; box-shadow:none; min-height:46dvh; }
+    .speech-bottom { border-radius:16px; background:rgba(244,246,243,.97); }
+    .speech-note { font-size:14px; line-height:1.6; }
+    .review-card h2 { font-size:28px; }
+    .review-section h3 { font-size:15px; letter-spacing:0; }
+    .review-section p { font-size:16px; }
+    .review-more { margin-top:20px; padding-top:18px; border-top:1px solid var(--line); }
+    .review-more>summary { cursor:pointer; font-size:16px; color:var(--green); font-weight:750; padding:6px 0; }
+    .review-more[open]>summary { margin-bottom:16px; }
+    .review-save-note { margin:0 0 18px; color:var(--muted); font-size:14px; line-height:1.6; }
+    .connection { padding:14px; border-radius:12px; background:#edf2ee; font-size:14px; }
+    .field label { font-size:14px; }
+    dialog { max-height:88dvh; overflow:auto; }
+    .error-actions { display:flex; gap:10px; flex-wrap:wrap; margin:20px 0; }
+    .prep-back { margin-top:24px; }
+    @media(max-width:560px) {
+      .app { width:calc(100% - 28px); }
+      .brand-name { font-size:16px; }
+      .topbar { flex-wrap:wrap; }
+      .top-actions { gap:5px; }
+      .settings-btn,.history-btn { font-size:13px; padding:0 9px; }
+      .journey { gap:24px; padding-top:20px; }
+      .mode-picker { grid-template-columns:1fr 1fr; }
+      .mode-option { padding:12px; }
+      .mode-option span { font-size:13px; }
+      .topic-card,.review-card { padding:24px 20px; border-radius:18px; }
+      .practice-topic { font-size:17px; }
+      .speech-bottom .danger { min-height:52px; }
+    }
+  </style>
 </head>
 <body>
   <main class="app">
@@ -245,14 +305,16 @@
         <button class="settings-btn" id="settingsBtn" aria-label="DeepSeek 设置">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.3a3.7 3.7 0 1 0 0 7.4 3.7 3.7 0 0 0 0-7.4Zm8 3.7-.1-1.2 2-1.6-2-3.4-2.5 1a8 8 0 0 0-2-1.2L15 3h-4l-.4 2.6a8 8 0 0 0-2 1.2l-2.5-1-2 3.4 2 1.6L6 12l.1 1.2-2 1.6 2 3.4 2.5-1a8 8 0 0 0 2 1.2L11 21h4l.4-2.6a8 8 0 0 0 2-1.2l2.5 1 2-3.4-2-1.6.1-1.2Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
           <span class="api-dot" id="apiDot" aria-hidden="true"></span>
-          <span>API 设置</span>
+          <span id="connectionBadge">AI 未检查</span>
         </button>
       </div>
     </header>
+    <nav class="journey" aria-label="训练进度"><span data-step="topic" class="current">01 选题</span><span data-step="speech">02 表达</span><span data-step="review">03 复盘</span></nav>
 
     <section class="screen active" id="homeScreen">
       <div class="home">
         <button class="primary" id="drawBtn">抽一道题</button>
+        <p class="home-note">准备 10 秒，表达 1–3 分钟。<br>开始训练前，会检查 AI 是否可用。</p>
       </div>
     </section>
 
@@ -269,9 +331,10 @@
             <button class="mode-option active" type="button" data-mode="voice" role="radio" aria-checked="true"><strong>语音输入</strong><span>边说边转写，不保存音频</span></button>
             <button class="mode-option" type="button" data-mode="text" role="radio" aria-checked="false"><strong>文字输入</strong><span>准备结束后，直接打字作答</span></button>
           </div>
-          <p class="mic-preflight" id="micPreflight"><i></i><span>点击开始后，将先检查麦克风</span></p>
+          <div class="connection-panel" id="connectionPanel" data-state="idle" aria-live="polite"><p id="preflightStatus">开始前将验证 AI 连接与当前模型。</p><button class="text-action" id="configureTopicBtn" type="button">设置 AI 连接</button></div>
+          <p class="mic-preflight" id="micPreflight"><i></i><span>先检查 AI 连接，再开启麦克风与准备倒计时</span></p>
           <div class="topic-actions">
-            <button class="primary" id="startBtn">开始</button>
+            <button class="primary" id="startBtn">检查连接并开始</button>
           </div>
         </article>
       </div>
@@ -283,11 +346,13 @@
         <p class="prep-topic" id="prepTopic"></p>
         <div class="prep-ring" id="prepRing"><p class="countdown" id="prepCount">…</p></div>
         <p class="prep-hint">想清楚：你的观点是什么？准备举哪个例子？</p>
+        <button class="text-action prep-back" id="cancelPrepBtn">返回题目</button>
       </div>
     </section>
 
     <section class="screen" id="speechScreen">
       <div class="speech-panel">
+        <p class="practice-topic" id="speechTopic"></p>
         <div class="speech-head">
           <div class="speech-time" id="speechTime">00:00</div>
           <div class="listening"><i></i><span id="speechState">正在转写</span></div>
@@ -350,10 +415,11 @@
         <option value="deepseek-v4-pro">DeepSeek V4 Pro（更深入，适合重点复盘）</option>
       </select>
     </div>
-    <p class="connection" id="connectionText">正在检查连接……</p>
+    <p class="connection" id="connectionText" role="status">尚未验证连接</p>
+    <p class="api-privacy">连接测试会向当前模型发送一条简短测试消息，消耗少量 tokens。测试通过表示此刻可调用，不代表后续调用一定成功。</p>
     <div class="dialog-actions">
       <button class="secondary" id="closeSettingsBtn">取消</button>
-      <button class="primary" id="saveSettingsBtn">保存</button>
+      <button class="primary" id="saveSettingsBtn">保存并检查连接</button>
     </div>
   </dialog>
 
@@ -501,13 +567,16 @@
       let currentTopic = "", practiceMode = "voice", prepTimer = null, speechTimer = null, speechStartedAt = 0;
       let recognition = null, recognitionWanted = false, finalTranscript = "", lastTopicIndex = -1;
       let drawingTopic = false, recentTopics = [];
+      let checkingConnection = false, reviewElapsed = 0, reviewing = false, prepGeneration = 0, connectionRevision = 0;
       let pendingCountdown = false, countdownStarted = false, fallbackMode = false;
       let lastReviewMarkdown = "", loadedHistoryRecords = [];
       const apiStorageKey = "kaikoulian.deepseek.v2";
       const apiKeyStorageKey = "kaikoulian.deepseek.key.session.v1";
       const deviceTokenStorageKey = "kaikoulian.practice.device.v1";
-      const isStandaloneLocal = ["127.0.0.1", "localhost"].includes(location.hostname) && location.port === "8766";
-      const publicApiOrigin = "https://caojiang-works-map.jone19890801.chatgpt.site";
+      const isLocal = ["127.0.0.1", "localhost"].includes(location.hostname);
+      const isStandaloneLocal = isLocal && location.port === "8766";
+      const publicApiOrigin = isLocal ? "" : "https://caojiang-works-map.jone19890801.chatgpt.site";
+      const checkEndpoint = isStandaloneLocal ? "/api/check" : `${publicApiOrigin}/api/jixingyanjiang/check`;
       const statusEndpoint = isStandaloneLocal ? "/api/status" : `${publicApiOrigin}/api/jixingyanjiang/status`;
       const analyzeEndpoint = isStandaloneLocal ? "/api/analyze" : `${publicApiOrigin}/api/jixingyanjiang/analyze`;
       const topicEndpoint = isStandaloneLocal ? "/api/topic" : `${publicApiOrigin}/api/jixingyanjiang/topic`;
@@ -524,7 +593,41 @@
 
       function showScreen(id) {
         screens.forEach(screen => screen.classList.toggle("active", screen.id === id));
+        const step = ["prepScreen","speechScreen"].includes(id) ? "speech" : ["loadingScreen","reviewScreen"].includes(id) ? "review" : "topic";
+        document.querySelectorAll("[data-step]").forEach(item => { item.classList.toggle("current", item.dataset.step === step); if(item.dataset.step === step) item.setAttribute("aria-current","step"); else item.removeAttribute("aria-current"); });
         window.scrollTo({ top: 0, behavior: "instant" });
+      }
+      function connectionState(state, message) {
+        connectionRevision++;
+        $("connectionBadge").textContent = { idle:"AI 未检查", checking:"AI 检查中", ready:"AI 已连接", error:"AI 未连接" }[state];
+        els.apiDot.classList.toggle("ready", state === "ready");
+        $("connectionPanel").dataset.state = state;
+        $("preflightStatus").textContent = message;
+        els.connection.textContent = message;
+      }
+      async function verifyConnection() {
+        if (checkingConnection) return false;
+        checkingConnection = true;
+        connectionState("checking", "正在验证 API Key 和当前模型，请稍候……");
+        const controls = [els.start, els.redraw, $("retryBtn"), $("nextBtn"), $("saveSettingsBtn"), els.apiKey, els.baseUrl, els.model, ...document.querySelectorAll("[data-mode]")];
+        const disabled = controls.map(item => item.disabled);
+        controls.forEach(item => item.disabled = true);
+        try {
+          const response = await fetch(checkEndpoint, {
+            method: "POST", headers: { "Content-Type":"application/json", ...(sessionStorage.getItem(apiKeyStorageKey) ? { "X-DeepSeek-Api-Key":sessionStorage.getItem(apiKeyStorageKey) } : {}) },
+            body: JSON.stringify({ baseUrl:els.baseUrl.value.trim(), model:els.model.value }), signal:AbortSignal.timeout(20_000)
+          });
+          const result = await response.json().catch(() => ({}));
+          if (!response.ok || result.ok !== true) throw new Error(result.error || "连接检查未通过，请检查设置后重试。");
+          connectionState("ready", "连接检查通过，当前模型可以调用。");
+          return true;
+        } catch(error) {
+          connectionState("error", error.name === "TimeoutError" || error.name === "TypeError" ? "连接超时或网络不可用，请检查网络后重试。" : error.message);
+          return false;
+        } finally {
+          controls.forEach((item,index) => item.disabled = disabled[index]);
+          checkingConnection = false;
+        }
       }
       function toast(message) {
         els.toast.textContent = message; els.toast.classList.add("show"); clearTimeout(toast.timer);
@@ -540,7 +643,7 @@
         return topics[index];
       }
       async function drawTopic() {
-        if (drawingTopic) return;
+        if (drawingTopic || checkingConnection) return;
         drawingTopic = true; currentTopic = "";
         els.topicSource.textContent = "DeepSeek 正在出题";
         els.topic.textContent = "正在想一道有趣的题目……";
@@ -553,7 +656,7 @@
               "Content-Type": "application/json",
               ...(sessionStorage.getItem(apiKeyStorageKey) ? { "X-DeepSeek-Api-Key": sessionStorage.getItem(apiKeyStorageKey) } : {})
             },
-            body: JSON.stringify({ baseUrl: els.baseUrl.value.trim(), model: els.model.value.trim(), recentTopics })
+            body: JSON.stringify({ baseUrl: els.baseUrl.value.trim(), model: els.model.value.trim(), recentTopics }), signal:AbortSignal.timeout(28_000)
           });
           const payload = await response.json().catch(() => ({}));
           if (!response.ok || !String(payload.topic || "").trim()) throw new Error(payload.error || "题目生成失败");
@@ -578,7 +681,7 @@
         });
         els.micPreflight.classList.remove("ready");
         els.micPreflight.querySelector("span").textContent = practiceMode === "voice"
-          ? "点击开始后，将先检查麦克风"
+          ? "先检查 AI 连接，再开启麦克风与准备倒计时"
           : "文字模式不启用麦克风";
       }
       function formatTime(seconds) {
@@ -600,9 +703,9 @@
             const text = event.results[i][0].transcript;
             if (event.results[i].isFinal) finalTranscript += text; else interim += text;
           }
+          const follow = els.transcript.scrollHeight - els.transcript.scrollTop - els.transcript.clientHeight < 80;
           els.transcript.value = finalTranscript + interim;
-          els.transcript.scrollTop = els.transcript.scrollHeight;
-          updateTranscriptView();
+          if (follow) updateTranscriptView();
         };
         recognition.onerror = event => {
           if (["not-allowed", "service-not-allowed"].includes(event.error)) {
@@ -639,11 +742,17 @@
         recognitionWanted = false;
         if (recognition) try { recognition.stop(); } catch {}
       }
-      function startPractice() {
+      async function startPractice() {
+        if (checkingConnection || drawingTopic || reviewing || !currentTopic) return;
+        if (!await verifyConnection()) {
+          if (!els.settings.open) els.settings.showModal();
+          return;
+        }
+        prepGeneration += 1;
         clearInterval(prepTimer); clearInterval(speechTimer); finalTranscript = ""; els.transcript.value = "";
         lastReviewMarkdown = ""; els.copyMarkdown.disabled = true; els.exportMarkdown.disabled = true;
         pendingCountdown = true; countdownStarted = false; fallbackMode = false;
-        els.prep.textContent = "…"; els.prepLabel.textContent = practiceMode === "voice" ? "正在打开麦克风" : "准备开始"; els.prepTopic.textContent = currentTopic; els.prepRing.style.setProperty("--progress", 0);
+        els.prep.textContent = "…"; els.prepLabel.textContent = practiceMode === "voice" ? "正在打开麦克风" : "准备开始"; els.prepTopic.textContent = currentTopic; $("speechTopic").textContent = currentTopic; els.prepRing.style.setProperty("--progress", 0);
         els.speechState.textContent = practiceMode === "voice" ? "正在转写" : "文字输入";
         els.speechState.parentElement.classList.toggle("text-mode", practiceMode === "text");
         els.speechNote.textContent = practiceMode === "voice" ? "浏览器正在识别你的声音" : "请完整写下你的表达，写完后提交复盘";
@@ -651,7 +760,11 @@
         $("finishBtn").textContent = practiceMode === "voice" ? "结束演讲" : "提交复盘";
         els.dictate.hidden = true;
         showScreen("prepScreen");
-        if (practiceMode === "voice") startRecognition(); else beginCountdown();
+        if (practiceMode === "voice") {
+          startRecognition();
+          const generation = prepGeneration;
+          setTimeout(() => { if (generation === prepGeneration && pendingCountdown && !countdownStarted) { stopRecognition(); showDictationFallback("麦克风暂未就绪，可使用手机听写或文字输入"); beginCountdown(); } }, 8000);
+        } else beginCountdown();
       }
       function beginCountdown() {
         if (countdownStarted) return;
@@ -667,7 +780,8 @@
           }
           if (left <= 0) {
             clearInterval(prepTimer); els.prep.textContent = "开始"; els.prepRing.classList.add("cue");
-            setTimeout(beginSpeech, 420);
+            const generation = prepGeneration;
+            setTimeout(() => { if (generation === prepGeneration) beginSpeech(); }, 420);
           }
         }, 1000);
       }
@@ -685,14 +799,17 @@
         els.transcript.focus(); toast("请点击手机键盘上的麦克风");
       }
       async function finishSpeech() {
+        if (reviewing) return;
+        if (els.transcript.value.trim().length < 8) { toast("请先输入或说出一段完整表达（至少 8 个字）"); return; }
         clearInterval(speechTimer); if (practiceMode === "voice") stopRecognition(); finalTranscript = els.transcript.value.trim();
         const elapsed = Math.max(1, Math.round((Date.now() - speechStartedAt) / 1000));
-        showScreen("loadingScreen"); await requestReview(elapsed);
+        reviewElapsed = elapsed; showScreen("loadingScreen"); await requestReview(elapsed);
       }
       function savedApiConfig() {
         try { return JSON.parse(localStorage.getItem(apiStorageKey) || "{}"); } catch { return {}; }
       }
       async function initApiConfig() {
+        const revision = connectionRevision;
         const saved = savedApiConfig();
         const sessionApiKey = sessionStorage.getItem(apiKeyStorageKey) || "";
         els.apiKey.value = sessionApiKey;
@@ -704,16 +821,15 @@
             headers: sessionApiKey ? { "X-DeepSeek-Api-Key": sessionApiKey } : {}
           });
           const status = await response.json();
+          if (revision !== connectionRevision) return;
           if (!saved.baseUrl && status.baseUrl) els.baseUrl.value = status.baseUrl;
           if (!saved.model && ["deepseek-v4-flash", "deepseek-v4-pro"].includes(status.model)) els.model.value = status.model;
           const configured = Boolean(sessionApiKey || status.configured);
-          els.connection.textContent = configured
-            ? sessionApiKey ? "API Key 已加入当前浏览器会话，可以开始复盘。" : "DeepSeek 已由服务器安全配置。"
-            : "请输入 DeepSeek API Key 后保存。";
-          els.apiDot.classList.toggle("ready", configured);
-        } catch { els.connection.textContent = "请通过本地服务打开页面，才能调用 DeepSeek。"; }
+          if (!checkingConnection) connectionState("idle", configured ? "已保存连接设置，开始前会验证是否可用。" : "请先设置 DeepSeek API Key，训练前会自动检查。");
+        } catch { if (revision === connectionRevision) connectionState("idle", "暂未取得连接信息，开始前会重新检查。"); }
       }
-      function saveSettings() {
+      async function saveSettings() {
+        if (checkingConnection || reviewing) return;
         const apiKey = els.apiKey.value.trim();
         const baseUrl = els.baseUrl.value.trim().replace(/\/+$/, ""), model = els.model.value.trim();
         if (apiKey && apiKey.length < 10) return toast("API Key 看起来不完整");
@@ -722,8 +838,7 @@
         if (apiKey) sessionStorage.setItem(apiKeyStorageKey, apiKey);
         else sessionStorage.removeItem(apiKeyStorageKey);
         localStorage.setItem(apiStorageKey, JSON.stringify({ baseUrl, model }));
-        els.apiDot.classList.toggle("ready", Boolean(apiKey));
-        els.settings.close(); toast(apiKey ? "API Key 已保存到当前浏览器会话" : "API 设置已保存");
+        if (await verifyConnection()) { els.settings.close(); toast("连接已验证，可以开始训练"); }
       }
       function normalizeDimensions(value) {
         const tedNames = ["核心主张", "听众连接", "叙事推进", "证据支撑", "收束与启发"];
@@ -815,16 +930,17 @@
         lastReviewMarkdown = buildReviewMarkdown({ topic: currentTopic, transcript: els.transcript.value.trim(), inputMode: practiceMode, elapsed, model: payload.model, createdAt: payload.record?.createdAt || Date.now(), analysis });
         els.copyMarkdown.disabled = false; els.exportMarkdown.disabled = false;
         els.review.innerHTML = `
+          <p class="review-save-note">${payload.record ? "本次复盘已保存到训练记录。" : "本次复盘未保存到训练记录，请复制或导出留存。"}</p>
           <section class="review-section"><h3>01 · 核心观点（忠实复述）</h3><p>${escapeHtml(analysis.summary || "未能提取清晰的核心观点。")}</p></section>
           <section class="review-section"><h3>02 · TED式核心主线</h3><p class="throughline">${escapeHtml(analysis.throughline || "这次表达还没有形成一句清晰、可带走的主张。")}</p></section>
           <section class="review-section"><h3>03 · 最明显的问题</h3><p class="problem">${escapeHtml(analysis.main_problem || "这次表达暂时没有形成一个足够清晰的中心。")}</p></section>
-          <section class="review-section"><h3>04 · TED五维评估</h3><div class="dimensions">
+          <details class="review-more"><summary>展开 TED 五维评估与重组路线</summary><section class="review-section"><h3>04 · TED五维评估</h3><div class="dimensions">
             ${dimensions.map(item => `<div class="dimension"><div class="dimension-head"><span>${escapeHtml(item.name)}</span><span class="dimension-rating">${escapeHtml(item.rating)}</span></div><p>${escapeHtml(item.comment)}</p></div>`).join("")}
           </div></section>
           <section class="review-section"><h3>05 · TED式重组路线</h3><div class="ted-outline">
             ${outline.length ? outline.map(item => `<article class="ted-step"><h4>${escapeHtml(item.stage)}</h4><p class="ted-purpose">${escapeHtml(item.purpose)}</p><p>${escapeHtml(item.content)}</p></article>`).join("") : `<p>这次没有生成可用的重组路线，请重试复盘。</p>`}
           </div></section>
-          <section class="review-section"><h3>06 · 基于原话的修改建议</h3><div class="suggestions">
+          </details><section class="review-section"><h3>接下来，具体这样改</h3><div class="suggestions">
             ${suggestions.length ? suggestions.map(item => `<article class="suggestion"><h4>${escapeHtml(item.title)}</h4><p><strong>对应原话：</strong>${escapeHtml(item.evidence)}</p><p><strong>怎么改：</strong>${escapeHtml(item.action)}</p><p class="suggestion-example"><strong>可以这样讲：</strong>${escapeHtml(item.example)}</p></article>`).join("") : `<p>这次没有生成可用的具体建议，请重试复盘。</p>`}
           </div></section>
           <details class="transcript-details"><summary>查看本轮转写原文</summary><p>${escapeHtml(els.transcript.value.trim())}</p></details>`;
@@ -867,12 +983,14 @@
       }
       function renderError(message) {
         lastReviewMarkdown = ""; els.copyMarkdown.disabled = true; els.exportMarkdown.disabled = true;
-        els.review.innerHTML = `<div class="error-box">${escapeHtml(message)}<br><br>请点击右上角“API 设置”，填写 DeepSeek API Key 后重试。</div>`;
+        els.review.innerHTML = `<div class="error-box">${escapeHtml(message)}<br><br>本轮原文还在，可以重新连接后直接复盘。</div><div class="error-actions"><button class="primary" data-review-retry>重试本次复盘</button><button class="secondary" data-copy-original>复制本轮原文</button></div><details class="transcript-details" open><summary>本轮完整原文</summary><p>${escapeHtml(els.transcript.value)}</p></details>`;
         showScreen("reviewScreen");
       }
       async function requestReview(elapsed) {
+        if (reviewing) return;
         const transcript = els.transcript.value.trim();
         if (transcript.length < 8) return renderError("没有识别到足够的演讲文字。你可以返回同题再练，并使用手机系统听写补充文字。");
+        reviewing = true;
         try {
           const response = await fetch(analyzeEndpoint, {
             method: "POST", headers: {
@@ -886,12 +1004,24 @@
           if (!response.ok) throw new Error(payload.error || "DeepSeek 复盘失败，请稍后重试");
           renderReview(payload, elapsed);
         } catch (error) { renderError(error.message); }
+        finally { reviewing = false; }
       }
 
       $("drawBtn").addEventListener("click", drawTopic);
       $("redrawBtn").addEventListener("click", drawTopic);
       document.querySelectorAll("[data-mode]").forEach(button => button.addEventListener("click", () => setPracticeMode(button.dataset.mode)));
       $("startBtn").addEventListener("click", startPractice);
+      $("configureTopicBtn").addEventListener("click", () => els.settings.showModal());
+      $("cancelPrepBtn").addEventListener("click", () => { prepGeneration += 1; pendingCountdown = false; clearInterval(prepTimer); stopRecognition(); showScreen("topicScreen"); });
+      [els.apiKey,els.model,els.baseUrl].forEach(field => field.addEventListener("input", () => connectionState("idle", "设置已修改，请保存并重新检查连接。")));
+      els.review.addEventListener("click", async event => {
+        if (event.target.closest("[data-review-retry]")) {
+          if (checkingConnection || reviewing) return;
+          if (!await verifyConnection()) { els.settings.showModal(); return; }
+          showScreen("loadingScreen"); await requestReview(reviewElapsed);
+        }
+        if (event.target.closest("[data-copy-original]")) await copyMarkdown(els.transcript.value);
+      });
       $("finishBtn").addEventListener("click", finishSpeech);
       $("dictateBtn").addEventListener("click", openPhoneDictation);
       $("retryBtn").addEventListener("click", startPractice);
@@ -917,7 +1047,7 @@
         els.apiKey.type = showing ? "password" : "text";
         event.currentTarget.textContent = showing ? "显示" : "隐藏";
       });
-      els.transcript.addEventListener("input", () => { finalTranscript = els.transcript.value; updateTranscriptView(); });
+      els.transcript.addEventListener("input", () => { finalTranscript = els.transcript.value; });
       deviceToken();
       initApiConfig();
     })();
