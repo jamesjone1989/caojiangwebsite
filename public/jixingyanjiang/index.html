@@ -302,7 +302,7 @@
       </div>
       <div class="top-actions">
         <button class="history-btn" id="historyBtn">训练记录</button>
-        <button class="settings-btn" id="settingsBtn" aria-label="DeepSeek 设置">
+        <button class="settings-btn" id="settingsBtn" aria-label="AI 服务与 API 设置">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.3a3.7 3.7 0 1 0 0 7.4 3.7 3.7 0 0 0 0-7.4Zm8 3.7-.1-1.2 2-1.6-2-3.4-2.5 1a8 8 0 0 0-2-1.2L15 3h-4l-.4 2.6a8 8 0 0 0-2 1.2l-2.5-1-2 3.4 2 1.6L6 12l.1 1.2-2 1.6 2 3.4 2.5-1a8 8 0 0 0 2 1.2L11 21h4l.4-2.6a8 8 0 0 0 2-1.2l2.5 1 2-3.4-2-1.6.1-1.2Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
           <span class="api-dot" id="apiDot" aria-hidden="true"></span>
           <span id="connectionBadge">AI 未检查</span>
@@ -369,7 +369,7 @@
     <section class="screen" id="loadingScreen">
       <div class="loading">
         <div class="loader"></div>
-        <h2>DeepSeek 正在进行 TED 式复盘</h2>
+        <h2>AI 正在进行 TED 式复盘</h2>
         <p>提炼核心主线，检查听众连接与证据，再用原话设计重组路线。</p>
       </div>
     </section>
@@ -395,25 +395,28 @@
   </main>
 
   <dialog id="settingsDialog">
-    <h2>DeepSeek 设置</h2>
+    <h2>AI 服务设置</h2>
+    <div class="field"><label for="apiProvider">服务商</label><select id="apiProvider"></select></div>
+    <p class="api-privacy" id="providerNote"></p>
     <div class="field">
-      <label for="apiKey">DeepSeek API Key</label>
+      <label for="apiKey">当前服务商的 API Key</label>
       <div class="secret-field">
         <input id="apiKey" type="password" placeholder="sk-..." autocomplete="off" autocapitalize="off" spellcheck="false">
         <button class="secret-toggle" id="toggleKeyBtn" type="button">显示</button>
       </div>
     </div>
-    <p class="api-privacy">仅保存在当前浏览器会话中，关闭标签页后自动清除；不会写入网站源码。</p>
+    <p class="api-privacy">Key 按服务商和地址隔离，仅保存在当前浏览器会话中，不会写入源码或训练记录。请求由本站后端转发至你选定的服务商；转写原文仅在复盘时发送。</p>
     <div class="field">
       <label for="apiBaseUrl">API 地址</label>
-      <input id="apiBaseUrl" value="https://api.deepseek.com" inputmode="url" autocomplete="url">
+      <input id="apiBaseUrl" value="https://api.deepseek.com" list="apiAddresses" inputmode="url" autocomplete="off" spellcheck="false">
+      <datalist id="apiAddresses"></datalist>
+      <details id="allowedAddresses" hidden><summary>查看支持的官方地址</summary><div id="allowedAddressList" style="font-size:13px;overflow-wrap:anywhere;line-height:1.8"></div></details>
     </div>
     <div class="field">
       <label for="apiModel">模型</label>
-      <select id="apiModel" aria-label="选择 DeepSeek 模型">
-        <option value="deepseek-v4-flash">DeepSeek V4 Flash（更快，适合日常复盘）</option>
-        <option value="deepseek-v4-pro">DeepSeek V4 Pro（更深入，适合重点复盘）</option>
-      </select>
+      <select id="apiModel" aria-label="选择文本模型"></select>
+      <input id="customModel" aria-label="自定义模型 ID" placeholder="填写开放平台中的准确模型 ID" autocomplete="off" spellcheck="false" hidden>
+      <p class="api-privacy">可以选择预设，也可以自定义模型 ID。是否可用取决于该接口和账户权限。</p>
     </div>
     <p class="connection" id="connectionText" role="status">尚未验证连接</p>
     <p class="api-privacy">连接测试会向当前模型发送一条简短测试消息，消耗少量 tokens。测试通过表示此刻可调用，不代表后续调用一定成功。</p>
@@ -434,7 +437,9 @@
 
   <div class="toast" id="toast" role="status"></div>
 
-  <script>
+  <script type="module">
+    import { providers, allowedBases, normalizeConfig } from "./ai-providers.mjs";
+    import { createSettingsStore } from "./ai-settings.mjs";
     (() => {
       const topics = [
         "如果你能改变公司里的一条默认规则，你会改变什么？为什么？",
@@ -570,8 +575,9 @@
       let checkingConnection = false, reviewElapsed = 0, reviewing = false, prepGeneration = 0, connectionRevision = 0;
       let pendingCountdown = false, countdownStarted = false, fallbackMode = false;
       let lastReviewMarkdown = "", loadedHistoryRecords = [];
-      const apiStorageKey = "kaikoulian.deepseek.v2";
-      const apiKeyStorageKey = "kaikoulian.deepseek.key.session.v1";
+      const aiStore = createSettingsStore(localStorage, sessionStorage);
+      const currentAI = () => aiStore.config();
+      const aiHeaders = () => aiStore.key(currentAI()) ? { "X-AI-Api-Key":aiStore.key(currentAI()) } : {};
       const deviceTokenStorageKey = "kaikoulian.practice.device.v1";
       const isLocal = ["127.0.0.1", "localhost"].includes(location.hostname);
       const isStandaloneLocal = isLocal && location.port === "8766";
@@ -609,17 +615,17 @@
         if (checkingConnection) return false;
         checkingConnection = true;
         connectionState("checking", "正在验证 API Key 和当前模型，请稍候……");
-        const controls = [els.start, els.redraw, $("retryBtn"), $("nextBtn"), $("saveSettingsBtn"), els.apiKey, els.baseUrl, els.model, ...document.querySelectorAll("[data-mode]")];
+        const controls = [els.start, els.redraw, $("retryBtn"), $("nextBtn"), $("saveSettingsBtn"), els.apiKey, els.baseUrl, els.model, $("apiProvider"), $("customModel"), ...document.querySelectorAll("[data-mode]")];
         const disabled = controls.map(item => item.disabled);
         controls.forEach(item => item.disabled = true);
         try {
           const response = await fetch(checkEndpoint, {
-            method: "POST", headers: { "Content-Type":"application/json", ...(sessionStorage.getItem(apiKeyStorageKey) ? { "X-DeepSeek-Api-Key":sessionStorage.getItem(apiKeyStorageKey) } : {}) },
-            body: JSON.stringify({ baseUrl:els.baseUrl.value.trim(), model:els.model.value }), signal:AbortSignal.timeout(20_000)
+            method: "POST", headers: { "Content-Type":"application/json", ...aiHeaders() },
+            body: JSON.stringify(currentAI()), signal:AbortSignal.timeout(25_000)
           });
           const result = await response.json().catch(() => ({}));
           if (!response.ok || result.ok !== true) throw new Error(result.error || "连接检查未通过，请检查设置后重试。");
-          connectionState("ready", "连接检查通过，当前模型可以调用。");
+          connectionState("ready", `${providers[currentAI().provider].name} · ${currentAI().model} 已验证可用。`);
           return true;
         } catch(error) {
           connectionState("error", error.name === "TimeoutError" || error.name === "TypeError" ? "连接超时或网络不可用，请检查网络后重试。" : error.message);
@@ -645,7 +651,7 @@
       async function drawTopic() {
         if (drawingTopic || checkingConnection) return;
         drawingTopic = true; currentTopic = "";
-        els.topicSource.textContent = "DeepSeek 正在出题";
+        els.topicSource.textContent = "AI 正在出题";
         els.topic.textContent = "正在想一道有趣的题目……";
         els.redraw.disabled = true; els.start.disabled = true; els.redraw.textContent = "生成中";
         showScreen("topicScreen");
@@ -654,18 +660,18 @@
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              ...(sessionStorage.getItem(apiKeyStorageKey) ? { "X-DeepSeek-Api-Key": sessionStorage.getItem(apiKeyStorageKey) } : {})
+              ...aiHeaders()
             },
-            body: JSON.stringify({ baseUrl: els.baseUrl.value.trim(), model: els.model.value.trim(), recentTopics }), signal:AbortSignal.timeout(28_000)
+            body: JSON.stringify({ ...currentAI(), recentTopics }), signal:AbortSignal.timeout(28_000)
           });
           const payload = await response.json().catch(() => ({}));
           if (!response.ok || !String(payload.topic || "").trim()) throw new Error(payload.error || "题目生成失败");
           currentTopic = String(payload.topic).trim();
-          els.topicSource.textContent = "DeepSeek 随机题目";
+          els.topicSource.textContent = (providers[payload.source]?.name || "AI") + " 随机题目";
         } catch (error) {
           currentTopic = drawLocalTopic();
           els.topicSource.textContent = "115 道备用题库";
-          toast(error?.message?.includes("API Key") ? "尚未配置 DeepSeek，已使用备用题库" : "DeepSeek 暂时不可用，已使用备用题库");
+          toast(error?.message?.includes("API Key") ? "尚未配置 AI，已使用备用题库" : "AI 暂时不可用，已使用备用题库");
         } finally {
           recentTopics = [...recentTopics, currentTopic].filter(Boolean).slice(-8);
           els.topic.textContent = currentTopic;
@@ -745,7 +751,7 @@
       async function startPractice() {
         if (checkingConnection || drawingTopic || reviewing || !currentTopic) return;
         if (!await verifyConnection()) {
-          if (!els.settings.open) els.settings.showModal();
+          if (!els.settings.open) openSettings();
           return;
         }
         prepGeneration += 1;
@@ -805,40 +811,53 @@
         const elapsed = Math.max(1, Math.round((Date.now() - speechStartedAt) / 1000));
         reviewElapsed = elapsed; showScreen("loadingScreen"); await requestReview(elapsed);
       }
-      function savedApiConfig() {
-        try { return JSON.parse(localStorage.getItem(apiStorageKey) || "{}"); } catch { return {}; }
+      function fillProvider(provider) {
+        const preset = providers[provider];
+        const saved = aiStore.profile(provider);
+        $("apiProvider").value = provider;
+        els.baseUrl.value = saved?.baseUrl || preset.baseUrl;
+        els.baseUrl.readOnly = provider !== "custom";
+        $("allowedAddresses").hidden = provider !== "custom";
+        $("providerNote").textContent = preset.note;
+        els.model.innerHTML = preset.models.map(model => '<option value="'+escapeHtml(model)+'">'+escapeHtml(model)+'</option>').join("") + '<option value="__custom__">自定义模型 ID…</option>';
+        const model = saved?.model || preset.models[0] || "";
+        els.model.value = preset.models.includes(model) ? model : "__custom__";
+        $("customModel").value = els.model.value === "__custom__" ? model : "";
+        $("customModel").hidden = els.model.value !== "__custom__";
+        els.apiKey.value = "";
+        try { els.apiKey.value = aiStore.key(normalizeConfig({provider,baseUrl:els.baseUrl.value,model:model || "placeholder"})); } catch { /* blank until configured */ }
+        els.apiKey.type = "password"; $("toggleKeyBtn").textContent = "显示";
+      }
+      function openSettings() {
+        if (drawingTopic || reviewing || checkingConnection || $("prepScreen").classList.contains("active") || $("speechScreen").classList.contains("active")) return toast("请完成当前操作后再修改 AI 设置");
+        fillProvider(currentAI().provider);
+        if (!els.settings.open) els.settings.showModal();
       }
       async function initApiConfig() {
+        $("apiProvider").innerHTML = Object.entries(providers).map(([id,p]) => '<option value="'+id+'">'+escapeHtml(p.name)+'</option>').join("");
+        $("apiAddresses").innerHTML = Object.keys(allowedBases).map(url => '<option value="'+url+'"></option>').join("");
+        $("allowedAddressList").innerHTML = Object.keys(allowedBases).map(url => '<div>'+escapeHtml(url)+'</div>').join("");
+        fillProvider(currentAI().provider);
         const revision = connectionRevision;
-        const saved = savedApiConfig();
-        const sessionApiKey = sessionStorage.getItem(apiKeyStorageKey) || "";
-        els.apiKey.value = sessionApiKey;
-        if (saved.baseUrl) els.baseUrl.value = saved.baseUrl;
-        if (["deepseek-v4-flash", "deepseek-v4-pro"].includes(saved.model)) els.model.value = saved.model;
-        try {
-          const response = await fetch(statusEndpoint, {
-            cache: "no-store",
-            headers: sessionApiKey ? { "X-DeepSeek-Api-Key": sessionApiKey } : {}
-          });
-          const status = await response.json();
-          if (revision !== connectionRevision) return;
-          if (!saved.baseUrl && status.baseUrl) els.baseUrl.value = status.baseUrl;
-          if (!saved.model && ["deepseek-v4-flash", "deepseek-v4-pro"].includes(status.model)) els.model.value = status.model;
-          const configured = Boolean(sessionApiKey || status.configured);
-          if (!checkingConnection) connectionState("idle", configured ? "已保存连接设置，开始前会验证是否可用。" : "请先设置 DeepSeek API Key，训练前会自动检查。");
-        } catch { if (revision === connectionRevision) connectionState("idle", "暂未取得连接信息，开始前会重新检查。"); }
+        let configured = Boolean(aiStore.key(currentAI()));
+        if (currentAI().provider === "deepseek") {
+          try {
+            const response = await fetch(statusEndpoint, {cache:"no-store",signal:AbortSignal.timeout(5000)});
+            const status = await response.json();
+            configured ||= Boolean(status.configured);
+          } catch { /* Starting practice performs the authoritative check. */ }
+        }
+        if (revision === connectionRevision) connectionState("idle", configured ? "已保存连接设置，开始前会验证是否可用。" : "请先设置 AI 服务和 API Key，训练前会自动检查。");
       }
       async function saveSettings() {
-        if (checkingConnection || reviewing) return;
-        const apiKey = els.apiKey.value.trim();
-        const baseUrl = els.baseUrl.value.trim().replace(/\/+$/, ""), model = els.model.value.trim();
-        if (apiKey && apiKey.length < 10) return toast("API Key 看起来不完整");
-        if (baseUrl !== "https://api.deepseek.com") return toast("当前 Demo 仅支持 DeepSeek 官方地址");
-        if (!["deepseek-v4-flash", "deepseek-v4-pro"].includes(model)) return toast("请选择 DeepSeek Flash 或 Pro");
-        if (apiKey) sessionStorage.setItem(apiKeyStorageKey, apiKey);
-        else sessionStorage.removeItem(apiKeyStorageKey);
-        localStorage.setItem(apiStorageKey, JSON.stringify({ baseUrl, model }));
-        if (await verifyConnection()) { els.settings.close(); toast("连接已验证，可以开始训练"); }
+        if (checkingConnection || reviewing || drawingTopic) return;
+        try {
+          const config = normalizeConfig({provider:$("apiProvider").value,baseUrl:els.baseUrl.value,model:els.model.value === "__custom__" ? $("customModel").value : els.model.value});
+          const apiKey = els.apiKey.value.trim();
+          if (apiKey && apiKey.length < 10) return toast("API Key 看起来不完整");
+          aiStore.save(config,apiKey);
+          if (await verifyConnection()) { els.settings.close(); toast("连接已验证，可以开始训练"); }
+        } catch(error) { connectionState("error",error.message); }
       }
       function normalizeDimensions(value) {
         const tedNames = ["核心主张", "听众连接", "叙事推进", "证据支撑", "收束与启发"];
@@ -996,12 +1015,12 @@
             method: "POST", headers: {
               "Content-Type": "application/json",
               "X-Practice-Device-Token": deviceToken(),
-              ...(sessionStorage.getItem(apiKeyStorageKey) ? { "X-DeepSeek-Api-Key": sessionStorage.getItem(apiKeyStorageKey) } : {})
+              ...aiHeaders()
             },
-            body: JSON.stringify({ baseUrl: els.baseUrl.value.trim(), model: els.model.value.trim(), prompt: currentTopic, context: "TED式即兴演讲练习", inputMode: practiceMode, transcript, elapsed })
+            body: JSON.stringify({ ...currentAI(), prompt: currentTopic, context: "TED式即兴演讲练习", inputMode: practiceMode, transcript, elapsed }), signal:AbortSignal.timeout(50_000)
           });
           const payload = await response.json().catch(() => ({}));
-          if (!response.ok) throw new Error(payload.error || "DeepSeek 复盘失败，请稍后重试");
+          if (!response.ok) throw new Error(payload.error || "AI 复盘失败，请稍后重试");
           renderReview(payload, elapsed);
         } catch (error) { renderError(error.message); }
         finally { reviewing = false; }
@@ -1011,13 +1030,16 @@
       $("redrawBtn").addEventListener("click", drawTopic);
       document.querySelectorAll("[data-mode]").forEach(button => button.addEventListener("click", () => setPracticeMode(button.dataset.mode)));
       $("startBtn").addEventListener("click", startPractice);
-      $("configureTopicBtn").addEventListener("click", () => els.settings.showModal());
+      $("configureTopicBtn").addEventListener("click", openSettings);
       $("cancelPrepBtn").addEventListener("click", () => { prepGeneration += 1; pendingCountdown = false; clearInterval(prepTimer); stopRecognition(); showScreen("topicScreen"); });
-      [els.apiKey,els.model,els.baseUrl].forEach(field => field.addEventListener("input", () => connectionState("idle", "设置已修改，请保存并重新检查连接。")));
+      [els.apiKey,els.model,els.baseUrl,$("customModel")].forEach(field => field.addEventListener("input", () => connectionState("idle", "设置已修改，请保存并重新检查连接。")));
+      $("apiProvider").addEventListener("change", () => { fillProvider($("apiProvider").value); connectionState("idle","已切换服务商，请填写对应 Key 并保存检查。"); });
+      els.model.addEventListener("change", () => { $("customModel").hidden = els.model.value !== "__custom__"; });
+      els.baseUrl.addEventListener("input", () => { els.apiKey.value = ""; els.apiKey.type = "password"; $("toggleKeyBtn").textContent = "显示"; });
       els.review.addEventListener("click", async event => {
         if (event.target.closest("[data-review-retry]")) {
           if (checkingConnection || reviewing) return;
-          if (!await verifyConnection()) { els.settings.showModal(); return; }
+          if (!await verifyConnection()) { openSettings(); return; }
           showScreen("loadingScreen"); await requestReview(reviewElapsed);
         }
         if (event.target.closest("[data-copy-original]")) await copyMarkdown(els.transcript.value);
@@ -1039,7 +1061,7 @@
         const markdown = buildReviewMarkdown(record);
         if (button.dataset.historyCopy) copyMarkdown(markdown); else exportMarkdown(markdown, record.topic);
       });
-      $("settingsBtn").addEventListener("click", () => els.settings.showModal());
+      $("settingsBtn").addEventListener("click", openSettings);
       $("closeSettingsBtn").addEventListener("click", () => els.settings.close());
       $("saveSettingsBtn").addEventListener("click", saveSettings);
       $("toggleKeyBtn").addEventListener("click", event => {

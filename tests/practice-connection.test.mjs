@@ -17,7 +17,7 @@ test('checks the selected model with a minimal completion, not key presence', as
     assert.equal(url, 'https://api.deepseek.com/chat/completions');
     const body = JSON.parse(options.body);
     assert.equal(body.model, config.model);
-    assert.equal(body.max_tokens, 8);
+    assert.equal(body.max_tokens, 16);
     assert.equal(body.messages[0].content, 'Reply OK.');
     return Response.json({choices:[{message:{content:'OK'}}]});
   });
@@ -43,7 +43,7 @@ function startHarness(connected, mode = 'voice') {
   els.settings = {open:false,showModal(){events.push('settings');}};
   const context = {checkingConnection:false,drawingTopic:false,reviewing:false,currentTopic:'如果必须删掉一个 App',prepGeneration:0,prepTimer:null,speechTimer:null,practiceMode:mode,els,
     verifyConnection:async()=>{events.push('check');return connected;},clearInterval(){},$:node,
-    showScreen:id=>events.push(id),startRecognition:()=>events.push('mic'),beginCountdown:()=>events.push('countdown'),setTimeout(){}};
+    showScreen:id=>events.push(id),startRecognition:()=>events.push('mic'),beginCountdown:()=>events.push('countdown'),openSettings:()=>events.push('settings'),setTimeout(){}};
   return {events,els,run:()=>runInNewContext(startSource+'startPractice()',context)};
 }
 test('failed preflight preserves text and never opens microphone or countdown',async()=>{
