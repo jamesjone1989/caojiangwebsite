@@ -348,7 +348,7 @@ img {
 }
 
 .highlight-books {
-  --card-height: 365px;
+  --card-height: 440px;
   --card-width: 70vw;
   color: var(--ink);
   background: var(--green);
@@ -360,17 +360,17 @@ img {
 }
 
 .highlight-ai {
-  --card-height: 440px;
+  --card-height: 470px;
   --card-width: 85vw;
   background: var(--red);
 }
 
 .highlight-write {
-  --card-height: 330px;
+  --card-height: 430px;
   --card-width: 73vw;
   background: #f2f2f4;
   color: var(--ink);
-  transform: translateY(76px) rotate(1.8deg);
+  transform: translateY(52px) rotate(1.2deg);
 }
 
 .highlight-write p {
@@ -378,7 +378,7 @@ img {
 }
 
 .highlight-product {
-  --card-height: 400px;
+  --card-height: 450px;
   --card-width: 76vw;
   background: #343438;
   transform: translateY(18px) rotate(-.8deg);
@@ -1925,6 +1925,7 @@ img {
   .highlight-card {
     flex: 0 0 var(--card-width, 76vw);
     min-width: 0;
+    aspect-ratio: 4 / 5;
     scroll-snap-align: center;
   }
 
