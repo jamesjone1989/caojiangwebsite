@@ -38,7 +38,7 @@ test('all provider preflights use selected model and destination, reject redirec
     const config={...normalizeConfig({provider}),apiKey:'test-placeholder'};
     let called=false;
     const result=await checkConnection(config,async(url,options)=>{
-      called=true; assert.equal(url,config.baseUrl+'/chat/completions'); assert.equal(options.redirect,'error');
+      called=true; assert.equal(url,config.baseUrl+'/chat/completions'); assert.equal(options.redirect,'manual');
       assert.equal(JSON.parse(options.body).model,config.model);
       return Response.json({choices:[{message:{content:'OK'}}]});
     });

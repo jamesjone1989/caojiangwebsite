@@ -31,7 +31,7 @@ test('invalid credentials, depleted balance, limits and unavailable model are di
 });
 test('empty success and timeout do not produce a connected status',async () => {
   assert.equal((await checkConnection(config,async () => Response.json({}))).ok,false);
-  assert.equal((await checkConnection(config,async () => {throw new Error('timeout');})).code,'network_error');
+  assert.equal((await checkConnection(config,async () => {throw new DOMException('timeout','TimeoutError');})).code,'upstream_timeout');
 });
 
 const page = readFileSync(new URL('../public/jixingyanjiang/index.html', import.meta.url), 'utf8');

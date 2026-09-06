@@ -1,10 +1,20 @@
 // Shared allowlist: never accept an arbitrary proxy destination.
 export const providers = {
   deepseek: { name: 'DeepSeek', baseUrl: 'https://api.deepseek.com', models: ['deepseek-v4-flash', 'deepseek-v4-pro'], note: '使用 DeepSeek 开放平台的 API Key。' },
-  openai: { name: 'OpenAI（ChatGPT 模型）', baseUrl: 'https://api.openai.com/v1', models: ['gpt-4.1-mini', 'gpt-4.1', 'gpt-4o-mini'], note: '填写 OpenAI 开放平台的 API Key，不是 ChatGPT 登录密码。API 按开放平台账户计费。' },
+  openai: { name: 'OpenAI（ChatGPT 模型）', baseUrl: 'https://api.openai.com/v1', models: ['gpt-5.6-luna', 'chat-latest', 'gpt-5.6-terra', 'gpt-5.6-sol', 'gpt-6-astra', 'gpt-4.1-mini', 'gpt-4.1', 'gpt-4o-mini'], note: '新设置默认 GPT-5.6 Luna；ChatGPT 当前版本使用 chat-latest。旧模型选择不会自动更改。需填写 OpenAI 开放平台 API Key，按 API 账户计费。模型目录核对于 2026-09-06。' },
   qwen: { name: '通义千问 / 百炼', baseUrl: 'https://dashscope.aliyuncs.com/compatible-mode/v1', models: ['qwen-plus', 'qwen-turbo'], note: '此预设为北京地域。其他地域请在自定义兼容接口中选择对应官方地址。' },
   siliconflow: { name: '硅基流动', baseUrl: 'https://api.siliconflow.cn/v1', models: ['deepseek-ai/DeepSeek-V4-Flash', 'Qwen/Qwen3-32B'], note: '模型 ID 须与硅基流动控制台一致；可填写该平台提供的其他文本模型。' },
   custom: { name: '自定义兼容接口', baseUrl: '', models: [], note: '仅支持下方列出的官方地址和 Chat Completions 文本模型，不支持任意中转站、Claude 原生 Messages 或 Responses-only 模型。' }
+};
+export const modelLabels = {
+  'gpt-5.6-luna':'GPT-5.6 Luna · 日常练习',
+  'chat-latest':'ChatGPT 当前版本 · chat-latest',
+  'gpt-5.6-terra':'GPT-5.6 Terra',
+  'gpt-5.6-sol':'GPT-5.6 Sol',
+  'gpt-6-astra':'GPT-6 Astra · 深度分析',
+  'gpt-4.1-mini':'GPT-4.1 mini · 旧版',
+  'gpt-4.1':'GPT-4.1 · 旧版',
+  'gpt-4o-mini':'GPT-4o mini · 旧版'
 };
 export const allowedBases = {
   'https://api.deepseek.com': 'deepseek',
@@ -30,6 +40,11 @@ export function completionBody(config, messages, {maxTokens = 2400, temperature 
   const body = {model:config.model, messages, stream:false};
   if (config.resolvedProvider === 'openai') {
     body.max_completion_tokens = maxTokens;
+    if (/^gpt-5\.6-(luna|terra|sol)(-|$)/.test(config.model)) body.reasoning_effort = 'none';
+    if (/^gpt-6-astra(-|$)/.test(config.model)) {
+      body.reasoning_effort = 'low';
+      body.max_completion_tokens += 2048;
+    }
   } else {
     body.max_tokens = maxTokens;
     body.temperature = Math.min(1, temperature);
