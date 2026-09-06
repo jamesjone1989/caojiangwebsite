@@ -44,3 +44,6 @@ next-env.d.ts
 
 # Official OPPO Sans binary is downloaded unmodified from ColorOS before dev/build.
 /public/fonts/OPPOSans4.0.ttf
+
+# Generated from the existing practice source before dev/build.
+/public/kaikoulian/

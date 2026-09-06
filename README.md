@@ -9,6 +9,10 @@
 - 小红书「曹将」
 - 独立作品「回声日记」
 - 互动作品「职场新人挑战地图」
+- AI 表达陪练「开口练」：https://caojiang.cn/kaikoulian/
+
+开口练的源文件保留在 `public/jixingyanjiang/`；`predev` / `prebuild` 自动同步到
+`public/kaikoulian/`，两个地址使用同一套页面、API 和浏览器存储，旧链接继续可用。
 
 ## 页面体验
 

@@ -21,6 +21,7 @@ const links = {
   aiVillage: "https://t.zsxq.com/2IJ1F",
   echoJournal: "https://huishengriji.cn",
   goodHabits: "/goodhabits/",
+  kaikoulian: "/kaikoulian/",
   challengeMap: "/tiaozhan/",
   xiaobot:
     "https://xiaobot.net/p/jghbd?refer=c3f68f06-3090-44fa-bf08-434f581889b3",
@@ -155,6 +156,7 @@ export default function Home() {
           <a href="#village">AI 新手村</a>
           <a href="#channels">公众号</a>
           <a href="#works">作品</a>
+          <a href="#kaikoulian">开口练</a>
         </nav>
       </header>
 
@@ -717,9 +719,35 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="chapter practice-section" id="kaikoulian" aria-labelledby="practice-heading">
+        <div className="practice-copy" data-reveal>
+          <p className="eyebrow">07 / 开口练 · AI 表达陪练</p>
+          <h2 id="practice-heading">把想法，<br />练成清楚的表达。</h2>
+          <p className="practice-description">
+            抽一个有趣的话题，准备 10 秒，再说说你的想法。
+            可以用语音，也可以打字；讲完后，让 AI 找出问题、给出具体建议，再帮你改成一篇完整的稿子。
+          </p>
+          <a className="primary-link practice-link" href={assetUrl(links.kaikoulian)}>
+            打开开口练
+            <ArrowUpRight aria-hidden="true" size={18} strokeWidth={2.2} />
+          </a>
+          <p className="practice-note">AI 选题与复盘需配置自己的 API Key，支持 DeepSeek、OpenAI 等服务。</p>
+        </div>
+        <div className="practice-example" data-reveal>
+          <div className="practice-example-label"><MessageCircle aria-hidden="true" size={24} /><span>试着聊聊这道题</span></div>
+          <h3>如果必须删掉<br />一个 App，<br />你会选哪一个？</h3>
+          <p>做一个选择，说清楚你的理由。</p>
+          <ol className="practice-steps">
+            <li><span>01</span><div><strong>选题</strong><p>AI 出题，也有 100 道备用话题。</p></div></li>
+            <li><span>02</span><div><strong>表达</strong><p>语音转写或文字输入，随时切换。</p></div></li>
+            <li><span>03</span><div><strong>复盘</strong><p>原文、修改建议、完整改写稿，一键复制或导出 Markdown。</p></div></li>
+          </ol>
+        </div>
+      </section>
+
       <section className="chapter xiaobot-section">
         <div className="xiaobot-copy" data-reveal>
-          <p className="eyebrow">07 / 小报童专栏</p>
+          <p className="eyebrow">08 / 小报童专栏</p>
           <h2>
             把结构化表达，
             <br />

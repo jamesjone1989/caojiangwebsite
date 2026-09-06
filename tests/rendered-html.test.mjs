@@ -99,6 +99,10 @@ test("server-renders the Cao Jiang works map", async () => {
   assert.doesNotMatch(html, />105</);
   assert.doesNotMatch(html, /日本/);
   assert.match(html, /回声日记/);
+  assert.match(html, /id="kaikoulian"/);
+  assert.match(html, /href="(?:\.\/|\/)kaikoulian\/"/);
+  assert.match(html, /打开开口练/);
+  assert.match(html, /原文、修改建议、完整改写稿/);
   assert.match(html, /职场新人挑战地图/);
   assert.match(html, /href="(?:\.\/|\/)tiaozhan\/"/);
   assert.match(html, /<strong>20<\/strong> 个办公室挑战/);
