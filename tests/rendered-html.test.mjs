@@ -99,6 +99,13 @@ test("server-renders the Cao Jiang works map", async () => {
   assert.doesNotMatch(html, />105</);
   assert.doesNotMatch(html, /日本/);
   assert.match(html, /回声日记/);
+  const worksCard = html.match(/<article class="highlight-card highlight-product">[\s\S]*?<\/article>/)?.[0] ?? "";
+  const worksDirectory = html.match(/<nav aria-label="作品目录">[\s\S]*?<\/nav>/)?.[0] ?? "";
+  const worksCount = worksDirectory.match(/<a /g)?.length ?? 0;
+  assert.equal(worksCount, 4);
+  assert.ok(worksCard.includes(`<span class="highlight-number">${String(worksCount).padStart(2, "0")}</span>`));
+  assert.match(worksCard, /记录生活，练习表达，探索职场。/);
+  assert.doesNotMatch(worksCard, /把日子说给自己听/);
   assert.match(html, /id="kaikoulian"/);
   assert.match(html, /href="(?:\.\/|\/)kaikoulian\/"/);
   assert.match(html, /打开开口练/);

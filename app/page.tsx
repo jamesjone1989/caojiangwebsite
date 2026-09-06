@@ -7,7 +7,7 @@ import {
   ArrowUpRight,
   BookOpen,
   MessageCircle,
-  Radio,
+  Layers,
   Sparkles,
   Users,
 } from "lucide-react";
@@ -221,10 +221,10 @@ export default function Home() {
             <p>公众号和小红书，都叫「曹将」。</p>
           </article>
           <article className="highlight-card highlight-product">
-            <span className="highlight-number">01</span>
-            <Radio aria-hidden="true" size={28} />
+            <span className="highlight-number">04</span>
+            <Layers aria-hidden="true" size={28} />
             <h3>独立作品</h3>
-            <p>把日子说给自己听。</p>
+            <p>记录生活，练习表达，探索职场。</p>
           </article>
         </div>
       </section>
