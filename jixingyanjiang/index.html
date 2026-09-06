@@ -581,7 +581,7 @@
       const deviceTokenStorageKey = "kaikoulian.practice.device.v1";
       const isLocal = ["127.0.0.1", "localhost"].includes(location.hostname);
       const isStandaloneLocal = isLocal && location.port === "8766";
-      const publicApiOrigin = isLocal ? "" : "https://caojiang-works-map.jone19890801.chatgpt.site";
+      const publicApiOrigin = isLocal ? "" : "https://jixing-api.caojiang.cn";
       const checkEndpoint = isStandaloneLocal ? "/api/check" : `${publicApiOrigin}/api/jixingyanjiang/check`;
       const statusEndpoint = isStandaloneLocal ? "/api/status" : `${publicApiOrigin}/api/jixingyanjiang/status`;
       const analyzeEndpoint = isStandaloneLocal ? "/api/analyze" : `${publicApiOrigin}/api/jixingyanjiang/analyze`;
@@ -996,6 +996,7 @@
           const payload = await response.json().catch(() => ({}));
           if (!response.ok) throw new Error(payload.error || "训练记录读取失败");
           renderHistory(payload.records);
+          if (payload.warning) els.historyContent.insertAdjacentHTML("afterbegin", `<p class="error-box" role="status">${escapeHtml(payload.warning)}</p>`);
         } catch (error) {
           els.historyContent.innerHTML = `<p class="error-box">${escapeHtml(error.message || "训练记录读取失败，请稍后重试。")}</p>`;
         }
