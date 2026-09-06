@@ -88,7 +88,7 @@ test('topic and review routes complete with each provider and preserve review hi
     const source=readFileSync(new URL('../app/api/jixingyanjiang/'+kind+'/route.ts',import.meta.url),'utf8');
     const result={topic:'如果必须删掉一个常用 App，你会删掉哪个？',summary:'真实观点',throughline:'一句主张',main_problem:'缺少例子',dimensions:[],ted_outline:[],suggestions:[]};
     const calls=[];
-    const module={exports:{}};
+    const compiledModule={exports:{}};
     const shared={cleanJsonText:x=>x,json:(req,data,status=200)=>Response.json(data,{status}),corsHeaders:()=>({})};
     const service={requestConfig,upstreamError,sendCompletion:async(config,messages,options)=>{
       calls.push(config);
@@ -97,10 +97,10 @@ test('topic and review routes complete with each provider and preserve review hi
       return Response.json({choices:[{message:{content:JSON.stringify(result)}}],model:config.model});
     }};
     runInNewContext(ts.transpileModule(source,{compilerOptions:{module:ts.ModuleKind.CommonJS}}).outputText,{
-      module,exports:module.exports,Response,process:{env:{}},console,
+      module:compiledModule,exports:compiledModule.exports,Response,process:{env:{}},console,
       require:id=>id==='../shared'?shared:id==='../provider-request.mjs'?service:{savePracticeSession:async(req,record)=>({id:'test-record',...record})}
     });
-    const response=await module.exports.POST(new Request('https://app.test/api/'+kind,{
+    const response=await compiledModule.exports.POST(new Request('https://app.test/api/'+kind,{
       method:'POST',headers:{'Content-Type':'application/json','X-AI-Api-Key':provider+'-key'},
       body:JSON.stringify({provider,transcript:'我选择删掉这个应用，因为它每天占用了我太多时间。',prompt:'删掉一个 App',elapsed:60})
     }));
