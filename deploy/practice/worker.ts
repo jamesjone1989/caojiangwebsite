@@ -41,7 +41,7 @@ const worker = {
       if (origin && !origins.has(origin)) return json(request, {error:'此来源不允许访问。'}, 403);
       const path = new URL(request.url).pathname;
       const route = path.replace(/^\/api\/jixingyanjiang\//, '');
-      if (path === '/health' && request.method === 'GET') return json(request, {ok:true,release:'independent-api-20260906'});
+      if (path === '/health' && request.method === 'GET') return json(request, {ok:true,release:'expression-rewrite-20260906'});
       if (!path.startsWith('/api/jixingyanjiang/') || !['check','topic','analyze','history','status'].includes(route)) return json(request, {error:'接口不存在。'}, 404);
       if (request.method === 'OPTIONS') return new Response(null,{status:204,headers:corsHeaders(request)});
       if (request.method === 'GET' && route === 'history') return history(request);

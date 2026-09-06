@@ -264,6 +264,9 @@
     .review-card h2 { font-size:28px; }
     .review-section h3 { font-size:15px; letter-spacing:0; }
     .review-section p { font-size:16px; }
+    .speech-mode-picker { margin: 4px 0 16px; grid-template-columns: 1fr 1fr; }
+    .speech-mode-picker .mode-option { min-height: 54px; text-align: center; }
+    .rewritten-article { white-space: pre-wrap; line-height: 1.9; }
     .review-more { margin-top:20px; padding-top:18px; border-top:1px solid var(--line); }
     .review-more>summary { cursor:pointer; font-size:16px; color:var(--green); font-weight:750; padding:6px 0; }
     .review-more[open]>summary { margin-bottom:16px; }
@@ -353,6 +356,10 @@
     <section class="screen" id="speechScreen">
       <div class="speech-panel">
         <p class="practice-topic" id="speechTopic"></p>
+        <div class="mode-picker speech-mode-picker" role="radiogroup" aria-label="表达输入方式，可随时切换并保留内容">
+          <button class="mode-option" type="button" data-mode="text" role="radio" aria-checked="false"><strong>文字输入</strong></button>
+          <button class="mode-option active" type="button" data-mode="voice" role="radio" aria-checked="true"><strong>语音输入</strong></button>
+        </div>
         <div class="speech-head">
           <div class="speech-time" id="speechTime">00:00</div>
           <div class="listening"><i></i><span id="speechState">正在转写</span></div>
@@ -370,7 +377,7 @@
       <div class="loading">
         <div class="loader"></div>
         <h2>AI 正在进行 TED 式复盘</h2>
-        <p>提炼核心主线，检查听众连接与证据，再用原话设计重组路线。</p>
+        <p>分析原文、给出修改建议，再整理成一篇完整改写稿。</p>
       </div>
     </section>
 
@@ -680,7 +687,14 @@
         }
       }
       function setPracticeMode(mode) {
-        practiceMode = mode === "text" ? "text" : "voice";
+        const nextMode = mode === "text" ? "text" : "voice";
+        const changed = nextMode !== practiceMode;
+        const speaking = $("speechScreen").classList.contains("active");
+        if (speaking && changed) {
+          stopRecognition();
+          finalTranscript = els.transcript.value;
+        }
+        practiceMode = nextMode;
         document.querySelectorAll("[data-mode]").forEach(button => {
           const active = button.dataset.mode === practiceMode;
           button.classList.toggle("active", active); button.setAttribute("aria-checked", String(active));
@@ -689,6 +703,20 @@
         els.micPreflight.querySelector("span").textContent = practiceMode === "voice"
           ? "先检查 AI 连接，再开启麦克风与准备倒计时"
           : "文字模式不启用麦克风";
+        if (speaking && changed) {
+          fallbackMode = false;
+          updateSpeechModeUI();
+          if (practiceMode === "voice") startRecognition();
+          else els.transcript.focus();
+        }
+      }
+      function updateSpeechModeUI() {
+        els.speechState.textContent = practiceMode === "voice" ? "正在转写" : "文字输入";
+        els.speechState.parentElement.classList.toggle("text-mode", practiceMode === "text");
+        els.speechNote.textContent = practiceMode === "voice" ? "浏览器正在识别你的声音，可切换文字输入修改" : "直接打字或粘贴内容；切换输入方式不会清空原文";
+        els.transcript.placeholder = practiceMode === "voice" ? "开始说话后，完整转写会持续显示在这里……" : "在这里写下你的完整表达……";
+        $("finishBtn").textContent = practiceMode === "voice" ? "结束演讲" : "提交复盘";
+        els.dictate.hidden = true;
       }
       function formatTime(seconds) {
         return `${String(Math.floor(seconds / 60)).padStart(2,"0")}:${String(seconds % 60).padStart(2,"0")}`;
@@ -697,13 +725,16 @@
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         if (!SpeechRecognition) return false;
         recognition = new SpeechRecognition();
+        const activeRecognition = recognition;
         recognition.lang = "zh-CN"; recognition.continuous = true; recognition.interimResults = true;
         recognition.onstart = () => {
+          if (recognition !== activeRecognition || !recognitionWanted) return;
           els.micPreflight.classList.add("ready");
           els.micPreflight.querySelector("span").textContent = "麦克风已准备";
           if (pendingCountdown && !countdownStarted) beginCountdown();
         };
         recognition.onresult = event => {
+          if (recognition !== activeRecognition || !recognitionWanted || practiceMode !== "voice" || !$("speechScreen").classList.contains("active")) return;
           let interim = "";
           for (let i = event.resultIndex; i < event.results.length; i++) {
             const text = event.results[i][0].transcript;
@@ -714,6 +745,7 @@
           if (follow) updateTranscriptView();
         };
         recognition.onerror = event => {
+          if (recognition !== activeRecognition || !recognitionWanted) return;
           if (["not-allowed", "service-not-allowed"].includes(event.error)) {
             recognitionWanted = false; showDictationFallback("麦克风未开启，请使用手机系统听写");
             if (pendingCountdown && !countdownStarted) beginCountdown();
@@ -723,7 +755,10 @@
           }
         };
         recognition.onend = () => {
-          if (recognitionWanted) setTimeout(() => { try { recognition.start(); } catch {} }, 250);
+          if (recognitionWanted && recognition === activeRecognition) setTimeout(() => {
+            if (!recognitionWanted || recognition !== activeRecognition || practiceMode !== "voice") return;
+            try { activeRecognition.start(); } catch {}
+          }, 250);
         };
         return true;
       }
@@ -746,7 +781,12 @@
       }
       function stopRecognition() {
         recognitionWanted = false;
-        if (recognition) try { recognition.stop(); } catch {}
+        const previous = recognition;
+        recognition = null;
+        if (previous) {
+          previous.onstart = previous.onresult = previous.onerror = previous.onend = null;
+          try { previous.abort(); } catch {}
+        }
       }
       async function startPractice() {
         if (checkingConnection || drawingTopic || reviewing || !currentTopic) return;
@@ -759,12 +799,7 @@
         lastReviewMarkdown = ""; els.copyMarkdown.disabled = true; els.exportMarkdown.disabled = true;
         pendingCountdown = true; countdownStarted = false; fallbackMode = false;
         els.prep.textContent = "…"; els.prepLabel.textContent = practiceMode === "voice" ? "正在打开麦克风" : "准备开始"; els.prepTopic.textContent = currentTopic; $("speechTopic").textContent = currentTopic; els.prepRing.style.setProperty("--progress", 0);
-        els.speechState.textContent = practiceMode === "voice" ? "正在转写" : "文字输入";
-        els.speechState.parentElement.classList.toggle("text-mode", practiceMode === "text");
-        els.speechNote.textContent = practiceMode === "voice" ? "浏览器正在识别你的声音" : "请完整写下你的表达，写完后提交复盘";
-        els.transcript.placeholder = practiceMode === "voice" ? "开始说话后，完整转写会持续显示在这里……" : "在这里写下你的完整表达……";
-        $("finishBtn").textContent = practiceMode === "voice" ? "结束演讲" : "提交复盘";
-        els.dictate.hidden = true;
+        updateSpeechModeUI();
         showScreen("prepScreen");
         if (practiceMode === "voice") {
           startRecognition();
@@ -901,7 +936,7 @@
         return text || fallback;
       }
       function buildReviewMarkdown(record) {
-        const analysis = record.analysis || {}, dimensions = normalizeDimensions(analysis.dimensions), outline = normalizeTedOutline(analysis.ted_outline), suggestions = normalizeSuggestions(analysis.suggestions);
+        const analysis = record.analysis || {}, suggestions = normalizeSuggestions(analysis.suggestions);
         const date = new Intl.DateTimeFormat("zh-CN", { year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" }).format(new Date(record.createdAt || Date.now()));
         const lines = [
           "# 开口练｜即兴演讲复盘", "",
@@ -910,21 +945,14 @@
           ...(record.inputMode ? [`- 输入方式：${record.inputMode === "text" ? "文字输入" : "语音输入"}`] : []),
           `- 时长：${formatTime(Number(record.elapsed) || 0)}`,
           `- 模型：${markdownText(record.model)}`, "",
-          "## 1. 核心观点（忠实复述）", "", markdownText(analysis.summary), "",
-          "## 2. TED式核心主线", "", markdownText(analysis.throughline), "",
-          "## 3. 最明显的问题", "", markdownText(analysis.main_problem), "",
-          "## 4. TED五维评估", ""
+          "## 1. 原文", "", ...markdownText(record.transcript).split(/\r?\n/).map(line => `> ${line}`), "",
+          "## 2. 修改建议", "", `**最明显的问题：** ${markdownText(analysis.main_problem)}`, ""
         ];
-        dimensions.forEach(item => lines.push(`- **${markdownText(item.name)}｜${markdownText(item.rating)}**：${markdownText(item.comment)}`));
-        lines.push("", "## 5. TED式重组路线", "");
-        if (outline.length) outline.forEach((item, index) => lines.push(`### ${index + 1}. ${markdownText(item.stage)}`, "", `- **目的：** ${markdownText(item.purpose)}`, `- **本次可以这样组织：** ${markdownText(item.content)}`, ""));
-        else lines.push("暂无重组路线。", "");
-        lines.push("## 6. 基于原话的修改建议", "");
         if (suggestions.length) suggestions.forEach((item, index) => {
           lines.push(`### ${index + 1}. ${markdownText(item.title)}`, "", `- **对应原话：** ${markdownText(item.evidence)}`, `- **怎么改：** ${markdownText(item.action)}`, `- **可以这样讲：** ${markdownText(item.example)}`, "");
         });
         else lines.push("暂无具体建议。", "");
-        lines.push("## 7. 转写原文", "", ...markdownText(record.transcript).split(/\r?\n/).map(line => `> ${line}`), "");
+        lines.push("## 3. 修改后的文章", "", markdownText(analysis.rewritten_article, "这条历史记录尚未生成完整改写稿。"), "");
         return lines.join("\n");
       }
       async function copyMarkdown(markdown) {
@@ -962,6 +990,7 @@
           </details><section class="review-section"><h3>接下来，具体这样改</h3><div class="suggestions">
             ${suggestions.length ? suggestions.map(item => `<article class="suggestion"><h4>${escapeHtml(item.title)}</h4><p><strong>对应原话：</strong>${escapeHtml(item.evidence)}</p><p><strong>怎么改：</strong>${escapeHtml(item.action)}</p><p class="suggestion-example"><strong>可以这样讲：</strong>${escapeHtml(item.example)}</p></article>`).join("") : `<p>这次没有生成可用的具体建议，请重试复盘。</p>`}
           </div></section>
+          <section class="review-section"><h3>修改后的完整文章</h3><p class="rewritten-article">${escapeHtml(analysis.rewritten_article || "这次没有生成完整改写稿，请重试复盘。")}</p></section>
           <details class="transcript-details"><summary>查看本轮转写原文</summary><p>${escapeHtml(els.transcript.value.trim())}</p></details>`;
         showScreen("reviewScreen");
       }
@@ -984,6 +1013,7 @@
             ${outline.length ? `<h4>TED式重组路线</h4>${outline.map(item => `<div class="history-suggestion"><strong>${escapeHtml(item.stage)}</strong><p>${escapeHtml(item.content)}</p></div>`).join("")}` : ""}
             ${suggestions.length ? `<h4>修改建议</h4>${suggestions.map(item => `<div class="history-suggestion"><strong>${escapeHtml(item.title)}</strong><p>${escapeHtml(item.action)}</p><p>示范：${escapeHtml(item.example)}</p></div>`).join("")}` : ""}
             <h4>转写原文</h4><p>${escapeHtml(record.transcript || "暂无")}</p>
+            <h4>修改后的文章</h4><p>${escapeHtml(analysis.rewritten_article || "这条历史记录尚未生成完整改写稿。")}</p>
             <div class="history-export-actions"><button class="secondary" data-history-copy="${escapeHtml(record.id)}">复制 Markdown</button><button class="secondary" data-history-export="${escapeHtml(record.id)}">导出 .md</button></div>
           </div></details>`;
         }).join("")}</div>`;
@@ -1018,7 +1048,7 @@
               "X-Practice-Device-Token": deviceToken(),
               ...aiHeaders()
             },
-            body: JSON.stringify({ ...currentAI(), prompt: currentTopic, context: "TED式即兴演讲练习", inputMode: practiceMode, transcript, elapsed }), signal:AbortSignal.timeout(50_000)
+            body: JSON.stringify({ ...currentAI(), prompt: currentTopic, context: "TED式即兴演讲练习", inputMode: practiceMode, transcript, elapsed }), signal:AbortSignal.timeout(70_000)
           });
           const payload = await response.json().catch(() => ({}));
           if (!response.ok) throw new Error(payload.error || "AI 复盘失败，请稍后重试");

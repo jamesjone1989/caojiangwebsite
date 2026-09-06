@@ -86,7 +86,7 @@ test('review/topic bodies retain JSON output and contain only the selected key',
 test('topic and review routes complete with each provider and preserve review history',async()=>{
   for(const kind of ['topic','analyze']) for(const provider of ['openai','deepseek','qwen','siliconflow']) {
     const source=readFileSync(new URL('../app/api/jixingyanjiang/'+kind+'/route.ts',import.meta.url),'utf8');
-    const result={topic:'如果必须删掉一个常用 App，你会删掉哪个？',summary:'真实观点',throughline:'一句主张',main_problem:'缺少例子',dimensions:[],ted_outline:[],suggestions:[]};
+    const result={topic:'如果必须删掉一个常用 App，你会删掉哪个？',summary:'真实观点',throughline:'一句主张',main_problem:'缺少例子',dimensions:[],ted_outline:[],suggestions:[],rewritten_article:'我会删掉这个应用，把时间留给真正重要的事情。'};
     const calls=[];
     const compiledModule={exports:{}};
     const shared={cleanJsonText:x=>x,json:(req,data,status=200)=>Response.json(data,{status}),corsHeaders:()=>({})};

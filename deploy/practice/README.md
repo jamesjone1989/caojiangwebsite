@@ -9,7 +9,7 @@
 在仓库根目录执行：
 
 ```sh
-node --test tests/practice-connection.test.mjs tests/practice-providers.test.mjs tests/practice-worker.test.mjs tests/practice-independent.test.mjs
+node --test tests/practice-connection.test.mjs tests/practice-providers.test.mjs tests/practice-worker.test.mjs tests/practice-independent.test.mjs tests/practice-expression-export.test.mjs
 npm run lint
 node_modules/.bin/wrangler deploy --config deploy/practice/wrangler.jsonc
 ```
@@ -30,6 +30,7 @@ node_modules/.bin/wrangler deploy --config deploy/practice/wrangler.jsonc
 
 ## 线上验收
 
-- `/health` 返回 `independent-api-20260906`。
+- `/health` 返回 `expression-rewrite-20260906`。
+- 新复盘必须有 `analysis.rewritten_article` 完整改写稿，否则返回 `incomplete_review`，不保存残缺复盘。已有 JSON 存储兼容该字段，无需迁移数据库。
 - 使用明确无效的测试 Key，检查接口应返回服务商鉴权错误，而不是旧版 `network_error`。这只能证明网络链路和错误分类正常，不代表用户真实账号的额度和模型权限可用。
 - 不使用用户真实 Key 自动生成付费内容。成功复盘的保存和新旧记录合并由本地 Workers + D1 集成测试验证，真实账号测试由用户在原网页完成。

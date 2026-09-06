@@ -8,6 +8,7 @@ test('independent Worker: provider calls, stored reviews, old records and securi
   const token = 'a'.repeat(64);
   const calls = [];
   let legacyFails = false;
+  let omitRewrite = false;
   const mf = new Miniflare({modules:true,compatibilityDate:'2026-05-22',script:bundle.outputFiles[0].text,d1Databases:['DB'],
     outboundService:async request=>{
       const url = new URL(request.url);
@@ -25,7 +26,10 @@ test('independent Worker: provider calls, stored reviews, old records and securi
       const body = await request.json();
       let content = 'OK';
       if (body.messages[0].content.includes('出题人')) content = JSON.stringify({topic:'如果手机只能保留三个 App，你会选择哪些？'});
-      else if (body.messages[0].role === 'system') content = JSON.stringify({summary:'选择删掉短视频 App，给阅读留时间。',throughline:'把时间留给重要的事',main_problem:'缺少例子',dimensions:[],ted_outline:[],suggestions:[]});
+      else if (body.messages[0].role === 'system') {
+        assert.ok(body.messages.some(message=>message.content.includes('rewritten_article') && message.content.includes('不得杜撰')));
+        content = JSON.stringify({summary:'选择删掉短视频 App，给阅读留时间。',throughline:'把时间留给重要的事',main_problem:'缺少例子',dimensions:[],ted_outline:[],suggestions:[],...(omitRewrite ? {} : {rewritten_article:'我会删掉短视频 App。\n\n我想把时间留给阅读，而不是一直刷手机。'})});
+      }
       return Response.json({model:body.model,choices:[{message:{content}}]});
     },
   });
@@ -52,11 +56,20 @@ test('independent Worker: provider calls, stored reviews, old records and securi
       const review = await response.json();
       assert.equal(response.status,200,JSON.stringify(review));
       assert.ok(review.record?.id); assert.match(review.analysis.summary,/阅读/);
+      assert.match(review.record.analysis.rewritten_article,/我会删掉短视频/);
+    });
+    await t.test('missing rewritten article is not saved or treated as complete',async()=>{
+      omitRewrite=true;
+      const response=await req('analyze',{transcript:'我会删掉短视频 App，因为我希望把时间留给阅读。'});
+      assert.equal(response.status,502);
+      assert.equal((await response.json()).code,'incomplete_review');
+      omitRewrite=false;
     });
     await t.test('new and legacy records are merged, with device isolation',async()=>{
       const history = async (device=token)=>(await mf.dispatchFetch('https://worker.test/api/jixingyanjiang/history',{headers:{'X-Practice-Device-Token':device,'X-AI-Api-Key':'must-not-forward'}})).json();
       const result = await history();
       assert.equal(result.records.length,2); assert.equal(result.records[1].id,'old-record');
+      assert.match(result.records[0].analysis.rewritten_article,/阅读/);
       assert.equal((await history('b'.repeat(64))).records.length,0);
       legacyFails=true;
       const partial = await history(); assert.equal(partial.records.length,1); assert.match(partial.warning,/旧训练记录/);
