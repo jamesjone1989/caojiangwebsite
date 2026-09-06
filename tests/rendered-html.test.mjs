@@ -179,6 +179,11 @@ test("keeps the finished visual system and removes starter assets", async () => 
   assert.match(css, /--green:\s*#81c943/i);
   assert.match(css, /--warm:\s*#fff7ec/i);
   assert.match(css, /prefers-reduced-motion:\s*reduce/);
+  assert.match(css, /min-height: var\(--card-height, 390px\)/);
+  assert.match(css, /flex: 0 0 var\(--card-width, 76vw\)/);
+  const cardHeights = [...css.matchAll(/--card-height: (\d+)px/g)].map(match => match[1]);
+  assert.equal(new Set(cardHeights).size, 4, "each highlight card has a distinct height");
+  assert.match(css, /\.highlight-rail \{[^}]*align-items: start/s);
   assert.doesNotMatch(packageJson, /react-loading-skeleton/);
   assert.doesNotMatch(packageJson, /@react-three|["']three["']/);
   assert.doesNotMatch(css, /violet|purple|indigo|fuchsia/i);

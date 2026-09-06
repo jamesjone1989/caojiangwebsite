@@ -307,13 +307,13 @@ img {
 .highlight-rail {
   margin-top: clamp(58px, 8vw, 116px);
   display: grid;
-  grid-template-columns: 0.9fr 1.35fr 1fr 0.9fr;
-  gap: 16px;
-  align-items: stretch;
+  grid-template-columns: minmax(0, .85fr) minmax(0, 1.35fr) minmax(0, 1.05fr) minmax(0, .9fr);
+  gap: clamp(16px, 1.6vw, 24px);
+  align-items: start;
 }
 
 .highlight-card {
-  min-height: 390px;
+  min-height: var(--card-height, 390px);
   padding: 26px;
   display: flex;
   flex-direction: column;
@@ -348,9 +348,11 @@ img {
 }
 
 .highlight-books {
+  --card-height: 365px;
+  --card-width: 70vw;
   color: var(--ink);
   background: var(--green);
-  transform: translateY(34px) rotate(-1.5deg);
+  transform: translateY(38px) rotate(-2deg);
 }
 
 .highlight-books p {
@@ -358,13 +360,17 @@ img {
 }
 
 .highlight-ai {
+  --card-height: 440px;
+  --card-width: 85vw;
   background: var(--red);
 }
 
 .highlight-write {
+  --card-height: 330px;
+  --card-width: 73vw;
   background: #f2f2f4;
   color: var(--ink);
-  transform: translateY(52px) rotate(1.2deg);
+  transform: translateY(76px) rotate(1.8deg);
 }
 
 .highlight-write p {
@@ -372,7 +378,10 @@ img {
 }
 
 .highlight-product {
+  --card-height: 400px;
+  --card-width: 76vw;
   background: #343438;
+  transform: translateY(18px) rotate(-.8deg);
 }
 
 .statement-section {
@@ -1782,8 +1791,7 @@ img {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .highlight-books,
-  .highlight-write {
+  .highlight-card {
     transform: none;
   }
 
@@ -1915,8 +1923,8 @@ img {
   }
 
   .highlight-card {
-    min-width: 78vw;
-    min-height: 390px;
+    flex: 0 0 var(--card-width, 76vw);
+    min-width: 0;
     scroll-snap-align: center;
   }
 
