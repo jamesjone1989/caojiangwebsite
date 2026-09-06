@@ -1,0 +1,1109 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f7f3ea">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23145c46'/%3E%3Cpath d='M17 16h30v25H32l-10 8v-8h-5z' fill='none' stroke='white' stroke-width='5' stroke-linejoin='round'/%3E%3Cpath d='M26 31v-6m7 6V20m7 11v-9' stroke='%23e7654f' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E">
+  <title>开口练｜即兴演讲练习</title>
+  <style>
+    :root {
+      --paper: #f7f3ea; --ink: #173a2e; --muted: #5d6962; --green: #145c46;
+      --green-dark: #0e4535; --coral: #e7654f; --line: rgba(23, 58, 46, .14); --white: #fffdf8;
+      --shadow: 0 18px 48px rgba(30, 58, 47, .10);
+    }
+    * { box-sizing: border-box; }
+    html, body { min-height: 100%; }
+    body {
+      margin: 0; color: var(--ink);
+      background: radial-gradient(circle at 18% 8%, rgba(59, 127, 99, .08), transparent 28%), var(--paper);
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+    button, input, textarea, select { font: inherit; }
+    button { -webkit-tap-highlight-color: transparent; }
+    [hidden] { display: none !important; }
+    .app {
+      width: min(760px, calc(100% - 32px)); min-height: 100dvh; margin: 0 auto;
+      padding: max(24px, env(safe-area-inset-top)) 0 max(30px, env(safe-area-inset-bottom));
+      display: flex; flex-direction: column;
+    }
+    .topbar { height: 44px; display: flex; align-items: center; justify-content: space-between; }
+    .top-actions { display: flex; align-items: center; gap: 8px; }
+    .brand { display: inline-flex; align-items: center; gap: 10px; color: var(--ink); font-weight: 800; letter-spacing: -.04em; }
+    .brand-mark { width: 34px; height: 34px; flex: 0 0 auto; filter: drop-shadow(0 7px 12px rgba(20,92,70,.13)); }
+    .brand-name { font-size: 17px; }
+    .settings-btn {
+      min-height: 40px; padding: 0 13px; border: 1px solid var(--line); border-radius: 999px; color: var(--green);
+      display: inline-flex; align-items: center; gap: 7px; background: rgba(255,253,248,.78); cursor: pointer;
+      font-size: 13px; font-weight: 750;
+    }
+    .settings-btn:hover { background: rgba(255,255,255,.66); color: var(--ink); }
+    .settings-btn svg { width: 20px; height: 20px; }
+    .history-btn {
+      min-height: 40px; padding: 0 13px; border: 1px solid var(--line); border-radius: 999px;
+      color: var(--green); background: rgba(255,253,248,.78); cursor: pointer; font-size: 13px; font-weight: 750;
+    }
+    .history-btn:hover { background: rgba(255,255,255,.66); color: var(--ink); }
+    .api-dot { width: 7px; height: 7px; border-radius: 50%; background: #a3aaa5; }
+    .api-dot.ready { background: #38a777; }
+    .screen {
+      flex: 1; display: none; align-items: center; justify-content: center;
+      padding: 40px 0; animation: enter .38s ease both;
+    }
+    .screen.active { display: flex; }
+    @keyframes enter { from { opacity: 0; transform: translateY(8px); } }
+    .home { text-align: center; }
+    .home .primary { min-width: 184px; min-height: 64px; font-size: 17px; }
+    .primary, .secondary, .danger {
+      border: 0; border-radius: 999px; min-height: 56px; padding: 0 30px;
+      font-weight: 750; cursor: pointer; transition: transform .18s ease, box-shadow .18s ease, opacity .18s ease;
+    }
+    .primary { color: white; background: var(--green); box-shadow: 0 14px 32px rgba(20, 92, 70, .20); }
+    .primary:hover { background: var(--green-dark); transform: translateY(-2px); }
+    .secondary { color: var(--green); background: rgba(255,255,255,.72); border: 1px solid var(--line); }
+    .danger { color: white; background: #b94c3c; box-shadow: 0 12px 28px rgba(185, 76, 60, .18); }
+    button:disabled { opacity: .45; cursor: not-allowed; transform: none !important; }
+    button:focus-visible, input:focus-visible, textarea:focus-visible, summary:focus-visible { outline: 3px solid rgba(231, 101, 79, .38); outline-offset: 3px; }
+    .topic-wrap, .review-wrap { width: 100%; }
+    .topic-meta { display: flex; align-items: center; justify-content: space-between; margin: 0 2px 16px; }
+    .eyebrow { margin: 0; color: var(--green); font-size: 13px; font-weight: 800; letter-spacing: .12em; }
+    .text-action { border: 0; padding: 8px 4px; color: var(--green); background: transparent; font-weight: 750; cursor: pointer; }
+    .topic-card, .review-card {
+      padding: clamp(28px, 7vw, 54px); border: 1px solid var(--line);
+      border-radius: 30px; background: var(--white); box-shadow: var(--shadow);
+    }
+    .topic-card h2 {
+      margin: 0; font-family: "Songti SC", STSong, "Noto Serif CJK SC", serif; font-size: clamp(28px, 6vw, 44px);
+      line-height: 1.35; letter-spacing: -.035em;
+    }
+    .topic-actions, .review-actions { display: flex; gap: 12px; margin-top: 28px; flex-wrap: wrap; }
+    .topic-actions .primary { flex: 1; }
+    .mode-label { margin: 28px 0 10px; color: var(--muted); font-size: 13px; font-weight: 750; }
+    .mode-picker { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .mode-option {
+      min-height: 74px; padding: 14px 16px; border: 1px solid var(--line); border-radius: 17px;
+      color: var(--ink); background: rgba(255,255,255,.6); cursor: pointer; text-align: left;
+    }
+    .mode-option strong, .mode-option span { display: block; }
+    .mode-option strong { margin-bottom: 5px; font-size: 15px; }
+    .mode-option span { color: var(--muted); font-size: 12px; line-height: 1.45; }
+    .mode-option.active { border-color: rgba(20,92,70,.52); background: rgba(20,92,70,.075); box-shadow: inset 0 0 0 1px rgba(20,92,70,.08); }
+    .mode-option.active strong { color: var(--green); }
+    .mic-preflight { margin: 18px 0 0; display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 13px; }
+    .mic-preflight i { width: 7px; height: 7px; border-radius: 50%; background: #a3aaa5; }
+    .mic-preflight.ready i { background: #38a777; }
+    .practice-wrap { width: 100%; text-align: center; }
+    .phase-label { margin: 0 0 12px; color: var(--muted); font-weight: 700; }
+    .prep-topic { max-width: 620px; margin: 0 auto 24px; color: var(--ink); font-family: "Songti SC", STSong, "Noto Serif CJK SC", serif; font-size: clamp(20px, 4.6vw, 30px); font-weight: 700; line-height: 1.45; letter-spacing: -.025em; }
+    .prep-ring {
+      --progress: 100; width: clamp(190px, 45vw, 250px); aspect-ratio: 1; margin: 0 auto;
+      display: grid; place-items: center; border-radius: 50%;
+      background: conic-gradient(var(--green) calc(var(--progress) * 1%), rgba(20,92,70,.10) 0);
+      transition: background .28s linear;
+    }
+    .prep-ring::before { content: ""; grid-area: 1 / 1; width: calc(100% - 16px); aspect-ratio: 1; border-radius: 50%; background: var(--paper); }
+    .countdown { grid-area: 1 / 1; position: relative; margin: 0; font: 750 clamp(70px, 18vw, 108px)/1 -apple-system, BlinkMacSystemFont, sans-serif; letter-spacing: -.07em; color: var(--green); font-variant-numeric: tabular-nums; }
+    .prep-ring.cue .countdown { animation: countCue .35s ease; }
+    @keyframes countCue { 50% { transform: scale(1.12); color: var(--coral); } }
+    .prep-hint { margin: 22px auto 0; color: var(--muted); font-size: 16px; }
+    .speech-panel { width: 100%; }
+    .speech-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+    .speech-time { font: 750 30px/1 -apple-system, BlinkMacSystemFont, sans-serif; font-variant-numeric: tabular-nums; }
+    .listening { display: flex; align-items: center; gap: 8px; color: var(--green); font-size: 13px; font-weight: 750; }
+    .listening i {
+      width: 9px; height: 9px; border-radius: 50%; background: var(--coral);
+      box-shadow: 0 0 0 5px rgba(231,101,79,.12); animation: pulse 1.2s infinite;
+    }
+    .listening.text-mode i { background: var(--green); box-shadow: none; animation: none; }
+    @keyframes pulse { 50% { opacity: .35; transform: scale(.75); } }
+    .transcript {
+      width: 100%; min-height: min(48dvh, 420px); resize: none; border: 1px solid var(--line);
+      border-radius: 28px; padding: 28px; outline: none; color: var(--ink); background: rgba(255,255,255,.75);
+      font-size: clamp(17px, 4vw, 21px); line-height: 1.8; box-shadow: var(--shadow);
+    }
+    .transcript:focus { border-color: rgba(29,99,78,.48); box-shadow: 0 0 0 4px rgba(29,99,78,.08), var(--shadow); }
+    .speech-bottom { position: sticky; bottom: max(10px, env(safe-area-inset-bottom)); z-index: 3; margin-top: 18px; padding: 12px; display: flex; align-items: center; justify-content: space-between; gap: 14px; border: 1px solid var(--line); border-radius: 22px; background: rgba(247,243,234,.94); box-shadow: 0 12px 30px rgba(30,58,47,.12); backdrop-filter: blur(12px); }
+    .speech-note { margin: 0; color: var(--muted); font-size: 13px; text-align: left; }
+    .dictate-fallback { border: 0; background: transparent; color: var(--green); font-weight: 750; padding: 8px 0; cursor: pointer; }
+    .loading { padding: 50px 20px; text-align: center; }
+    .loader {
+      width: 42px; height: 42px; margin: 0 auto 22px; border: 3px solid rgba(29,99,78,.14);
+      border-top-color: var(--green); border-radius: 50%; animation: spin .8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading h2 { margin: 0 0 8px; }
+    .loading p { margin: 0; color: var(--muted); }
+    .review-card h2 { margin: 0 0 28px; font-size: 30px; letter-spacing: -.04em; }
+    .ted-note { margin: -17px 0 27px; color: var(--muted); font-size: 12px; line-height: 1.65; }
+    .review-tools { display: flex; gap: 10px; margin: -10px 0 26px; flex-wrap: wrap; }
+    .review-tools button { min-height: 44px; padding: 0 18px; }
+    .review-section { padding: 22px 0; border-top: 1px solid var(--line); }
+    .review-section:first-of-type { border-top: 0; padding-top: 0; }
+    .review-section h3 { margin: 0 0 10px; color: var(--green); font-size: 13px; letter-spacing: .08em; }
+    .review-section p { margin: 0; font-size: 17px; line-height: 1.75; }
+    .problem { padding: 18px 20px; border-radius: 18px; background: #fff1ed; color: #7b2f24; }
+    .throughline { padding: 18px 20px; border-left: 4px solid var(--green); border-radius: 0 16px 16px 0; background: rgba(20,92,70,.06); }
+    .dimensions { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .dimension { padding: 18px; border: 1px solid var(--line); border-radius: 18px; background: rgba(255,255,255,.58); }
+    .dimension-head { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 8px; font-weight: 800; }
+    .dimension-rating { padding: 3px 9px; border-radius: 999px; color: var(--green); background: rgba(20,92,70,.09); font-size: 12px; }
+    .dimension p { color: #59635e; font-size: 14px; line-height: 1.6; }
+    .suggestions { display: grid; gap: 12px; }
+    .ted-outline { display: grid; gap: 10px; counter-reset: tedstep; }
+    .ted-step { position: relative; padding: 17px 18px 17px 54px; border: 1px solid var(--line); border-radius: 17px; background: rgba(255,255,255,.58); }
+    .ted-step::before { counter-increment: tedstep; content: counter(tedstep); position: absolute; left: 17px; top: 17px; display: grid; place-items: center; width: 25px; height: 25px; border-radius: 50%; color: white; background: var(--green); font-size: 12px; font-weight: 800; }
+    .ted-step h4 { margin: 0 0 6px; font-size: 15px; }
+    .ted-step p { color: #59635e; font-size: 14px; line-height: 1.65; }
+    .ted-step .ted-purpose { margin-bottom: 5px; color: var(--green); font-weight: 700; }
+    .suggestion { padding: 18px; border: 1px solid rgba(20,92,70,.14); border-radius: 18px; background: rgba(20,92,70,.045); }
+    .suggestion h4 { margin: 0 0 10px; font-size: 16px; }
+    .suggestion p { margin: 8px 0 0; color: #59635e; font-size: 14px; line-height: 1.7; }
+    .suggestion strong { color: var(--green); }
+    .suggestion-example { padding: 12px 14px; border-radius: 12px; background: rgba(255,255,255,.72); color: var(--ink) !important; }
+    .error-box { padding: 20px; border-radius: 18px; background: #fff1ed; color: #7b2f24; line-height: 1.65; }
+    .transcript-details { margin-top: 22px; border-top: 1px solid var(--line); padding-top: 18px; }
+    .transcript-details summary { color: var(--green); font-weight: 750; cursor: pointer; }
+    .transcript-details p { margin: 14px 0 0; color: #516058; white-space: pre-wrap; font-size: 14px; line-height: 1.8; }
+    dialog {
+      width: min(480px, calc(100% - 28px)); border: 0; border-radius: 26px; padding: 28px;
+      color: var(--ink); background: #fbfaf6; box-shadow: 0 26px 90px rgba(17,39,31,.28);
+    }
+    dialog::backdrop { background: rgba(17,39,31,.28); backdrop-filter: blur(5px); }
+    dialog h2 { margin: 0 0 22px; }
+    .field { display: grid; gap: 8px; margin-bottom: 16px; }
+    .field label { color: var(--muted); font-size: 13px; font-weight: 700; }
+    .field input, .field select { width: 100%; height: 50px; border: 1px solid var(--line); border-radius: 14px; padding: 0 15px; outline: none; background: white; color: var(--ink); font: inherit; }
+    .field input:focus, .field select:focus { border-color: var(--green); }
+    .secret-field { display: flex; gap: 8px; }
+    .secret-field input { flex: 1; min-width: 0; }
+    .secret-toggle { flex: 0 0 auto; min-width: 60px; border: 1px solid var(--line); border-radius: 14px; color: var(--green); background: white; cursor: pointer; font-weight: 700; }
+    .api-privacy { margin: -6px 0 18px; color: var(--muted); font-size: 12px; line-height: 1.6; }
+    .connection { margin: 6px 0 20px; color: var(--muted); font-size: 13px; line-height: 1.6; }
+    .dialog-actions { display: flex; gap: 10px; justify-content: flex-end; }
+    .dialog-actions button { min-height: 46px; padding: 0 20px; }
+    .history-dialog { width: min(680px, calc(100% - 28px)); max-height: min(82dvh, 760px); overflow: auto; }
+    .history-head { position: sticky; top: -28px; z-index: 2; margin: -28px -28px 18px; padding: 24px 28px 18px; display: flex; align-items: center; justify-content: space-between; gap: 16px; background: rgba(251,250,246,.96); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
+    .history-head h2 { margin: 0; }
+    .history-close { min-height: 40px; padding: 0 14px; border: 1px solid var(--line); border-radius: 999px; color: var(--green); background: white; cursor: pointer; font-weight: 700; }
+    .history-note, .history-empty { color: var(--muted); font-size: 13px; line-height: 1.7; }
+    .history-list { display: grid; gap: 12px; }
+    .history-card { border: 1px solid var(--line); border-radius: 18px; background: rgba(255,255,255,.62); overflow: hidden; }
+    .history-card summary { padding: 17px 18px; cursor: pointer; list-style: none; }
+    .history-card summary::-webkit-details-marker { display: none; }
+    .history-card summary::after { content: "查看"; float: right; color: var(--green); font-size: 12px; font-weight: 750; }
+    .history-card[open] summary::after { content: "收起"; }
+    .history-date { display: block; margin-bottom: 6px; color: var(--muted); font-size: 12px; }
+    .history-topic { display: block; padding-right: 50px; font-weight: 800; line-height: 1.5; }
+    .history-detail { padding: 0 18px 18px; border-top: 1px solid var(--line); }
+    .history-detail h4 { margin: 18px 0 7px; color: var(--green); font-size: 13px; }
+    .history-detail p { margin: 0; line-height: 1.75; white-space: pre-wrap; }
+    .history-suggestion { margin-top: 10px; padding: 12px 14px; border-radius: 12px; background: rgba(20,92,70,.055); }
+    .history-export-actions { display: flex; gap: 8px; margin-top: 18px; flex-wrap: wrap; }
+    .history-export-actions button { min-height: 40px; padding: 0 14px; }
+    .toast {
+      position: fixed; left: 50%; bottom: max(24px, env(safe-area-inset-bottom)); z-index: 10;
+      transform: translate(-50%, 14px); padding: 11px 16px; border-radius: 999px; color: white;
+      background: rgba(18,69,54,.94); opacity: 0; pointer-events: none; transition: .2s ease; font-size: 13px;
+    }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+    @media (max-width: 560px) {
+      .app { width: min(100% - 24px, 760px); }
+      .screen { padding: 24px 0; align-items: flex-start; }
+      #homeScreen { align-items: center; }
+      .topic-card, .review-card { border-radius: 24px; padding: 26px 22px; }
+      .topic-actions, .review-actions { flex-direction: column; }
+      .topic-actions button, .review-actions button { width: 100%; }
+      .review-tools button { flex: 1; }
+      .dimensions { grid-template-columns: 1fr; }
+      .mode-picker { grid-template-columns: 1fr; }
+      .speech-bottom { align-items: center; flex-wrap: wrap; }
+      .speech-bottom .danger { width: 100%; order: 3; }
+      .transcript { min-height: 52dvh; border-radius: 22px; padding: 22px; }
+      .top-actions { gap: 6px; }
+      .history-btn, .settings-btn { padding: 0 10px; }
+      .settings-btn svg { display: none; }
+      .history-dialog { max-height: 88dvh; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }
+    }
+  </style>
+  <style>
+    /* A quiet practice notebook: clear stages, generous writing space. */
+    :root { --paper:#f4f6f3; --white:#ffffff; --ink:#183c32; --muted:#566960; --line:rgba(24,60,50,.13); --shadow:0 10px 36px rgba(24,60,50,.045); }
+    body { background:var(--paper); }
+    .app { width:min(820px,calc(100% - 40px)); }
+    .topbar { height:auto; min-height:52px; gap:12px; padding-bottom:18px; border-bottom:1px solid var(--line); }
+    .settings-btn,.history-btn { font-size:14px; min-height:44px; background:white; }
+    .journey { display:flex; gap:22px; padding:24px 0 0; color:var(--muted); font-size:14px; }
+    .journey span { padding-bottom:9px; border-bottom:2px solid transparent; }
+    .journey .current { color:var(--green); border-color:var(--green); font-weight:750; }
+    .screen { padding:30px 0; }
+    .home { width:100%; }
+    .home-note { color:var(--muted); font-size:14px; margin:20px 0 0; line-height:1.7; }
+    .topic-card,.review-card { border-radius:20px; padding:clamp(24px,6vw,46px); }
+    .topic-card h2 { font-family:inherit; font-weight:650; font-size:clamp(25px,4.5vw,36px); line-height:1.5; letter-spacing:-.025em; }
+    .topic-meta .eyebrow { letter-spacing:.02em; }
+    .mode-label { font-size:14px; }
+    .mode-option { min-height:82px; border-radius:12px; }
+    .mode-option span { font-size:14px; }
+    .mode-option.active { background:#eaf2ed; border-color:var(--green); }
+    .primary,.secondary,.danger { border-radius:14px; }
+    .connection-panel { margin-top:24px; padding:16px 18px; border:1px solid var(--line); border-radius:12px; background:#f7f9f7; }
+    .connection-panel p { margin:0; font-size:14px; line-height:1.6; }
+    .connection-panel .text-action { padding:8px 0 0; font-size:14px; }
+    .connection-panel[data-state="error"] { background:#fff2ee; border-color:#d9ada0; }
+    .connection-panel[data-state="ready"] { background:#edf5ef; }
+    .mic-preflight { font-size:14px; line-height:1.6; }
+    .topic-actions { margin-top:20px; }
+    .practice-topic { padding:18px 20px; margin:0 0 20px; border-left:3px solid var(--green); background:#eaf2ed; border-radius:0 12px 12px 0; line-height:1.65; font-size:18px; font-weight:600; }
+    .speech-time { font-size:36px; }
+    .transcript { border-radius:16px; background:white; box-shadow:none; min-height:46dvh; }
+    .speech-bottom { border-radius:16px; background:rgba(244,246,243,.97); }
+    .speech-note { font-size:14px; line-height:1.6; }
+    .review-card h2 { font-size:28px; }
+    .review-section h3 { font-size:15px; letter-spacing:0; }
+    .review-section p { font-size:16px; }
+    .speech-mode-picker { margin: 4px 0 16px; grid-template-columns: 1fr 1fr; }
+    .speech-mode-picker .mode-option { min-height: 54px; text-align: center; }
+    .rewritten-article { white-space: pre-wrap; line-height: 1.9; }
+    .review-more { margin-top:20px; padding-top:18px; border-top:1px solid var(--line); }
+    .review-more>summary { cursor:pointer; font-size:16px; color:var(--green); font-weight:750; padding:6px 0; }
+    .review-more[open]>summary { margin-bottom:16px; }
+    .review-save-note { margin:0 0 18px; color:var(--muted); font-size:14px; line-height:1.6; }
+    .connection { padding:14px; border-radius:12px; background:#edf2ee; font-size:14px; }
+    .field label { font-size:14px; }
+    dialog { max-height:88dvh; overflow:auto; }
+    .error-actions { display:flex; gap:10px; flex-wrap:wrap; margin:20px 0; }
+    .prep-back { margin-top:24px; }
+    @media(max-width:560px) {
+      .app { width:calc(100% - 28px); }
+      .brand-name { font-size:16px; }
+      .topbar { flex-wrap:wrap; }
+      .top-actions { gap:5px; }
+      .settings-btn,.history-btn { font-size:13px; padding:0 9px; }
+      .journey { gap:24px; padding-top:20px; }
+      .mode-picker { grid-template-columns:1fr 1fr; }
+      .mode-option { padding:12px; }
+      .mode-option span { font-size:13px; }
+      .topic-card,.review-card { padding:24px 20px; border-radius:18px; }
+      .practice-topic { font-size:17px; }
+      .speech-bottom .danger { min-height:52px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <div class="brand" aria-label="开口练">
+        <svg class="brand-mark" viewBox="0 0 64 64" aria-hidden="true">
+          <rect width="64" height="64" rx="18" fill="#145c46"/>
+          <path d="M17 16h30v25H32l-10 8v-8h-5z" fill="none" stroke="#fff" stroke-width="5" stroke-linejoin="round"/>
+          <path d="M26 31v-6m7 6V20m7 11v-9" fill="none" stroke="#e7654f" stroke-width="4" stroke-linecap="round"/>
+        </svg>
+        <span class="brand-name">开口练</span>
+      </div>
+      <div class="top-actions">
+        <button class="history-btn" id="historyBtn">训练记录</button>
+        <button class="settings-btn" id="settingsBtn" aria-label="AI 服务与 API 设置">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.3a3.7 3.7 0 1 0 0 7.4 3.7 3.7 0 0 0 0-7.4Zm8 3.7-.1-1.2 2-1.6-2-3.4-2.5 1a8 8 0 0 0-2-1.2L15 3h-4l-.4 2.6a8 8 0 0 0-2 1.2l-2.5-1-2 3.4 2 1.6L6 12l.1 1.2-2 1.6 2 3.4 2.5-1a8 8 0 0 0 2 1.2L11 21h4l.4-2.6a8 8 0 0 0 2-1.2l2.5 1 2-3.4-2-1.6.1-1.2Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+          <span class="api-dot" id="apiDot" aria-hidden="true"></span>
+          <span id="connectionBadge">AI 未检查</span>
+        </button>
+      </div>
+    </header>
+    <nav class="journey" aria-label="训练进度"><span data-step="topic" class="current">01 选题</span><span data-step="speech">02 表达</span><span data-step="review">03 复盘</span></nav>
+
+    <section class="screen active" id="homeScreen">
+      <div class="home">
+        <button class="primary" id="drawBtn">抽一道题</button>
+        <p class="home-note">准备 10 秒，表达 1–3 分钟。<br>开始训练前，会检查 AI 是否可用。</p>
+      </div>
+    </section>
+
+    <section class="screen" id="topicScreen">
+      <div class="topic-wrap">
+        <div class="topic-meta">
+          <p class="eyebrow" id="topicSource">今天的题目</p>
+          <button class="text-action" id="redrawBtn">换一题</button>
+        </div>
+        <article class="topic-card">
+          <h2 id="topicText"></h2>
+          <p class="mode-label">选择作答方式</p>
+          <div class="mode-picker" role="radiogroup" aria-label="选择作答方式">
+            <button class="mode-option active" type="button" data-mode="voice" role="radio" aria-checked="true"><strong>语音输入</strong><span>边说边转写，不保存音频</span></button>
+            <button class="mode-option" type="button" data-mode="text" role="radio" aria-checked="false"><strong>文字输入</strong><span>准备结束后，直接打字作答</span></button>
+          </div>
+          <div class="connection-panel" id="connectionPanel" data-state="idle" aria-live="polite"><p id="preflightStatus">开始前将验证 AI 连接与当前模型。</p><button class="text-action" id="configureTopicBtn" type="button">设置 AI 连接</button></div>
+          <p class="mic-preflight" id="micPreflight"><i></i><span>先检查 AI 连接，再开启麦克风与准备倒计时</span></p>
+          <div class="topic-actions">
+            <button class="primary" id="startBtn">检查连接并开始</button>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="screen" id="prepScreen">
+      <div class="practice-wrap">
+        <p class="phase-label" id="prepLabel">正在打开麦克风</p>
+        <p class="prep-topic" id="prepTopic"></p>
+        <div class="prep-ring" id="prepRing"><p class="countdown" id="prepCount">…</p></div>
+        <p class="prep-hint">想清楚：你的观点是什么？准备举哪个例子？</p>
+        <button class="text-action prep-back" id="cancelPrepBtn">返回题目</button>
+      </div>
+    </section>
+
+    <section class="screen" id="speechScreen">
+      <div class="speech-panel">
+        <p class="practice-topic" id="speechTopic"></p>
+        <div class="mode-picker speech-mode-picker" role="radiogroup" aria-label="表达输入方式，可随时切换并保留内容">
+          <button class="mode-option" type="button" data-mode="text" role="radio" aria-checked="false"><strong>文字输入</strong></button>
+          <button class="mode-option active" type="button" data-mode="voice" role="radio" aria-checked="true"><strong>语音输入</strong></button>
+        </div>
+        <div class="speech-head">
+          <div class="speech-time" id="speechTime">00:00</div>
+          <div class="listening"><i></i><span id="speechState">正在转写</span></div>
+        </div>
+        <textarea class="transcript" id="transcript" aria-label="完整演讲转写内容" aria-live="polite" placeholder="开始说话后，完整转写会持续显示在这里……"></textarea>
+        <div class="speech-bottom">
+          <p class="speech-note" id="speechNote">浏览器正在识别你的声音</p>
+          <button class="dictate-fallback" id="dictateBtn" hidden>使用手机听写</button>
+          <button class="danger" id="finishBtn">结束演讲</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen" id="loadingScreen">
+      <div class="loading">
+        <div class="loader"></div>
+        <h2>AI 正在进行 TED 式复盘</h2>
+        <p>分析原文、给出修改建议，再整理成一篇完整改写稿。</p>
+      </div>
+    </section>
+
+    <section class="screen" id="reviewScreen">
+      <div class="review-wrap">
+        <p class="eyebrow">本轮复盘</p>
+        <article class="review-card">
+          <h2>先看清楚，再练一遍</h2>
+          <p class="ted-note">参考 TED/TEDx 演讲指南的内容逻辑，只评估文字内容，不代表 TED 官方评分或认证。</p>
+          <div class="review-tools">
+            <button class="secondary" id="copyMarkdownBtn" disabled>复制 Markdown</button>
+            <button class="secondary" id="exportMarkdownBtn" disabled>导出 .md</button>
+          </div>
+          <div id="reviewContent"></div>
+          <div class="review-actions">
+            <button class="primary" id="retryBtn">同题再练</button>
+            <button class="secondary" id="nextBtn">再抽一题</button>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="settingsDialog">
+    <h2>AI 服务设置</h2>
+    <div class="field"><label for="apiProvider">服务商</label><select id="apiProvider"></select></div>
+    <p class="api-privacy" id="providerNote"></p>
+    <div class="field">
+      <label for="apiKey">当前服务商的 API Key</label>
+      <div class="secret-field">
+        <input id="apiKey" type="password" placeholder="sk-..." autocomplete="off" autocapitalize="off" spellcheck="false">
+        <button class="secret-toggle" id="toggleKeyBtn" type="button">显示</button>
+      </div>
+    </div>
+    <p class="api-privacy">Key 按服务商和地址隔离，仅保存在当前浏览器会话中，不会写入源码或训练记录。请求由本站后端转发至你选定的服务商；转写原文仅在复盘时发送。</p>
+    <div class="field">
+      <label for="apiBaseUrl">API 地址</label>
+      <input id="apiBaseUrl" value="https://api.deepseek.com" list="apiAddresses" inputmode="url" autocomplete="off" spellcheck="false">
+      <datalist id="apiAddresses"></datalist>
+      <details id="allowedAddresses" hidden><summary>查看支持的官方地址</summary><div id="allowedAddressList" style="font-size:13px;overflow-wrap:anywhere;line-height:1.8"></div></details>
+    </div>
+    <div class="field">
+      <label for="apiModel">模型</label>
+      <select id="apiModel" aria-label="选择文本模型"></select>
+      <input id="customModel" aria-label="自定义模型 ID" placeholder="填写开放平台中的准确模型 ID" autocomplete="off" spellcheck="false" hidden>
+      <p class="api-privacy">可以选择预设，也可以自定义模型 ID。是否可用取决于该接口和账户权限。</p>
+    </div>
+    <p class="connection" id="connectionText" role="status">尚未验证连接</p>
+    <p class="api-privacy">连接测试会向当前模型发送一条简短测试消息，消耗少量 tokens。测试通过表示此刻可调用，不代表后续调用一定成功。</p>
+    <div class="dialog-actions">
+      <button class="secondary" id="closeSettingsBtn">取消</button>
+      <button class="primary" id="saveSettingsBtn">保存并检查连接</button>
+    </div>
+  </dialog>
+
+  <dialog id="historyDialog" class="history-dialog">
+    <div class="history-head">
+      <h2>训练记录</h2>
+      <button class="history-close" id="closeHistoryBtn" type="button">关闭</button>
+    </div>
+    <p class="history-note">显示当前浏览器最近 50 次成功复盘，可展开查看题目、转写原文和修改建议。</p>
+    <div id="historyContent"><p class="history-empty">正在读取训练记录……</p></div>
+  </dialog>
+
+  <div class="toast" id="toast" role="status"></div>
+
+  <script type="module">
+    import { providers, modelLabels, allowedBases, normalizeConfig } from "./ai-providers.mjs?v=20260906-fix1";
+    import { createSettingsStore } from "./ai-settings.mjs?v=20260906-fix1";
+    (() => {
+      const topics = [
+        "如果你能改变公司里的一条默认规则，你会改变什么？为什么？",
+        "讲一件最近改变了你对某个人判断的小事。",
+        "你认为一个好领导最重要的能力是什么？",
+        "选择一个你不同意的常见职场建议，并说明理由。",
+        "如果必须删除手机里的一个常用 App，你会删掉哪个？",
+        "讲一次结果不理想，但让你学到很多的经历。",
+        "你最近做过的最值得坚持的一个小决定是什么？",
+        "向刚入职的新人解释：怎样才算一次好的工作汇报？",
+        "你认为效率和体验发生冲突时，应该优先选择什么？",
+        "讲一个你曾经深信、后来却改变看法的观点。",
+        "如果给现在的团队增加一个新习惯，你会选择什么？",
+        "用一个真实例子说明：知道和做到为什么是两回事。",
+        "最近哪一个瞬间，让你意识到自己正在发生变化？",
+        "如果要向十二岁的孩子解释你的工作，你会怎么说？",
+        "你更愿意和能力强但难沟通的人，还是能力普通但可靠的人合作？",
+        "最近哪一次拒绝，让你反而更轻松了？",
+        "如果每天只能保留一个小时的独处时间，你会怎么使用？",
+        "讲一件你花了很久才承认自己做错了的事。",
+        "你认为成年人最容易被忽略的一种能力是什么？",
+        "如果要给过去一年的自己颁一个奖，你会颁什么奖？",
+        "你最近一次因为好奇心而获得意外收获是什么？",
+        "如果可以重新学习一项基础技能，你会选择什么？",
+        "什么事情看起来浪费时间，却对你很重要？",
+        "你愿意用一年的稳定，交换一次高风险的尝试吗？",
+        "讲一个你没有坚持到底，但并不后悔的决定。",
+        "你认为准时更体现能力，还是更体现尊重？",
+        "如果团队会议只能保留一种，你会保留哪一种？",
+        "讲一次你主动暴露问题，反而赢得信任的经历。",
+        "面对一项陌生任务，你更倾向于先问人还是先自己研究？",
+        "你认为工作中最值得被自动化的一件小事是什么？",
+        "如果你是新任管理者，第一周最应该做什么？",
+        "同事犯错时，公开讨论和私下提醒应该如何选择？",
+        "你更看重一个方案完成得快，还是解释得清楚？",
+        "讲一次别人给你的反馈起初刺耳、后来有用的经历。",
+        "如果只能用一个指标衡量团队状态，你会选什么？",
+        "你认为职场中应该主动展示成绩吗？",
+        "一份好汇报应该先讲过程，还是先讲结论？",
+        "如果所有会议都缩短一半，会发生什么？",
+        "你如何判断一件事值得做到九十分，还是六十分就够？",
+        "讲一次你通过改变沟通方式解决问题的经历。",
+        "朋友向你抱怨同一件事很多次，你会继续倾听还是直接建议？",
+        "关系中，及时回应和认真回应哪个更重要？",
+        "讲一件别人记得、你自己却几乎忘了的善意。",
+        "当朋友做出你不认同的决定时，你会怎么表达？",
+        "你认为道歉最重要的是态度、解释还是补救？",
+        "如果只能保留三位联系人，你会依据什么选择？",
+        "讲一次沉默比说话更有效的时刻。",
+        "你更愿意被人认为可靠，还是有趣？",
+        "与很久没联系的朋友重逢，什么最容易让关系重新靠近？",
+        "你认为边界感是拉远关系，还是保护关系？",
+        "讲一次你误解别人，也被别人误解的经历。",
+        "如果家人和你对成功的定义不同，你会如何沟通？",
+        "什么样的赞美最容易让你真正相信？",
+        "如果人工智能替你完成一半工作，你会把时间用在哪里？",
+        "你愿意让 AI 替你做重要决定吗？边界在哪里？",
+        "未来十年，哪一种今天常见的东西可能消失？",
+        "如果手机每天只能联网两个小时，你的生活会怎样变化？",
+        "你认为推荐算法更懂你，还是正在塑造你？",
+        "当 AI 给出与你相反的建议时，你会如何判断？",
+        "如果可以给未来的智能助手设定一条原则，你会写什么？",
+        "科技让人与人更近了，还是更容易保持距离？",
+        "你最希望哪一种生活琐事被机器人接管？",
+        "如果所有网络内容都必须实名发布，会有什么变化？",
+        "你愿意为了便利，放弃多少个人隐私？",
+        "AI 生成的作品打动了你，这份感动是真的吗？",
+        "如果记忆可以像文件一样备份，你会选择备份吗？",
+        "什么技术看起来先进，却让生活变得更复杂？",
+        "如果明天开始没有短视频，你会多出什么？",
+        "你认为选择太多是一种自由，还是一种负担？",
+        "当诚实可能伤害别人时，还应该完全诚实吗？",
+        "如果努力没有被看见，它还有价值吗？",
+        "你更愿意做正确但不受欢迎的事，还是妥协以推动事情？",
+        "稳定和成长发生冲突时，你通常如何选择？",
+        "一个人应该先照顾好自己，还是先承担责任？",
+        "你认为运气在个人成就中占多大作用？",
+        "结果正确但过程不合理，值得认可吗？",
+        "如果一件事没有明确回报，你还愿意长期投入吗？",
+        "你更在意别人理解你，还是尊重你？",
+        "善意的谎言在什么情况下可以被接受？",
+        "如果失败不会被任何人知道，你会更敢尝试吗？",
+        "你认为坚持和固执之间的分界线是什么？",
+        "拥有更多和需要更少，哪一个更接近自由？",
+        "如果可以删除一种日常礼貌，你会删掉什么？",
+        "为什么很多人明知疲惫，却仍然不愿意休息？",
+        "排队时最能看出一个人的什么？",
+        "你所在城市最值得保留的一种生活方式是什么？",
+        "如果公共场所完全禁止外放声音，你赞成吗？",
+        "什么样的小店最容易让你产生归属感？",
+        "你认为邻里关系变淡是进步还是遗憾？",
+        "如果周末商场全部关闭一天，城市会发生什么？",
+        "为什么人们愿意为体验付费，却不愿意为时间付费？",
+        "你最希望社会重新重视哪一种普通职业？",
+        "如果城市里没有广告牌，生活会变得更好吗？",
+        "一座城市真正吸引人的，是机会还是生活感？",
+        "你认为陌生人之间最需要恢复哪一种信任？",
+        "如果可以给所有电梯增加一个按钮，你会增加什么？",
+        "假如你的一天可以暂停三次，每次十分钟，你会在何时使用？",
+        "如果动物能说话，你最想采访哪一种动物？",
+        "如果必须把家搬到一艘船上，你会带哪三样东西？",
+        "假如每个人头顶都会显示一种情绪，世界会更好吗？",
+        "如果周一可以改名，你会给它取什么名字？",
+        "如果一年只能庆祝一个节日，你会保留哪个？",
+        "假如你能设计一种新的货币，它奖励什么行为？",
+        "如果梦境可以共享，你愿意把梦给别人看吗？",
+        "如果可以和十年后的自己通话三分钟，你会问什么？",
+        "假如所有人每天必须安静一小时，会发生什么？",
+        "如果生活是一款游戏，你现在最想解锁什么技能？",
+        "如果你能给世界增加一个小规则，你会增加什么？",
+        "假如时间可以赠送，你会把一天送给谁？",
+        "如果你的房间会说话，它最想提醒你什么？",
+        "如果可以把一种声音永久收藏，你会选择什么？",
+        "如果可以让一种气味成为城市名片，你会选择什么？",
+        "如果明天醒来多了一项天赋，你希望它是什么？",
+        "如果只能用三个词介绍现在的自己，你会选哪三个？",
+        "假如所有承诺都有保质期，人与人会如何相处？"
+      ];
+      const $ = id => document.getElementById(id);
+      const screens = [...document.querySelectorAll(".screen")];
+      const els = {
+        topic: $("topicText"), topicSource: $("topicSource"), redraw: $("redrawBtn"), start: $("startBtn"), prepTopic: $("prepTopic"), prep: $("prepCount"), time: $("speechTime"), transcript: $("transcript"),
+        prepLabel: $("prepLabel"), prepRing: $("prepRing"), speechState: $("speechState"), speechNote: $("speechNote"), dictate: $("dictateBtn"),
+        micPreflight: $("micPreflight"),
+        review: $("reviewContent"), settings: $("settingsDialog"), apiKey: $("apiKey"), baseUrl: $("apiBaseUrl"),
+        model: $("apiModel"), connection: $("connectionText"), apiDot: $("apiDot"), toast: $("toast"),
+        history: $("historyDialog"), historyContent: $("historyContent"),
+        copyMarkdown: $("copyMarkdownBtn"), exportMarkdown: $("exportMarkdownBtn")
+      };
+      let currentTopic = "", practiceMode = "voice", prepTimer = null, speechTimer = null, speechStartedAt = 0;
+      let recognition = null, recognitionWanted = false, finalTranscript = "", lastTopicIndex = -1;
+      let drawingTopic = false, recentTopics = [];
+      let checkingConnection = false, reviewElapsed = 0, reviewing = false, prepGeneration = 0, connectionRevision = 0;
+      let pendingCountdown = false, countdownStarted = false, fallbackMode = false;
+      let lastReviewMarkdown = "", loadedHistoryRecords = [];
+      const aiStore = createSettingsStore(localStorage, sessionStorage);
+      const currentAI = () => aiStore.config();
+      const aiHeaders = () => aiStore.key(currentAI()) ? { "X-AI-Api-Key":aiStore.key(currentAI()) } : {};
+      const deviceTokenStorageKey = "kaikoulian.practice.device.v1";
+      const isLocal = ["127.0.0.1", "localhost"].includes(location.hostname);
+      const isStandaloneLocal = isLocal && location.port === "8766";
+      const publicApiOrigin = isLocal ? "" : "https://jixing-api.caojiang.cn";
+      const checkEndpoint = isStandaloneLocal ? "/api/check" : `${publicApiOrigin}/api/jixingyanjiang/check`;
+      const statusEndpoint = isStandaloneLocal ? "/api/status" : `${publicApiOrigin}/api/jixingyanjiang/status`;
+      const analyzeEndpoint = isStandaloneLocal ? "/api/analyze" : `${publicApiOrigin}/api/jixingyanjiang/analyze`;
+      const topicEndpoint = isStandaloneLocal ? "/api/topic" : `${publicApiOrigin}/api/jixingyanjiang/topic`;
+      const historyEndpoint = isStandaloneLocal ? "/api/history" : `${publicApiOrigin}/api/jixingyanjiang/history`;
+
+      function deviceToken() {
+        let token = localStorage.getItem(deviceTokenStorageKey) || "";
+        if (token.length >= 48) return token;
+        const bytes = crypto.getRandomValues(new Uint8Array(32));
+        token = [...bytes].map(byte => byte.toString(16).padStart(2, "0")).join("");
+        localStorage.setItem(deviceTokenStorageKey, token);
+        return token;
+      }
+
+      function showScreen(id) {
+        screens.forEach(screen => screen.classList.toggle("active", screen.id === id));
+        const step = ["prepScreen","speechScreen"].includes(id) ? "speech" : ["loadingScreen","reviewScreen"].includes(id) ? "review" : "topic";
+        document.querySelectorAll("[data-step]").forEach(item => { item.classList.toggle("current", item.dataset.step === step); if(item.dataset.step === step) item.setAttribute("aria-current","step"); else item.removeAttribute("aria-current"); });
+        window.scrollTo({ top: 0, behavior: "instant" });
+      }
+      function connectionState(state, message) {
+        connectionRevision++;
+        $("connectionBadge").textContent = { idle:"AI 未检查", checking:"AI 检查中", ready:"AI 已连接", error:"AI 未连接" }[state];
+        els.apiDot.classList.toggle("ready", state === "ready");
+        $("connectionPanel").dataset.state = state;
+        $("preflightStatus").textContent = message;
+        els.connection.textContent = message;
+      }
+      async function verifyConnection() {
+        if (checkingConnection) return false;
+        checkingConnection = true;
+        connectionState("checking", "正在验证 API Key 和当前模型，请稍候……");
+        const controls = [els.start, els.redraw, $("retryBtn"), $("nextBtn"), $("saveSettingsBtn"), els.apiKey, els.baseUrl, els.model, $("apiProvider"), $("customModel"), ...document.querySelectorAll("[data-mode]")];
+        const disabled = controls.map(item => item.disabled);
+        controls.forEach(item => item.disabled = true);
+        try {
+          const response = await fetch(checkEndpoint, {
+            method: "POST", headers: { "Content-Type":"application/json", ...aiHeaders() },
+            body: JSON.stringify(currentAI()), signal:AbortSignal.timeout(40_000)
+          });
+          const result = await response.json().catch(() => ({}));
+          if (!response.ok || result.ok !== true) throw new Error(result.error || "连接检查未通过，请检查设置后重试。");
+          connectionState("ready", `${providers[currentAI().provider].name} · ${currentAI().model} 已验证可用。`);
+          return true;
+        } catch(error) {
+          connectionState("error", error.name === "TimeoutError" ? "连接检查等待超时，请稍后重试。" : error.name === "TypeError" ? "浏览器无法访问网站的 AI 接口，请刷新页面或检查网络。" : error.message);
+          return false;
+        } finally {
+          controls.forEach((item,index) => item.disabled = disabled[index]);
+          checkingConnection = false;
+        }
+      }
+      function toast(message) {
+        els.toast.textContent = message; els.toast.classList.add("show"); clearTimeout(toast.timer);
+        toast.timer = setTimeout(() => els.toast.classList.remove("show"), 1800);
+      }
+      function escapeHtml(value) {
+        return String(value ?? "").replace(/[&<>"']/g, char => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[char]));
+      }
+      function drawLocalTopic() {
+        let index;
+        do index = Math.floor(Math.random() * topics.length); while (topics.length > 1 && index === lastTopicIndex);
+        lastTopicIndex = index;
+        return topics[index];
+      }
+      async function drawTopic() {
+        if (drawingTopic || checkingConnection) return;
+        drawingTopic = true; currentTopic = "";
+        els.topicSource.textContent = "AI 正在出题";
+        els.topic.textContent = "正在想一道有趣的题目……";
+        els.redraw.disabled = true; els.start.disabled = true; els.redraw.textContent = "生成中";
+        showScreen("topicScreen");
+        try {
+          const response = await fetch(topicEndpoint, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              ...aiHeaders()
+            },
+            body: JSON.stringify({ ...currentAI(), recentTopics }), signal:AbortSignal.timeout(28_000)
+          });
+          const payload = await response.json().catch(() => ({}));
+          if (!response.ok || !String(payload.topic || "").trim()) throw new Error(payload.error || "题目生成失败");
+          currentTopic = String(payload.topic).trim();
+          els.topicSource.textContent = (providers[payload.source]?.name || "AI") + " 随机题目";
+        } catch (error) {
+          currentTopic = drawLocalTopic();
+          els.topicSource.textContent = "115 道备用题库";
+          toast(error?.message?.includes("API Key") ? "尚未配置 AI，已使用备用题库" : "AI 暂时不可用，已使用备用题库");
+        } finally {
+          recentTopics = [...recentTopics, currentTopic].filter(Boolean).slice(-8);
+          els.topic.textContent = currentTopic;
+          els.redraw.disabled = false; els.start.disabled = false; els.redraw.textContent = "换一题";
+          drawingTopic = false;
+        }
+      }
+      function setPracticeMode(mode) {
+        const nextMode = mode === "text" ? "text" : "voice";
+        const changed = nextMode !== practiceMode;
+        const speaking = $("speechScreen").classList.contains("active");
+        if (speaking && changed) {
+          stopRecognition();
+          finalTranscript = els.transcript.value;
+        }
+        practiceMode = nextMode;
+        document.querySelectorAll("[data-mode]").forEach(button => {
+          const active = button.dataset.mode === practiceMode;
+          button.classList.toggle("active", active); button.setAttribute("aria-checked", String(active));
+        });
+        els.micPreflight.classList.remove("ready");
+        els.micPreflight.querySelector("span").textContent = practiceMode === "voice"
+          ? "先检查 AI 连接，再开启麦克风与准备倒计时"
+          : "文字模式不启用麦克风";
+        if (speaking && changed) {
+          fallbackMode = false;
+          updateSpeechModeUI();
+          if (practiceMode === "voice") startRecognition();
+          else els.transcript.focus();
+        }
+      }
+      function updateSpeechModeUI() {
+        els.speechState.textContent = practiceMode === "voice" ? "正在转写" : "文字输入";
+        els.speechState.parentElement.classList.toggle("text-mode", practiceMode === "text");
+        els.speechNote.textContent = practiceMode === "voice" ? "浏览器正在识别你的声音，可切换文字输入修改" : "直接打字或粘贴内容；切换输入方式不会清空原文";
+        els.transcript.placeholder = practiceMode === "voice" ? "开始说话后，完整转写会持续显示在这里……" : "在这里写下你的完整表达……";
+        $("finishBtn").textContent = practiceMode === "voice" ? "结束演讲" : "提交复盘";
+        els.dictate.hidden = true;
+      }
+      function formatTime(seconds) {
+        return `${String(Math.floor(seconds / 60)).padStart(2,"0")}:${String(seconds % 60).padStart(2,"0")}`;
+      }
+      function setupRecognition() {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRecognition) return false;
+        recognition = new SpeechRecognition();
+        const activeRecognition = recognition;
+        recognition.lang = "zh-CN"; recognition.continuous = true; recognition.interimResults = true;
+        recognition.onstart = () => {
+          if (recognition !== activeRecognition || !recognitionWanted) return;
+          els.micPreflight.classList.add("ready");
+          els.micPreflight.querySelector("span").textContent = "麦克风已准备";
+          if (pendingCountdown && !countdownStarted) beginCountdown();
+        };
+        recognition.onresult = event => {
+          if (recognition !== activeRecognition || !recognitionWanted || practiceMode !== "voice" || !$("speechScreen").classList.contains("active")) return;
+          let interim = "";
+          for (let i = event.resultIndex; i < event.results.length; i++) {
+            const text = event.results[i][0].transcript;
+            if (event.results[i].isFinal) finalTranscript += text; else interim += text;
+          }
+          const follow = els.transcript.scrollHeight - els.transcript.scrollTop - els.transcript.clientHeight < 80;
+          els.transcript.value = finalTranscript + interim;
+          if (follow) updateTranscriptView();
+        };
+        recognition.onerror = event => {
+          if (recognition !== activeRecognition || !recognitionWanted) return;
+          if (["not-allowed", "service-not-allowed"].includes(event.error)) {
+            recognitionWanted = false; showDictationFallback("麦克风未开启，请使用手机系统听写");
+            if (pendingCountdown && !countdownStarted) beginCountdown();
+          } else if (pendingCountdown && !countdownStarted && event.error !== "aborted") {
+            recognitionWanted = false; showDictationFallback("自动语音识别暂时不可用，请使用手机系统听写");
+            beginCountdown();
+          }
+        };
+        recognition.onend = () => {
+          if (recognitionWanted && recognition === activeRecognition) setTimeout(() => {
+            if (!recognitionWanted || recognition !== activeRecognition || practiceMode !== "voice") return;
+            try { activeRecognition.start(); } catch {}
+          }, 250);
+        };
+        return true;
+      }
+      function showDictationFallback(message = "当前浏览器不支持自动识别，请使用手机系统听写") {
+        fallbackMode = true; els.speechState.textContent = "等待听写"; els.speechNote.textContent = message;
+        els.dictate.hidden = false;
+      }
+      function startRecognition() {
+        if (!recognition && !setupRecognition()) {
+          showDictationFallback();
+          if (pendingCountdown && !countdownStarted) beginCountdown();
+          return;
+        }
+        recognitionWanted = true;
+        try { recognition.start(); }
+        catch {
+          showDictationFallback("语音识别未能启动，请使用手机系统听写");
+          if (pendingCountdown && !countdownStarted) beginCountdown();
+        }
+      }
+      function stopRecognition() {
+        recognitionWanted = false;
+        const previous = recognition;
+        recognition = null;
+        if (previous) {
+          previous.onstart = previous.onresult = previous.onerror = previous.onend = null;
+          try { previous.abort(); } catch {}
+        }
+      }
+      async function startPractice() {
+        if (checkingConnection || drawingTopic || reviewing || !currentTopic) return;
+        if (!await verifyConnection()) {
+          if (!els.settings.open) openSettings();
+          return;
+        }
+        prepGeneration += 1;
+        clearInterval(prepTimer); clearInterval(speechTimer); finalTranscript = ""; els.transcript.value = "";
+        lastReviewMarkdown = ""; els.copyMarkdown.disabled = true; els.exportMarkdown.disabled = true;
+        pendingCountdown = true; countdownStarted = false; fallbackMode = false;
+        els.prep.textContent = "…"; els.prepLabel.textContent = practiceMode === "voice" ? "正在打开麦克风" : "准备开始"; els.prepTopic.textContent = currentTopic; $("speechTopic").textContent = currentTopic; els.prepRing.style.setProperty("--progress", 0);
+        updateSpeechModeUI();
+        showScreen("prepScreen");
+        if (practiceMode === "voice") {
+          startRecognition();
+          const generation = prepGeneration;
+          setTimeout(() => { if (generation === prepGeneration && pendingCountdown && !countdownStarted) { stopRecognition(); showDictationFallback("麦克风暂未就绪，可使用手机听写或文字输入"); beginCountdown(); } }, 8000);
+        } else beginCountdown();
+      }
+      function beginCountdown() {
+        if (countdownStarted) return;
+        countdownStarted = true; pendingCountdown = false;
+        let left = 10;
+        els.prepLabel.textContent = "准备时间"; els.prep.textContent = String(left); els.prepRing.style.setProperty("--progress", 100);
+        prepTimer = setInterval(() => {
+          left -= 1; els.prep.textContent = String(Math.max(0, left));
+          els.prepRing.style.setProperty("--progress", Math.max(0, left * 10));
+          if (left <= 3 && left > 0) {
+            els.prepRing.classList.remove("cue"); void els.prepRing.offsetWidth; els.prepRing.classList.add("cue");
+            if (navigator.vibrate) navigator.vibrate(25);
+          }
+          if (left <= 0) {
+            clearInterval(prepTimer); els.prep.textContent = "开始"; els.prepRing.classList.add("cue");
+            const generation = prepGeneration;
+            setTimeout(() => { if (generation === prepGeneration) beginSpeech(); }, 420);
+          }
+        }, 1000);
+      }
+      function beginSpeech() {
+        finalTranscript = ""; els.transcript.value = ""; speechStartedAt = Date.now(); els.time.textContent = "00:00";
+        updateTranscriptView();
+        showScreen("speechScreen");
+        if (practiceMode === "text") setTimeout(() => els.transcript.focus(), 80);
+        speechTimer = setInterval(() => { els.time.textContent = formatTime(Math.floor((Date.now() - speechStartedAt) / 1000)); }, 500);
+      }
+      function updateTranscriptView() {
+        els.transcript.scrollTop = els.transcript.scrollHeight;
+      }
+      function openPhoneDictation() {
+        els.transcript.focus(); toast("请点击手机键盘上的麦克风");
+      }
+      async function finishSpeech() {
+        if (reviewing) return;
+        if (els.transcript.value.trim().length < 8) { toast("请先输入或说出一段完整表达（至少 8 个字）"); return; }
+        clearInterval(speechTimer); if (practiceMode === "voice") stopRecognition(); finalTranscript = els.transcript.value.trim();
+        const elapsed = Math.max(1, Math.round((Date.now() - speechStartedAt) / 1000));
+        reviewElapsed = elapsed; showScreen("loadingScreen"); await requestReview(elapsed);
+      }
+      function fillProvider(provider) {
+        const preset = providers[provider];
+        const saved = aiStore.profile(provider);
+        $("apiProvider").value = provider;
+        els.baseUrl.value = saved?.baseUrl || preset.baseUrl;
+        els.baseUrl.readOnly = provider !== "custom";
+        $("allowedAddresses").hidden = provider !== "custom";
+        $("providerNote").textContent = preset.note;
+        els.model.innerHTML = preset.models.map(model => '<option value="'+escapeHtml(model)+'">'+escapeHtml(modelLabels[model] || model)+'</option>').join("") + '<option value="__custom__">自定义模型 ID…</option>';
+        const model = saved?.model || preset.models[0] || "";
+        els.model.value = preset.models.includes(model) ? model : "__custom__";
+        $("customModel").value = els.model.value === "__custom__" ? model : "";
+        $("customModel").hidden = els.model.value !== "__custom__";
+        els.apiKey.value = "";
+        try { els.apiKey.value = aiStore.key(normalizeConfig({provider,baseUrl:els.baseUrl.value,model:model || "placeholder"})); } catch { /* blank until configured */ }
+        els.apiKey.type = "password"; $("toggleKeyBtn").textContent = "显示";
+      }
+      function openSettings() {
+        if (drawingTopic || reviewing || checkingConnection || $("prepScreen").classList.contains("active") || $("speechScreen").classList.contains("active")) return toast("请完成当前操作后再修改 AI 设置");
+        fillProvider(currentAI().provider);
+        if (!els.settings.open) els.settings.showModal();
+      }
+      async function initApiConfig() {
+        $("apiProvider").innerHTML = Object.entries(providers).map(([id,p]) => '<option value="'+id+'">'+escapeHtml(p.name)+'</option>').join("");
+        $("apiAddresses").innerHTML = Object.keys(allowedBases).map(url => '<option value="'+url+'"></option>').join("");
+        $("allowedAddressList").innerHTML = Object.keys(allowedBases).map(url => '<div>'+escapeHtml(url)+'</div>').join("");
+        fillProvider(currentAI().provider);
+        const revision = connectionRevision;
+        let configured = Boolean(aiStore.key(currentAI()));
+        if (currentAI().provider === "deepseek") {
+          try {
+            const response = await fetch(statusEndpoint, {cache:"no-store",signal:AbortSignal.timeout(5000)});
+            const status = await response.json();
+            configured ||= Boolean(status.configured);
+          } catch { /* Starting practice performs the authoritative check. */ }
+        }
+        if (revision === connectionRevision) connectionState("idle", configured ? "已保存连接设置，开始前会验证是否可用。" : "请先设置 AI 服务和 API Key，训练前会自动检查。");
+      }
+      async function saveSettings() {
+        if (checkingConnection || reviewing || drawingTopic) return;
+        try {
+          const config = normalizeConfig({provider:$("apiProvider").value,baseUrl:els.baseUrl.value,model:els.model.value === "__custom__" ? $("customModel").value : els.model.value});
+          const apiKey = els.apiKey.value.trim();
+          if (apiKey && apiKey.length < 10) return toast("API Key 看起来不完整");
+          aiStore.save(config,apiKey);
+          if (await verifyConnection()) { els.settings.close(); toast("连接已验证，可以开始训练"); }
+        } catch(error) { connectionState("error",error.message); }
+      }
+      function normalizeDimensions(value) {
+        const tedNames = ["核心主张", "听众连接", "叙事推进", "证据支撑", "收束与启发"];
+        const legacyNames = ["结构", "具体性", "简洁度", "说服力"];
+        const entries = Array.isArray(value) ? value : [];
+        const hasTed = entries.some(item => tedNames.includes(item?.name)) || tedNames.some(name => value?.[name]);
+        const names = hasTed || !value ? tedNames : legacyNames;
+        if (Array.isArray(value)) return names.map(name => {
+          const item = value.find(entry => entry.name === name) || {};
+          return { name, rating: item.rating || scoreToRating(item.score), comment: item.comment || "暂无评价" };
+        });
+        return names.map(name => {
+          const key = {"结构":"structure","具体性":"specificity","简洁度":"conciseness","说服力":"persuasiveness"}[name];
+          const item = value?.[name] || value?.[key];
+          return { name, rating: item?.rating || scoreToRating(item?.score), comment: item?.comment || item?.brief || "暂无评价" };
+        });
+      }
+      function normalizeTedOutline(value) {
+        const stages = ["让听众在意", "说清核心观点", "用例子或证据展开", "收束到听众启发"];
+        const source = Array.isArray(value) ? value : [];
+        return stages.map((stage, index) => {
+          const item = source.find(entry => entry?.stage === stage) || source[index] || {};
+          return { stage, purpose: item.purpose || "", content: item.content || item.example || "" };
+        }).filter(item => item.purpose || item.content);
+      }
+      function scoreToRating(score) {
+        if (!Number.isFinite(Number(score))) return "待观察";
+        return Number(score) >= 78 ? "清晰" : Number(score) >= 60 ? "基本清晰" : "需加强";
+      }
+      function normalizeSuggestions(value) {
+        if (!Array.isArray(value)) return [];
+        return value.slice(0, 3).map((item, index) => ({
+          title: item?.title || `修改建议 ${index + 1}`,
+          evidence: item?.evidence || item?.original || "请对照本轮转写原文",
+          action: item?.action || item?.advice || "把这一处表达得更明确。",
+          example: item?.example || item?.rewrite || "暂无示范说法。"
+        }));
+      }
+      function markdownText(value, fallback = "暂无") {
+        const text = String(value ?? "").trim();
+        return text || fallback;
+      }
+      function buildReviewMarkdown(record) {
+        const analysis = record.analysis || {}, suggestions = normalizeSuggestions(analysis.suggestions);
+        const date = new Intl.DateTimeFormat("zh-CN", { year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" }).format(new Date(record.createdAt || Date.now()));
+        const lines = [
+          "# 开口练｜即兴演讲复盘", "",
+          `- 日期：${date}`,
+          `- 题目：${markdownText(record.topic, "即兴演讲练习")}`,
+          ...(record.inputMode ? [`- 输入方式：${record.inputMode === "text" ? "文字输入" : "语音输入"}`] : []),
+          `- 时长：${formatTime(Number(record.elapsed) || 0)}`,
+          `- 模型：${markdownText(record.model)}`, "",
+          "## 1. 原文", "", ...markdownText(record.transcript).split(/\r?\n/).map(line => `> ${line}`), "",
+          "## 2. 修改建议", "", `**最明显的问题：** ${markdownText(analysis.main_problem)}`, ""
+        ];
+        if (suggestions.length) suggestions.forEach((item, index) => {
+          lines.push(`### ${index + 1}. ${markdownText(item.title)}`, "", `- **对应原话：** ${markdownText(item.evidence)}`, `- **怎么改：** ${markdownText(item.action)}`, `- **可以这样讲：** ${markdownText(item.example)}`, "");
+        });
+        else lines.push("暂无具体建议。", "");
+        lines.push("## 3. 修改后的文章", "", markdownText(analysis.rewritten_article, "这条历史记录尚未生成完整改写稿。"), "");
+        return lines.join("\n");
+      }
+      async function copyMarkdown(markdown) {
+        if (!markdown) return toast("暂无可复制的复盘内容");
+        try { await navigator.clipboard.writeText(markdown); }
+        catch {
+          const helper = document.createElement("textarea"); helper.value = markdown; helper.style.position = "fixed"; helper.style.opacity = "0";
+          document.body.appendChild(helper); helper.select(); document.execCommand("copy"); helper.remove();
+        }
+        toast("Markdown 已复制");
+      }
+      function exportMarkdown(markdown, topic) {
+        if (!markdown) return toast("暂无可导出的复盘内容");
+        const safeTopic = markdownText(topic, "即兴演讲复盘").replace(/[\\/:*?"<>|]/g, "").slice(0, 28);
+        const url = URL.createObjectURL(new Blob([markdown], { type: "text/markdown;charset=utf-8" }));
+        const link = document.createElement("a"); link.href = url; link.download = `开口练-${safeTopic}.md`;
+        document.body.appendChild(link); link.click(); link.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+        toast("Markdown 文件已导出");
+      }
+      function renderReview(payload, elapsed) {
+        const analysis = payload.analysis || {}, dimensions = normalizeDimensions(analysis.dimensions), outline = normalizeTedOutline(analysis.ted_outline), suggestions = normalizeSuggestions(analysis.suggestions);
+        lastReviewMarkdown = buildReviewMarkdown({ topic: currentTopic, transcript: els.transcript.value.trim(), inputMode: practiceMode, elapsed, model: payload.model, createdAt: payload.record?.createdAt || Date.now(), analysis });
+        els.copyMarkdown.disabled = false; els.exportMarkdown.disabled = false;
+        els.review.innerHTML = `
+          <p class="review-save-note">${payload.record ? "本次复盘已保存到训练记录。" : "本次复盘未保存到训练记录，请复制或导出留存。"}</p>
+          <section class="review-section"><h3>01 · 核心观点（忠实复述）</h3><p>${escapeHtml(analysis.summary || "未能提取清晰的核心观点。")}</p></section>
+          <section class="review-section"><h3>02 · TED式核心主线</h3><p class="throughline">${escapeHtml(analysis.throughline || "这次表达还没有形成一句清晰、可带走的主张。")}</p></section>
+          <section class="review-section"><h3>03 · 最明显的问题</h3><p class="problem">${escapeHtml(analysis.main_problem || "这次表达暂时没有形成一个足够清晰的中心。")}</p></section>
+          <details class="review-more"><summary>展开 TED 五维评估与重组路线</summary><section class="review-section"><h3>04 · TED五维评估</h3><div class="dimensions">
+            ${dimensions.map(item => `<div class="dimension"><div class="dimension-head"><span>${escapeHtml(item.name)}</span><span class="dimension-rating">${escapeHtml(item.rating)}</span></div><p>${escapeHtml(item.comment)}</p></div>`).join("")}
+          </div></section>
+          <section class="review-section"><h3>05 · TED式重组路线</h3><div class="ted-outline">
+            ${outline.length ? outline.map(item => `<article class="ted-step"><h4>${escapeHtml(item.stage)}</h4><p class="ted-purpose">${escapeHtml(item.purpose)}</p><p>${escapeHtml(item.content)}</p></article>`).join("") : `<p>这次没有生成可用的重组路线，请重试复盘。</p>`}
+          </div></section>
+          </details><section class="review-section"><h3>接下来，具体这样改</h3><div class="suggestions">
+            ${suggestions.length ? suggestions.map(item => `<article class="suggestion"><h4>${escapeHtml(item.title)}</h4><p><strong>对应原话：</strong>${escapeHtml(item.evidence)}</p><p><strong>怎么改：</strong>${escapeHtml(item.action)}</p><p class="suggestion-example"><strong>可以这样讲：</strong>${escapeHtml(item.example)}</p></article>`).join("") : `<p>这次没有生成可用的具体建议，请重试复盘。</p>`}
+          </div></section>
+          <section class="review-section"><h3>修改后的完整文章</h3><p class="rewritten-article">${escapeHtml(analysis.rewritten_article || "这次没有生成完整改写稿，请重试复盘。")}</p></section>
+          <details class="transcript-details"><summary>查看本轮转写原文</summary><p>${escapeHtml(els.transcript.value.trim())}</p></details>`;
+        showScreen("reviewScreen");
+      }
+      function formatHistoryDate(timestamp) {
+        try { return new Intl.DateTimeFormat("zh-CN", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" }).format(new Date(timestamp)); }
+        catch { return "最近一次训练"; }
+      }
+      function renderHistory(records) {
+        loadedHistoryRecords = Array.isArray(records) ? records : [];
+        if (!Array.isArray(records) || records.length === 0) {
+          els.historyContent.innerHTML = `<p class="history-empty">还没有训练记录。完成一次复盘后，会自动保存在这里。</p>`;
+          return;
+        }
+        els.historyContent.innerHTML = `<div class="history-list">${records.map(record => {
+          const analysis = record.analysis || {}, outline = normalizeTedOutline(analysis.ted_outline), suggestions = normalizeSuggestions(analysis.suggestions);
+          return `<details class="history-card"><summary><span class="history-date">${escapeHtml(formatHistoryDate(record.createdAt))} · ${escapeHtml(formatTime(Number(record.elapsed) || 0))}</span><span class="history-topic">${escapeHtml(record.topic || "即兴演讲练习")}</span></summary><div class="history-detail">
+            <h4>核心观点</h4><p>${escapeHtml(analysis.summary || "暂无")}</p>
+            ${analysis.throughline ? `<h4>TED式核心主线</h4><p>${escapeHtml(analysis.throughline)}</p>` : ""}
+            <h4>最明显的问题</h4><p>${escapeHtml(analysis.main_problem || "暂无")}</p>
+            ${outline.length ? `<h4>TED式重组路线</h4>${outline.map(item => `<div class="history-suggestion"><strong>${escapeHtml(item.stage)}</strong><p>${escapeHtml(item.content)}</p></div>`).join("")}` : ""}
+            ${suggestions.length ? `<h4>修改建议</h4>${suggestions.map(item => `<div class="history-suggestion"><strong>${escapeHtml(item.title)}</strong><p>${escapeHtml(item.action)}</p><p>示范：${escapeHtml(item.example)}</p></div>`).join("")}` : ""}
+            <h4>转写原文</h4><p>${escapeHtml(record.transcript || "暂无")}</p>
+            <h4>修改后的文章</h4><p>${escapeHtml(analysis.rewritten_article || "这条历史记录尚未生成完整改写稿。")}</p>
+            <div class="history-export-actions"><button class="secondary" data-history-copy="${escapeHtml(record.id)}">复制 Markdown</button><button class="secondary" data-history-export="${escapeHtml(record.id)}">导出 .md</button></div>
+          </div></details>`;
+        }).join("")}</div>`;
+      }
+      async function openHistory() {
+        els.historyContent.innerHTML = `<p class="history-empty">正在读取训练记录……</p>`;
+        els.history.showModal();
+        try {
+          const response = await fetch(historyEndpoint, { cache: "no-store", headers: { "X-Practice-Device-Token": deviceToken() } });
+          const payload = await response.json().catch(() => ({}));
+          if (!response.ok) throw new Error(payload.error || "训练记录读取失败");
+          renderHistory(payload.records);
+          if (payload.warning) els.historyContent.insertAdjacentHTML("afterbegin", `<p class="error-box" role="status">${escapeHtml(payload.warning)}</p>`);
+        } catch (error) {
+          els.historyContent.innerHTML = `<p class="error-box">${escapeHtml(error.message || "训练记录读取失败，请稍后重试。")}</p>`;
+        }
+      }
+      function renderError(message) {
+        lastReviewMarkdown = ""; els.copyMarkdown.disabled = true; els.exportMarkdown.disabled = true;
+        els.review.innerHTML = `<div class="error-box">${escapeHtml(message)}<br><br>本轮原文还在，可以重新连接后直接复盘。</div><div class="error-actions"><button class="primary" data-review-retry>重试本次复盘</button><button class="secondary" data-copy-original>复制本轮原文</button></div><details class="transcript-details" open><summary>本轮完整原文</summary><p>${escapeHtml(els.transcript.value)}</p></details>`;
+        showScreen("reviewScreen");
+      }
+      async function requestReview(elapsed) {
+        if (reviewing) return;
+        const transcript = els.transcript.value.trim();
+        if (transcript.length < 8) return renderError("没有识别到足够的演讲文字。你可以返回同题再练，并使用手机系统听写补充文字。");
+        reviewing = true;
+        try {
+          const response = await fetch(analyzeEndpoint, {
+            method: "POST", headers: {
+              "Content-Type": "application/json",
+              "X-Practice-Device-Token": deviceToken(),
+              ...aiHeaders()
+            },
+            body: JSON.stringify({ ...currentAI(), prompt: currentTopic, context: "TED式即兴演讲练习", inputMode: practiceMode, transcript, elapsed }), signal:AbortSignal.timeout(70_000)
+          });
+          const payload = await response.json().catch(() => ({}));
+          if (!response.ok) throw new Error(payload.error || "AI 复盘失败，请稍后重试");
+          renderReview(payload, elapsed);
+        } catch (error) { renderError(error.message); }
+        finally { reviewing = false; }
+      }
+
+      $("drawBtn").addEventListener("click", drawTopic);
+      $("redrawBtn").addEventListener("click", drawTopic);
+      document.querySelectorAll("[data-mode]").forEach(button => button.addEventListener("click", () => setPracticeMode(button.dataset.mode)));
+      $("startBtn").addEventListener("click", startPractice);
+      $("configureTopicBtn").addEventListener("click", openSettings);
+      $("cancelPrepBtn").addEventListener("click", () => { prepGeneration += 1; pendingCountdown = false; clearInterval(prepTimer); stopRecognition(); showScreen("topicScreen"); });
+      [els.apiKey,els.model,els.baseUrl,$("customModel")].forEach(field => field.addEventListener("input", () => connectionState("idle", "设置已修改，请保存并重新检查连接。")));
+      $("apiProvider").addEventListener("change", () => { fillProvider($("apiProvider").value); connectionState("idle","已切换服务商，请填写对应 Key 并保存检查。"); });
+      els.model.addEventListener("change", () => { $("customModel").hidden = els.model.value !== "__custom__"; });
+      els.baseUrl.addEventListener("input", () => { els.apiKey.value = ""; els.apiKey.type = "password"; $("toggleKeyBtn").textContent = "显示"; });
+      els.review.addEventListener("click", async event => {
+        if (event.target.closest("[data-review-retry]")) {
+          if (checkingConnection || reviewing) return;
+          if (!await verifyConnection()) { openSettings(); return; }
+          showScreen("loadingScreen"); await requestReview(reviewElapsed);
+        }
+        if (event.target.closest("[data-copy-original]")) await copyMarkdown(els.transcript.value);
+      });
+      $("finishBtn").addEventListener("click", finishSpeech);
+      $("dictateBtn").addEventListener("click", openPhoneDictation);
+      $("retryBtn").addEventListener("click", startPractice);
+      $("nextBtn").addEventListener("click", drawTopic);
+      $("historyBtn").addEventListener("click", openHistory);
+      $("closeHistoryBtn").addEventListener("click", () => els.history.close());
+      els.copyMarkdown.addEventListener("click", () => copyMarkdown(lastReviewMarkdown));
+      els.exportMarkdown.addEventListener("click", () => exportMarkdown(lastReviewMarkdown, currentTopic));
+      els.historyContent.addEventListener("click", event => {
+        const button = event.target.closest("[data-history-copy], [data-history-export]");
+        if (!button) return;
+        const id = button.dataset.historyCopy || button.dataset.historyExport;
+        const record = loadedHistoryRecords.find(item => item.id === id);
+        if (!record) return toast("未找到这条训练记录");
+        const markdown = buildReviewMarkdown(record);
+        if (button.dataset.historyCopy) copyMarkdown(markdown); else exportMarkdown(markdown, record.topic);
+      });
+      $("settingsBtn").addEventListener("click", openSettings);
+      $("closeSettingsBtn").addEventListener("click", () => els.settings.close());
+      $("saveSettingsBtn").addEventListener("click", saveSettings);
+      $("toggleKeyBtn").addEventListener("click", event => {
+        const showing = els.apiKey.type === "text";
+        els.apiKey.type = showing ? "password" : "text";
+        event.currentTarget.textContent = showing ? "显示" : "隐藏";
+      });
+      els.transcript.addEventListener("input", () => { finalTranscript = els.transcript.value; });
+      deviceToken();
+      initApiConfig();
+    })();
+  </script>
+</body>
+</html>
