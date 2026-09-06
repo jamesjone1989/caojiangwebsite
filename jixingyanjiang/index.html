@@ -438,8 +438,8 @@
   <div class="toast" id="toast" role="status"></div>
 
   <script type="module">
-    import { providers, allowedBases, normalizeConfig } from "./ai-providers.mjs";
-    import { createSettingsStore } from "./ai-settings.mjs";
+    import { providers, modelLabels, allowedBases, normalizeConfig } from "./ai-providers.mjs?v=20260906-fix1";
+    import { createSettingsStore } from "./ai-settings.mjs?v=20260906-fix1";
     (() => {
       const topics = [
         "如果你能改变公司里的一条默认规则，你会改变什么？为什么？",
@@ -621,14 +621,14 @@
         try {
           const response = await fetch(checkEndpoint, {
             method: "POST", headers: { "Content-Type":"application/json", ...aiHeaders() },
-            body: JSON.stringify(currentAI()), signal:AbortSignal.timeout(25_000)
+            body: JSON.stringify(currentAI()), signal:AbortSignal.timeout(40_000)
           });
           const result = await response.json().catch(() => ({}));
           if (!response.ok || result.ok !== true) throw new Error(result.error || "连接检查未通过，请检查设置后重试。");
           connectionState("ready", `${providers[currentAI().provider].name} · ${currentAI().model} 已验证可用。`);
           return true;
         } catch(error) {
-          connectionState("error", error.name === "TimeoutError" || error.name === "TypeError" ? "连接超时或网络不可用，请检查网络后重试。" : error.message);
+          connectionState("error", error.name === "TimeoutError" ? "连接检查等待超时，请稍后重试。" : error.name === "TypeError" ? "浏览器无法访问网站的 AI 接口，请刷新页面或检查网络。" : error.message);
           return false;
         } finally {
           controls.forEach((item,index) => item.disabled = disabled[index]);
@@ -819,7 +819,7 @@
         els.baseUrl.readOnly = provider !== "custom";
         $("allowedAddresses").hidden = provider !== "custom";
         $("providerNote").textContent = preset.note;
-        els.model.innerHTML = preset.models.map(model => '<option value="'+escapeHtml(model)+'">'+escapeHtml(model)+'</option>').join("") + '<option value="__custom__">自定义模型 ID…</option>';
+        els.model.innerHTML = preset.models.map(model => '<option value="'+escapeHtml(model)+'">'+escapeHtml(modelLabels[model] || model)+'</option>').join("") + '<option value="__custom__">自定义模型 ID…</option>';
         const model = saved?.model || preset.models[0] || "";
         els.model.value = preset.models.includes(model) ? model : "__custom__";
         $("customModel").value = els.model.value === "__custom__" ? model : "";

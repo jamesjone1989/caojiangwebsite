@@ -1,4 +1,4 @@
-import { normalizeConfig, providers } from './ai-providers.mjs';
+import { normalizeConfig, providers } from './ai-providers.mjs?v=20260906-fix1';
 const settingsKey = 'kaikoulian.ai.profiles.v1';
 const keySlot = config => 'kaikoulian.ai.key.session.v1:'+config.provider+':'+config.baseUrl;
 export function createSettingsStore(local, session) {
