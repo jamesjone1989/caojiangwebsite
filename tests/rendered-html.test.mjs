@@ -102,6 +102,13 @@ test("server-renders the Cao Jiang works map", async () => {
   assert.match(html, /id="kaikoulian"/);
   assert.match(html, /href="(?:\.\/|\/)kaikoulian\/"/);
   assert.match(html, /打开开口练/);
+  const topnav = html.match(/<nav class="topnav"[\s\S]*?<\/nav>/)?.[0] ?? "";
+  assert.match(topnav, /href="#works"/);
+  assert.doesNotMatch(topnav, /开口练/);
+  assert.match(html, /aria-label="作品目录"[\s\S]*?href="#kaikoulian"/);
+  assert.match(html, /id="works"[\s\S]*?id="kaikoulian"[\s\S]*?<\/section><\/div><section class="chapter xiaobot-section"/);
+  assert.match(html, /alt="开口练 Logo"/);
+  assert.match(html, /kaikoulian-logo\.svg/);
   assert.match(html, /原文、修改建议、完整改写稿/);
   assert.match(html, /职场新人挑战地图/);
   assert.match(html, /href="(?:\.\/|\/)tiaozhan\/"/);

@@ -1150,6 +1150,24 @@ img {
   backdrop-filter: blur(10px);
 }
 
+.works-group { scroll-margin-top: 80px; }
+.works-directory {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px 40px;
+  padding: 32px clamp(20px, 5vw, 80px);
+  background: #151b18;
+  color: white;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+}
+.works-directory h2 { margin: 0; font-size: 24px; }
+.works-directory nav { display: flex; flex-wrap: wrap; gap: 12px 28px; }
+.works-directory a { display: inline-flex; align-items: center; min-height: 44px; font-size: 16px; }
+.works-directory a:hover { color: var(--green); }
+.works-directory a:focus-visible { outline: 2px solid var(--green); outline-offset: 5px; }
+.works-group section { scroll-margin-top: 72px; }
+
 .echo-section {
   min-height: 100svh;
   padding-left: 0;
@@ -1513,6 +1531,10 @@ img {
   line-height: 1.15;
   letter-spacing: -0.045em;
 }
+
+.practice-brand { display: flex; align-items: center; gap: 16px; margin-top: 26px; color: #145c46; }
+.practice-brand img { width: 64px; height: 64px; flex-shrink: 0; }
+.practice-brand span { font-size: clamp(28px, 3vw, 38px); font-weight: 800; letter-spacing: -0.04em; }
 
 .practice-description {
   max-width: 34em;

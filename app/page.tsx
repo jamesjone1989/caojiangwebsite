@@ -156,7 +156,6 @@ export default function Home() {
           <a href="#village">AI 新手村</a>
           <a href="#channels">公众号</a>
           <a href="#works">作品</a>
-          <a href="#kaikoulian">开口练</a>
         </nav>
       </header>
 
@@ -588,7 +587,18 @@ export default function Home() {
         </article>
       </section>
 
-      <section className="chapter echo-section" id="works">
+      <div id="works" className="works-group" role="region" aria-labelledby="works-heading">
+        <div className="works-directory">
+          <h2 id="works-heading">作品</h2>
+          <nav aria-label="作品目录">
+            <a href="#echo-journal">回声日记</a>
+            <a href="#good-habits">职场好习惯</a>
+            <a href="#challenge-map">职场新人挑战地图</a>
+            <a href="#kaikoulian">开口练</a>
+          </nav>
+        </div>
+
+      <section className="chapter echo-section" id="echo-journal">
         <div className="echo-visual" data-reveal>
           <div className="browser-frame">
             <div className="browser-bar" aria-hidden="true">
@@ -629,7 +639,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="chapter good-habits-section">
+      <section className="chapter good-habits-section" id="good-habits">
         <div className="good-habits-copy" data-reveal>
           <p className="eyebrow">05 / 互动作品</p>
           <h2>
@@ -665,7 +675,7 @@ export default function Home() {
         </a>
       </section>
 
-      <section className="chapter challenge-map-section">
+      <section className="chapter challenge-map-section" id="challenge-map">
         <a
           className="challenge-map-art"
           href={assetUrl(links.challengeMap)}
@@ -721,7 +731,11 @@ export default function Home() {
 
       <section className="chapter practice-section" id="kaikoulian" aria-labelledby="practice-heading">
         <div className="practice-copy" data-reveal>
-          <p className="eyebrow">07 / 开口练 · AI 表达陪练</p>
+          <p className="eyebrow">07 / 作品 · AI 表达陪练</p>
+          <div className="practice-brand">
+            <img src={assetUrl("/editorial/kaikoulian-logo.svg")} alt="开口练 Logo" width={64} height={64} loading="lazy" />
+            <span>开口练</span>
+          </div>
           <h2 id="practice-heading">把想法，<br />练成清楚的表达。</h2>
           <p className="practice-description">
             抽一个有趣的话题，准备 10 秒，再说说你的想法。
@@ -744,6 +758,8 @@ export default function Home() {
           </ol>
         </div>
       </section>
+
+      </div>
 
       <section className="chapter xiaobot-section">
         <div className="xiaobot-copy" data-reveal>
