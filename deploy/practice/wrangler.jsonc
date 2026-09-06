@@ -1,0 +1,18 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "kaikoulian-api",
+  "account_id": "10f5e44abaee0dae593e18c144327b17",
+  "main": "worker.ts",
+  "compatibility_date": "2026-05-22",
+  "workers_dev": true,
+  "routes": [{"pattern":"jixing-api.caojiang.cn","custom_domain":true}],
+  "preview_urls": false,
+  "minify": true,
+  "define": { "process.env": "{}" },
+  "observability": { "enabled": false },
+  "d1_databases": [{
+    "binding": "DB",
+    "database_name": "kaikoulian-history",
+    "database_id": "cccb7cca-fd89-439d-bb4c-01ea005cfa94"
+  }]
+}
