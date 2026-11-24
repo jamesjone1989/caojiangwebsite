@@ -13,13 +13,13 @@ export const categories = [
 export const tools = [
   {
     id: "01",
-    name: "天工超级智能体",
-    category: "创作表达",
-    description: "智能创作，可生成文档、PPT、表格等多种内容。",
-    url: "https://www.tiangong.cn/",
-    domain: "tiangong.cn",
-    logo: "assets/logos/tiangong.cn.png",
-    color: "#ff6a32"
+    name: "微信输入法的「AI录音笔」",
+    category: "音视频",
+    description: "免费录音转文字，并自动生成清晰的思维框架。",
+    url: "https://z.weixin.qq.com/",
+    domain: "z.weixin.qq.com",
+    logo: "assets/logos/z.weixin.qq.com.png",
+    color: "#18c98c"
   },
   {
     id: "02",
