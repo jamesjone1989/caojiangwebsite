@@ -128,6 +128,7 @@ svg {
 }
 
 .hero-copy {
+  container-type: inline-size;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -160,6 +161,7 @@ h1 {
   max-width: 830px;
   margin: 0;
   font-size: clamp(4rem, 7.8vw, 8.4rem);
+  font-size: min(clamp(4rem, 7.8vw, 8.4rem), 17.5cqi);
   font-weight: 900;
   line-height: 0.98;
   letter-spacing: -0.075em;
@@ -676,6 +678,7 @@ footer > a {
 
   h1 {
     font-size: clamp(3.5rem, 16vw, 5.8rem);
+    font-size: min(clamp(3.5rem, 16vw, 5.8rem), 17.5cqi);
   }
 
   .hero-intro {
